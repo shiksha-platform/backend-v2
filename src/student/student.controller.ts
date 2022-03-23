@@ -1,14 +1,53 @@
-import { Controller, Get, Post, Put, Patch, Param } from '@nestjs/common';
-import { StudentInterface } from './interfaces/student.interface';
-import { StudentService } from './student.service';
-
-@Controller('student')
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Body,
+  Patch,
+  Param,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  Req,
+  SerializeOptions,
+} from "@nestjs/common";
+import {
+  ApiTags,
+  ApiOkResponse,
+  ApiForbiddenResponse,
+  ApiCreatedResponse,
+  ApiBody,
+  ApiBasicAuth,
+} from "@nestjs/swagger";
+import { request } from "http";
+import { StudentInterface } from "./interfaces/student.interface";
+import { StudentService } from "./student.service";
+import { Request } from "express";
+import { StudentDto } from "./dto/student.dto";
+@ApiTags("student")
+@Controller("student")
 export class StudentController {
+  constructor(private readonly studentService: StudentService) {}
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get("/:id")
+  @ApiOkResponse({ description: "Student detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  public async getStudent(@Param("id") id: string, @Req() request: Request) {
+    return this.studentService.getStudent(id, request);
+  }
 
-    constructor(private service: StudentService) {}
-
-    @Get(":id")
-    getOne(@Param('id') id): any {
-      return this.service.getOne(id)
-    }    
+  @Post()
+  @ApiCreatedResponse({ description: "Student has been created successfully." })
+  @ApiBody({ type: StudentDto })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async createStudent(
+    @Req() request: Request,
+    @Body() studentDto: StudentDto
+  ) {
+    return this.studentService.createStudent(request, studentDto);
+  }
 }

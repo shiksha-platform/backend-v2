@@ -1,9 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { StudentInterface } from "./interfaces/student.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
-import { first, map, Observable } from "rxjs";
+import { first, map, catchError, Observable } from "rxjs";
 import { response } from "express";
+import { StudentDto } from "./dto/student.dto";
+import { SuccessResponse } from "src/success-response";
+import { ErrorResponse } from "../error-response";
 
 @Injectable()
 export class StudentService {
@@ -11,19 +14,73 @@ export class StudentService {
 
   constructor(private httpService: HttpService) {}
 
-  getOne(id: any): Observable<StudentInterface> {
-    return this.httpService
-      .get(
-        "https://dev-shiksha.uniteframework.io/registry/api/v1/Student/c008ac28-cbc1-4abb-a215-4917e360b1a1"
-      )
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          this.student = {
-            studentId: id,
-            firstName: axiosResponse.data.studentFirstName,
-          };
-          return this.student;
-        })
-      );
+  url = "https://dev-shiksha.uniteframework.io/registry/api/v1/Student";
+  public async getStudent(id: any, request: any) {
+    return this.httpService.get(`${this.url}/${id}`, request).pipe(
+      map((axiosResponse: AxiosResponse) => {
+        const data = axiosResponse.data;
+
+        let student = {
+          osid: data.osid,
+          firstName: data.studentFirstName,
+          lastName: data.studentLastName,
+          email: data.email,
+          refStudentId: data.studentRefId,
+          aadhaar: data.aadhaar,
+          schoolId: data.schoolId,
+          currentClassId: data.currentClassID,
+          gender: data.gender,
+          socialCategory: data.socialCategory,
+          iscwsn: "",
+          religion: "",
+          singleGirl: "",
+          weight: "",
+          height: "",
+          bloodGroup: "",
+          birthDate: "",
+          homeless: "",
+          bpl: "",
+          migrant: "",
+          status: "",
+          studentName: data.studentFullName,
+          contactNumber: "",
+          studentId: "",
+        };
+
+        const studentDto = new StudentDto(student);
+        return new SuccessResponse({
+          statusCode: 200,
+          message: "Student found Successfully",
+          data: studentDto,
+        });
+      }),
+      catchError((e: any) => {
+        var error = new ErrorResponse({
+          errorCode: e.response.status,
+          errorMessage: e.response.data.params.errmsg,
+        });
+        throw new HttpException(error, e.response.status);
+      })
+    );
+  }
+
+  createStudent(request: any, studentDto: StudentDto) {
+    return this.httpService.post(`${this.url}`, studentDto, request).pipe(
+      map((axiosResponse: AxiosResponse) => {
+        return new SuccessResponse({
+          statusCode: 200,
+          message: "Student found Successfully",
+          data: this.student,
+        });
+      }),
+
+      catchError((e: any) => {
+        var error = new ErrorResponse({
+          errorCode: e.response.status,
+          errorMessage: e.response.data.params.errmsg,
+        });
+        throw new HttpException(error, e.response.status);
+      })
+    );
   }
 }
