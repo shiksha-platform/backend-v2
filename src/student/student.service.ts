@@ -9,25 +9,26 @@ import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "../error-response";
 import { SaveStudentDto } from "./dto/save-student.dto";
 
-var objectMapper = require("object-mapper");
 @Injectable()
 export class StudentService {
   private student: StudentInterface;
 
   constructor(private httpService: HttpService) {}
 
-  url = "https://dev-shiksha.uniteframework.io/registry/api/v1/Student";
+  url = `${process.env.BASE_URL}/Student`;
+
   public async getStudent(id: any, request: any) {
+    console.log(this.url);
     return this.httpService.get(`${this.url}/${id}`, request).pipe(
       map((axiosResponse: AxiosResponse) => {
         const data = axiosResponse.data;
 
         let student = {
-          osid: data.osid,
+          studentId: data.osid,
           firstName: data.studentFirstName,
           lastName: data.studentLastName,
           email: data.email,
-          refStudentId: data.studentRefId,
+          refId: data.studentRefId,
           aadhaar: data.aadhaar,
           schoolId: data.schoolId,
           currentClassId: data.currentClassID,
@@ -46,7 +47,6 @@ export class StudentService {
           status: "",
           studentName: data.studentFullName,
           contactNumber: "",
-          studentId: "",
           image: "",
         };
 

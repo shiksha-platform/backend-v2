@@ -9,15 +9,15 @@ import {
 import { ApiProperty } from "@nestjs/swagger";
 
 export class StudentDto {
-  @Exclude()
-  osid: string;
+  @Expose()
+  studentId: string;
 
   @ApiProperty({
     type: String,
     description: "The reference student id of the student",
   })
   @Expose()
-  refStudentId: string;
+  refId: string;
 
   @ApiProperty({
     type: String,
@@ -153,22 +153,6 @@ export class StudentDto {
   @IsEmail()
   @Expose()
   email: string;
-
-  @ApiProperty({
-    type: String,
-    description: "The image of the student",
-  })
-  @Expose()
-  image: string;
-
-  @IsNumber()
-  contactNumber: string;
-
-  @Expose()
-  studentId: string;
-
-  @Expose()
-  studentName: string;
 
   constructor(obj: StudentDto) {
     // Object.keys(obj).forEach(key => obj[key] === '' ? delete obj[key] : {});
