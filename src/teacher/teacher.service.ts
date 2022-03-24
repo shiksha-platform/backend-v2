@@ -14,7 +14,7 @@ export class TeacherService {
   getOne(id: any): Observable<TeacherInterface> {
     return this.httpService
       .get(
-        "https://dev-shiksha.uniteframework.io/registry/api/v1/Teacher/"+id
+        process.env.BASEAPIURL+"Teacher/"+id
       )
       .pipe(
         map((axiosResponse: AxiosResponse) => {

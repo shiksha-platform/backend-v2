@@ -14,7 +14,7 @@ export class AttendanceService {
   getOne(id: any): Observable<AttendanceInterface> {
     return this.httpService
       .get(
-        "https://dev-shiksha.uniteframework.io/registry/api/v1/Attendance/"+id
+        process.env.BASEAPIURL+ "Attendance/"+id
       )
       .pipe(
         map((axiosResponse: AxiosResponse) => {

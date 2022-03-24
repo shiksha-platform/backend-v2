@@ -14,7 +14,7 @@ export class StudentService {
   getOne(id: any): Observable<StudentInterface> {
     return this.httpService
       .get(
-        "https://dev-shiksha.uniteframework.io/registry/api/v1/Student/"+id
+        process.env.BASEAPIURL+"Student/"+id
       )
       .pipe(
         map((axiosResponse: AxiosResponse) => {
