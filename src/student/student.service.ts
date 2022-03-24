@@ -7,7 +7,9 @@ import { response } from "express";
 import { StudentDto } from "./dto/student.dto";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "../error-response";
+import { SaveStudentDto } from "./dto/save-student.dto";
 
+var objectMapper = require("object-mapper");
 @Injectable()
 export class StudentService {
   private student: StudentInterface;
@@ -45,6 +47,7 @@ export class StudentService {
           studentName: data.studentFullName,
           contactNumber: "",
           studentId: "",
+          image: "",
         };
 
         const studentDto = new StudentDto(student);
@@ -64,13 +67,13 @@ export class StudentService {
     );
   }
 
-  createStudent(request: any, studentDto: StudentDto) {
+  public async createStudent(request: any, studentDto: StudentDto) {
     return this.httpService.post(`${this.url}`, studentDto, request).pipe(
       map((axiosResponse: AxiosResponse) => {
         return new SuccessResponse({
           statusCode: 200,
-          message: "Student found Successfully",
-          data: this.student,
+          message: "Student created Successfully",
+          data: axiosResponse.data,
         });
       }),
 
@@ -83,4 +86,6 @@ export class StudentService {
       })
     );
   }
+
+  public async updateStudent(request: any) {}
 }

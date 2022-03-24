@@ -50,4 +50,12 @@ export class StudentController {
   ) {
     return this.studentService.createStudent(request, studentDto);
   }
+
+  @Put("/:id")
+  @ApiCreatedResponse({ description: "Student has been Updated successfully." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async updateStudent(@Req() request: Request) {
+    return this.studentService.updateStudent(request);
+  }
 }

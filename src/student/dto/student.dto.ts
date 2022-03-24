@@ -154,6 +154,13 @@ export class StudentDto {
   @Expose()
   email: string;
 
+  @ApiProperty({
+    type: String,
+    description: "The image of the student",
+  })
+  @Expose()
+  image: string;
+
   @IsNumber()
   contactNumber: string;
 
