@@ -14,13 +14,16 @@ export class StudentService {
   getOne(id: any): Observable<StudentInterface> {
     return this.httpService
       .get(
-        "https://dev-shiksha.uniteframework.io/registry/api/v1/Student/c008ac28-cbc1-4abb-a215-4917e360b1a1"
+        "https://dev-shiksha.uniteframework.io/registry/api/v1/Student/"+id
       )
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           this.student = {
             studentId: id,
             firstName: axiosResponse.data.studentFirstName,
+            lastName: axiosResponse.data.studentLastName,
+            email: axiosResponse.data.email,
+            currentClassId: axiosResponse.data.currentClassID
           };
           return this.student;
         })

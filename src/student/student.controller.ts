@@ -10,5 +10,7 @@ export class StudentController {
     @Get(":id")
     getOne(@Param('id') id): any {
       return this.service.getOne(id)
-    }    
+    }
+    
+    
 }
