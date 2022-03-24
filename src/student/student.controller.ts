@@ -24,7 +24,7 @@ import { StudentInterface } from "./interfaces/student.interface";
 import { StudentService } from "./student.service";
 import { Request } from "express";
 import { StudentDto } from "./dto/student.dto";
-@ApiTags("student")
+@ApiTags("Student")
 @Controller("student")
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
