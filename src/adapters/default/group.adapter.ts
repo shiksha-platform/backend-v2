@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { GroupInterface } from "./interfaces/group.interface";
+import { GroupInterface } from "../../group/interfaces/group.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";

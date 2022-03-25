@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { AttendanceInterface } from "./interfaces/attendance.interface";
+import { AttendanceInterface } from "../../attendance/interfaces/attendance.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";

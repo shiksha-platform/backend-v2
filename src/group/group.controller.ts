@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Put, Patch, Param } from '@nestjs/common';
-import { GroupInterface } from './interfaces/group.interface';
-import { GroupService } from './group.service';
+import { GroupService } from '../adapters/default/group.adapter';
 
 @Controller('group')
 export class GroupController {

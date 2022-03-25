@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Put, Patch, Param } from '@nestjs/common';
-import { AttendanceInterface } from './interfaces/attendance.interface';
-import { AttendanceService } from './attendance.service';
+import { AttendanceService } from '../adapters/default/attendance.adapter';
 
 @Controller('attendance')
 export class AttendanceController {

@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Put, Patch, Param } from '@nestjs/common';
-import { SchoolInterface } from './interfaces/school.interface';
-import { SchoolService } from './school.service';
+import { SchoolService } from '../adapters/default/school.adapter';
 
 @Controller('school')
 export class SchoolController {
