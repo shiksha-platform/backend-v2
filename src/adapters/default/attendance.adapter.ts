@@ -13,9 +13,7 @@ export class AttendanceService {
 
   getOne(id: any): Observable<AttendanceInterface> {
     return this.httpService
-      .get(
-        process.env.BASEAPIURL+ "Attendance/"+id
-      )
+      .get(process.env.BASEAPIURL + "Attendance/" + id)
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           this.attendance = {
@@ -27,7 +25,7 @@ export class AttendanceService {
             classId: axiosResponse.data.classId,
             teacherId: axiosResponse.data.teacherId,
             attendanceNote: axiosResponse.data.attendanceNote,
-           };
+          };
           return this.attendance;
         })
       );

@@ -1,10 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, HttpException } from "@nestjs/common";
 import { TeacherInterface } from "../../teacher/interfaces/teacher.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";
-import { response } from "express";
+import { catchError } from "rxjs/operators";
 import { SuccessResponse } from "src/success-response";
+import { ErrorResponse } from "src/error-response";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
 @Injectable()
 export class TeacherService {
@@ -56,6 +57,13 @@ export class TeacherService {
           message: "Student found Successfully",
           data: teacherDto,
         });
+      }),
+      catchError((e) => {
+        var error = new ErrorResponse({
+          errorCode: e.response?.status,
+          errorMessage: e.response?.data?.params?.errmsg,
+        });
+        throw new HttpException(error, e.response.status);
       })
     );
   }
@@ -65,9 +73,16 @@ export class TeacherService {
       map((axiosResponse: AxiosResponse) => {
         return new SuccessResponse({
           statusCode: 200,
-          message: "Student created Successfully",
+          message: "Teacher created Successfully",
           data: axiosResponse.data,
         });
+      }),
+      catchError((e) => {
+        var error = new ErrorResponse({
+          errorCode: e.response?.status,
+          errorMessage: e.response?.data?.params?.errmsg,
+        });
+        throw new HttpException(error, e.response.status);
       })
     );
   }
