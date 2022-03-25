@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Patch, Param } from "@nestjs/common";
 import { StudentInterface } from "./interfaces/student.interface";
-import { StudentService } from "./student.service";
+import { StudentService } from "../adapters/default/student.adapter";
 import { ApiTags } from "@nestjs/swagger";
 @ApiTags("Student")
 @Controller("student")

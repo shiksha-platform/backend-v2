@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { StudentController } from "./student.controller";
-import { StudentService } from "./student.service";
+import { StudentService } from "../adapters/default/student.adapter";
 import { HttpModule } from "@nestjs/axios";
 @Module({
   imports: [HttpModule],

@@ -1,14 +1,11 @@
-
 name: Docker Image CI
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     steps:
       -
@@ -26,4 +23,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: coolbung/shiksha-backend:latest
+          tags: coolbung/shiksha-backend:${{ github.sha }}

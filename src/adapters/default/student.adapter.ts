@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { StudentInterface } from "./interfaces/student.interface";
+import { StudentInterface } from "../../student/interfaces/student.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";

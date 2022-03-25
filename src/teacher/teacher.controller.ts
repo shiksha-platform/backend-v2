@@ -12,7 +12,7 @@ import {
   Req,
 } from "@nestjs/common";
 import { TeacherInterface } from "./interfaces/teacher.interface";
-import { TeacherService } from "./teacher.service";
+import { TeacherService } from "../adapters/default/teacher.adapter";
 import {
   ApiTags,
   ApiBody,
