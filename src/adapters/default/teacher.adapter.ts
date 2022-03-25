@@ -54,7 +54,7 @@ export class TeacherService {
         const teacherDto = new TeacherDto(teacher);
         return new SuccessResponse({
           statusCode: 200,
-          message: "Student found Successfully",
+          message: "Teacher found Successfully",
           data: teacherDto,
         });
       }),
