@@ -13,6 +13,7 @@ import {
 } from "@nestjs/common";
 import { TeacherInterface } from "./interfaces/teacher.interface";
 import { TeacherService } from "../adapters/default/teacher.adapter";
+import { Request } from "@nestjs/common";
 import {
   ApiTags,
   ApiBody,
@@ -21,7 +22,7 @@ import {
   ApiCreatedResponse,
 } from "@nestjs/swagger";
 import { request } from "http";
-import { Request } from "express";
+
 import { TeacherDto } from "./dto/teacher.dto";
 @ApiTags("Teacher")
 @Controller("teacher")
@@ -44,10 +45,23 @@ export class TeacherController {
   @ApiBody({ type: TeacherDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createStudent(
+  public async createTeacher(
     @Req() request: Request,
     @Body() teacherDto: TeacherDto
   ) {
     return this.service.createTeacher(request, teacherDto);
+  }
+
+  @Put("/:id")
+  @ApiCreatedResponse({ description: "Teacher has been updated successfully." })
+  @ApiBody({ type: TeacherDto })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async updateTeacher(
+    @Param("id") id: string,
+    @Req() request: Request,
+    @Body() teacherDto: TeacherDto
+  ) {
+    return this.service.updateTeacher(id, request, teacherDto);
   }
 }

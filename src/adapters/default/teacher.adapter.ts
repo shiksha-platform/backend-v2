@@ -7,6 +7,7 @@ import { catchError } from "rxjs/operators";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import { SaveTeacherDto } from "src/teacher/dto/save-teacher.dto";
 @Injectable()
 export class TeacherService {
   private teacher: TeacherInterface;
@@ -74,6 +75,27 @@ export class TeacherService {
         return new SuccessResponse({
           statusCode: 200,
           message: "Teacher created Successfully",
+          data: axiosResponse.data,
+        });
+      }),
+      catchError((e) => {
+        var error = new ErrorResponse({
+          errorCode: e.response?.status,
+          errorMessage: e.response?.data?.params?.errmsg,
+        });
+        throw new HttpException(error, e.response.status);
+      })
+    );
+  }
+
+  public async updateTeacher(id: string, request: any, teacherDto: TeacherDto) {
+    const updateTeacherDto = new SaveTeacherDto(teacherDto);
+
+    return this.httpService.put(`${this.url}/${id}`, teacherDto, request).pipe(
+      map((axiosResponse: AxiosResponse) => {
+        return new SuccessResponse({
+          statusCode: 200,
+          message: "Teacher updated Successfully",
           data: axiosResponse.data,
         });
       }),
