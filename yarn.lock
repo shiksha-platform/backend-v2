@@ -3774,6 +3774,11 @@
   "resolved" "https://registry.npmjs.org/object-inspect/-/object-inspect-1.12.0.tgz"
   "version" "1.12.0"
 
+"object-resolve-path@^1.1.1":
+  "integrity" "sha1-p/j5Poogr4DkQhe6fbVDFtnRIjI="
+  "resolved" "https://registry.npmjs.org/object-resolve-path/-/object-resolve-path-1.1.1.tgz"
+  "version" "1.1.1"
+
 "on-finished@^2.3.0", "on-finished@~2.3.0":
   "integrity" "sha1-IPEzZIGwg811M3mSoWlxqi2QaUc="
   "resolved" "https://registry.npmjs.org/on-finished/-/on-finished-2.3.0.tgz"

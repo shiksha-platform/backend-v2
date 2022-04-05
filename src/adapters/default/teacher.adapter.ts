@@ -8,6 +8,12 @@ import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
 import { SaveTeacherDto } from "src/teacher/dto/save-teacher.dto";
+import axios from "axios";
+const resolvePath = require("object-resolve-path");
+import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
+import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
+import { TeacherResponseDto } from "src/teacher/dto/teacher-response.dto";
+
 @Injectable()
 export class TeacherService {
   private teacher: TeacherInterface;
@@ -26,26 +32,26 @@ export class TeacherService {
           contactNumber: data.contactNumber,
           email: data.email,
           gender: data.gendar,
-          socialCategory: "",
-          birthDate: "",
-          designation: "",
-          cadre: "",
-          profQualification: "",
-          joiningDate: "",
-          subjectId: "",
-          bloodGroup: "",
-          maritalStatus: "",
-          blockI: "",
-          address: "",
-          compSkills: "",
-          disability: "",
-          religion: "",
-          homeDistance: "",
-          roles: "",
-          schoolId: "",
-          acrId: "",
-          retirementDate: "",
-          workingStatus: "",
+          socialCategory: data.socialCategory,
+          birthDate: data.birthDate,
+          designation: data.designation,
+          cadre: data.cadre,
+          profQualification: data.profQualification,
+          joiningDate: data.joiningDate,
+          subjectId: data.subjectId,
+          bloodGroup: data.bloodGroup,
+          maritalStatus: data.maritalStatus,
+          blockI: data.blockI,
+          address: data.address,
+          compSkills: data.compSkills,
+          disability: data.disability,
+          religion: data.religion,
+          homeDistance: data.homeDistance,
+          roles: data.roles,
+          schoolId: data.schoolId,
+          acrId: data.acrId,
+          retirementDate: data.retirementDate,
+          workingStatus: data.workingStatus,
           osCreatedAt: data.osCreatedAt,
           osUpdatedAt: data.osUpdatedAt,
           osCreatedBy: data.osCreatedBy,
@@ -88,24 +94,50 @@ export class TeacherService {
     );
   }
 
-  public async updateTeacher(id: string, request: any, teacherDto: TeacherDto) {
-    const updateTeacherDto = new SaveTeacherDto(teacherDto);
+  public async updateTeacher(id: string, teacherDto: TeacherDto) {
+    const headersRequest = {
+      "Content-Type": "application/json",
+    };
 
-    return this.httpService.put(`${this.url}/${id}`, teacherDto, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "Teacher updated Successfully",
-          data: axiosResponse.data,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
-      })
-    );
+    return this.httpService
+      .patch(`${this.url}/${id}`, teacherDto, { headers: headersRequest })
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "Teacher updated Successfully",
+            data: axiosResponse.data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
+  }
+  public async searchTeacher(request: any, teacherSearchDto: TeacherSearchDto) {
+    return this.httpService
+      .post(`${this.url}/search`, teacherSearchDto, request)
+      .pipe(
+        map((response) => {
+          const data = response.data;
+
+          return new SuccessResponse({
+            statusCode: response.status,
+            message: "Teacher found Successfully",
+            data: data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response.status,
+            errorMessage: e.response.data.params.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
 }

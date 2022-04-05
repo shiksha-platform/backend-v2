@@ -24,6 +24,7 @@ import {
 import { request } from "http";
 
 import { TeacherDto } from "./dto/teacher.dto";
+import { TeacherSearchDto } from "./dto/teacher-search.dto";
 @ApiTags("Teacher")
 @Controller("teacher")
 export class TeacherController {
@@ -52,16 +53,30 @@ export class TeacherController {
     return this.service.createTeacher(request, teacherDto);
   }
 
-  @Put("/:id")
+  @Patch("/:id")
   @ApiCreatedResponse({ description: "Teacher has been updated successfully." })
   @ApiBody({ type: TeacherDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async updateTeacher(
+  public async update(
     @Param("id") id: string,
-    @Req() request: Request,
+    // @Req() request: Request,
     @Body() teacherDto: TeacherDto
   ) {
-    return this.service.updateTeacher(id, request, teacherDto);
+    return await this.service.updateTeacher(id, teacherDto);
+  }
+  @Post("/search")
+  @ApiCreatedResponse({ description: "Teacher list." })
+  @ApiBody({ type: TeacherSearchDto })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  public async searchTeacher(
+    @Req() request: Request,
+    @Body() teacherSearchDto: TeacherSearchDto
+  ) {
+    return this.service.searchTeacher(request, teacherSearchDto);
   }
 }
