@@ -1,11 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { TeacherInterface } from "../../teacher/interfaces/teacher.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";
 import { response } from "express";
 import { SuccessResponse } from "src/success-response";
+
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import { TeacherInterface } from "../../teacher/interfaces/teacher.interface";
+
 @Injectable()
 export class TeacherService {
   private teacher: TeacherInterface;

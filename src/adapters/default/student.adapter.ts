@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { StudentInterface } from "../../student/interfaces/student.interface";
+import { StudentDto } from "../../student/dto/student.dto";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";
@@ -7,11 +7,11 @@ import { response } from "express";
 
 @Injectable()
 export class StudentService {
-  private student: StudentInterface;
+  private student: StudentDto;
 
   constructor(private httpService: HttpService) {}
 
-  getOne(id: any): Observable<StudentInterface> {
+  getOne(id: any): Observable<StudentDto> {
     return this.httpService
       .get(
         process.env.BASEAPIURL+"Student/"+id
