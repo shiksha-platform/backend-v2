@@ -20,10 +20,32 @@ export class StudentService {
         map((axiosResponse: AxiosResponse) => {
           this.student = {
             studentId: id,
+            refId: "",
             firstName: axiosResponse.data.studentFirstName,
             lastName: axiosResponse.data.studentLastName,
             email: axiosResponse.data.email,
-            currentClassId: axiosResponse.data.currentClassID
+            currentClassId: axiosResponse.data.currentClassID,
+            aadhaar: null,
+            schoolId: "",
+            gender: "",
+            socialCategory: "",
+            iscwsn: "",
+            religion: "",
+            singleGirl: null,
+            bpl: null,
+            birthDate: null,
+            weight: null,
+            height: null,
+            bloodGroup: "",
+            homeless: null,
+            migrant: null,
+            status: "",
+
+            createdAt: axiosResponse.data.osCreatedAt,
+            updatedAt: axiosResponse.data.osUpdatedAt,
+            createdBy: axiosResponse.data.osCreatedBy,
+            updatedBy: axiosResponse.data.osUpdatedBy,
+  
           };
           return this.student;
         })
