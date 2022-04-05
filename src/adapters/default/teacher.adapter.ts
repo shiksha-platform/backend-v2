@@ -1,18 +1,19 @@
 import { Injectable, HttpException } from "@nestjs/common";
-import { TeacherInterface } from "../../teacher/interfaces/teacher.interface";
+
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-import { TeacherDto } from "../../teacher/dto/teacher.dto";
 import { SaveTeacherDto } from "src/teacher/dto/save-teacher.dto";
 import axios from "axios";
 const resolvePath = require("object-resolve-path");
 import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
 import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
 import { TeacherResponseDto } from "src/teacher/dto/teacher-response.dto";
+import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import { TeacherInterface } from "../../teacher/interfaces/teacher.interface";
 
 @Injectable()
 export class TeacherService {
