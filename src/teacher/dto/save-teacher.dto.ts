@@ -189,16 +189,16 @@ export class SaveTeacherDto {
   workingStatus: string;
 
   @Expose()
-  osCreatedAt: string;
+  createdAt: string;
 
   @Expose()
-  osUpdatedAt: string;
+  updatedAt: string;
 
   @Expose()
-  osCreatedBy: string;
+  createdBy: string;
 
   @Expose()
-  osUpdatedBy: string;
+  updatedBy: string;
 
   constructor(obj: SaveTeacherDto) {
     Object.keys(obj).forEach((key) => (obj[key] === "" ? delete obj[key] : {}));

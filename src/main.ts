@@ -9,6 +9,10 @@ async function bootstrap() {
     .setDescription("CRUD API")
     .setVersion("1.0")
     .addTag("V2")
+    .addApiKey(
+      { type: "apiKey", name: "Authorization", in: "header" },
+      "access-token"
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);

@@ -6,12 +6,9 @@ import { first, map, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-import { SaveTeacherDto } from "src/teacher/dto/save-teacher.dto";
-import axios from "axios";
 const resolvePath = require("object-resolve-path");
 import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
 import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
-import { TeacherResponseDto } from "src/teacher/dto/teacher-response.dto";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
 import { TeacherInterface } from "../../teacher/interfaces/teacher.interface";
 
@@ -53,10 +50,10 @@ export class TeacherService {
           acrId: data.acrId,
           retirementDate: data.retirementDate,
           workingStatus: data.workingStatus,
-          osCreatedAt: data.osCreatedAt,
-          osUpdatedAt: data.osUpdatedAt,
-          osCreatedBy: data.osCreatedBy,
-          osUpdatedBy: data.osUpdatedBy,
+          createdAt: data.osCreatedAt,
+          updatedAt: data.osUpdatedAt,
+          createdBy: data.osCreatedBy,
+          updatedBy: data.osUpdatedBy,
         };
 
         const teacherDto = new TeacherDto(teacher);
@@ -95,41 +92,75 @@ export class TeacherService {
     );
   }
 
-  public async updateTeacher(id: string, teacherDto: TeacherDto) {
-    const headersRequest = {
-      "Content-Type": "application/json",
-    };
+  public async updateTeacher(id: string, request: any, teacherDto: TeacherDto) {
+    var axios = require("axios");
+    var data = teacherDto;
 
-    return this.httpService
-      .patch(`${this.url}/${id}`, teacherDto, { headers: headersRequest })
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "Teacher updated Successfully",
-            data: axiosResponse.data,
-          });
-        }),
-        catchError((e) => {
-          var error = new ErrorResponse({
-            errorCode: e.response?.status,
-            errorMessage: e.response?.data?.params?.errmsg,
-          });
-          throw new HttpException(error, e.response.status);
-        })
-      );
+    var config = {
+      method: "put",
+      url: `${this.url}/${id}`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+    const response = await axios(config);
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "Teacher updated Successfully",
+      data: response.data,
+    });
   }
   public async searchTeacher(request: any, teacherSearchDto: TeacherSearchDto) {
+    var template = {
+      teacherId: "teacherId",
+      firstName: "firstName",
+      lastName: "lastName",
+      gender: "gender",
+      dob: "dob",
+      email: "email",
+      contactNumber: "mobile",
+      address: "address",
+      socialCategory: "socialCategory",
+      birthDate: "birthDate",
+      designation: "designation",
+      cadre: "cadre",
+      profQualification: "profQualification",
+      joiningDate: "joiningDate",
+      subjectId: "subjectId",
+      bloodGroup: "bloodGroup",
+      maritalStatus: "maritalStatus",
+      blockI: "blockI",
+      compSkills: "compSkills",
+      disability: "disability",
+      religion: "religion",
+      homeDistance: "homeDistance",
+      roles: "roles",
+      schoolId: "schoolId",
+      acrId: "acrId",
+      retirementDate: "retirementDate",
+      workingStatus: "workingStatus",
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
+      createdBy: "createdBy",
+      updatedBy: "updatedBy",
+    };
     return this.httpService
       .post(`${this.url}/search`, teacherSearchDto, request)
       .pipe(
         map((response) => {
-          const data = response.data;
+          const responsedata = response.data.map((item) => {
+            const teacherDetailDto = new TeacherDetailDto(template);
+            Object.keys(template).forEach((key) => {
+              teacherDetailDto[key] = resolvePath(item, template[key]);
+            });
+            return teacherDetailDto;
+          });
 
           return new SuccessResponse({
             statusCode: response.status,
             message: "Teacher found Successfully",
-            data: data,
+            data: responsedata,
           });
         }),
         catchError((e) => {

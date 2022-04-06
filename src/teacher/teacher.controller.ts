@@ -20,6 +20,7 @@ import {
   ApiOkResponse,
   ApiForbiddenResponse,
   ApiCreatedResponse,
+  ApiBasicAuth,
 } from "@nestjs/swagger";
 import { request } from "http";
 
@@ -28,10 +29,11 @@ import { TeacherSearchDto } from "./dto/teacher-search.dto";
 @ApiTags("Teacher")
 @Controller("teacher")
 export class TeacherController {
-  constructor(private service: TeacherService) {}
+  constructor(private readonly service: TeacherService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get("/:id")
+  @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Teacher detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
@@ -42,6 +44,7 @@ export class TeacherController {
   }
 
   @Post()
+  @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Teacher has been created successfully." })
   @ApiBody({ type: TeacherDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -53,19 +56,21 @@ export class TeacherController {
     return this.service.createTeacher(request, teacherDto);
   }
 
-  @Patch("/:id")
+  @Put("/:id")
+  @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Teacher has been updated successfully." })
-  @ApiBody({ type: TeacherDto })
+  //@ApiBody({ type: TeacherDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async update(
+  public async updateTeacher(
     @Param("id") id: string,
-    // @Req() request: Request,
+    @Req() request: Request,
     @Body() teacherDto: TeacherDto
   ) {
-    return await this.service.updateTeacher(id, teacherDto);
+    return await this.service.updateTeacher(id, request, teacherDto);
   }
   @Post("/search")
+  @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Teacher list." })
   @ApiBody({ type: TeacherSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -77,6 +82,6 @@ export class TeacherController {
     @Req() request: Request,
     @Body() teacherSearchDto: TeacherSearchDto
   ) {
-    return this.service.searchTeacher(request, teacherSearchDto);
+    return await this.service.searchTeacher(request, teacherSearchDto);
   }
 }

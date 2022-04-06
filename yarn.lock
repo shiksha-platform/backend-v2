@@ -640,6 +640,16 @@
     "tslib" "2.3.1"
     "uuid" "8.3.2"
 
+"@nestjs/config@^2.0.0":
+  "integrity" "sha512-Hi1k/1S5ogsS5c0OtNm72thiLSngijOaLDFaGI5ZPxNGpF23lctPg6ox3pYIOhXVRX/u+eiUIp71gswH2k8YNw=="
+  "resolved" "https://registry.npmjs.org/@nestjs/config/-/config-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "dotenv" "16.0.0"
+    "dotenv-expand" "8.0.2"
+    "lodash" "4.17.21"
+    "uuid" "8.3.2"
+
 "@nestjs/core@^8.0.0":
   "integrity" "sha512-JUV2cy/5z8MS2SRwszLmyOCclMMlyumxIbC1YFFlnSInhu7ODhrHLIMztyGmyAIuaehbOnyXPtHkjl01rHxc5w=="
   "resolved" "https://registry.npmjs.org/@nestjs/core/-/core-8.4.1.tgz"
@@ -2030,7 +2040,12 @@
   dependencies:
     "webidl-conversions" "^5.0.0"
 
-"dotenv@^16.0.0":
+"dotenv-expand@8.0.2":
+  "integrity" "sha512-vKKAk+VOzAWOV/dPIeSYqhgC/TQY+6L6Ibkzfsr8xd1stdBsTuGu9asCOXgbYbBeS+f2Y6lqqEuw7riOA+xEUQ=="
+  "resolved" "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-8.0.2.tgz"
+  "version" "8.0.2"
+
+"dotenv@^16.0.0", "dotenv@16.0.0":
   "integrity" "sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q=="
   "resolved" "https://registry.npmjs.org/dotenv/-/dotenv-16.0.0.tgz"
   "version" "16.0.0"
@@ -4222,7 +4237,7 @@
   dependencies:
     "queue-microtask" "^1.2.2"
 
-"rxjs@^6.0.0 || ^7.0.0", "rxjs@^7.1.0", "rxjs@^7.2.0":
+"rxjs@^6.0.0 || ^7.0.0", "rxjs@^6.0.0 || ^7.2.0", "rxjs@^7.1.0", "rxjs@^7.2.0":
   "integrity" "sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw=="
   "resolved" "https://registry.npmjs.org/rxjs/-/rxjs-7.5.5.tgz"
   "version" "7.5.5"
@@ -4604,6 +4619,11 @@
   "integrity" "sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ=="
   "resolved" "https://registry.npmjs.org/tapable/-/tapable-2.2.1.tgz"
   "version" "2.2.1"
+
+"templates.js@^0.3.11":
+  "integrity" "sha1-qAtXgaoySmHpK+GmlHDVATQd6QQ="
+  "resolved" "https://registry.npmjs.org/templates.js/-/templates.js-0.3.11.tgz"
+  "version" "0.3.11"
 
 "terminal-link@^2.0.0":
   "integrity" "sha512-un0FmiRUQNr5PJqy9kP7c40F5BOfpGlYTrxonDChEZB7pzZxRNp/bt+ymiy9/npwXya9KH99nJ/GXFIiUkYGFQ=="
