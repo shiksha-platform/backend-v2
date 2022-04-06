@@ -6,8 +6,8 @@ import { RequestMethod } from "@nestjs/common";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api/v1', {
-    exclude: [{ path: 'health', method: RequestMethod.GET }],
+  app.setGlobalPrefix("api/v1", {
+    exclude: [{ path: "health", method: RequestMethod.GET }],
   });
 
   const config = new DocumentBuilder()
@@ -15,6 +15,11 @@ async function bootstrap() {
     .setDescription("CRUD API")
     .setVersion("1.0")
     .addTag("V1")
+    .addApiKey(
+      { type: "apiKey", name: "Authorization", in: "header" },
+      "access-token"
+    )
+
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);

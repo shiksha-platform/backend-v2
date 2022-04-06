@@ -1,81 +1,82 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 
 export class StudentDto {
+  @ApiProperty()
+  studentId: string;
 
-    @ApiProperty()
-    studentId: string;
+  @ApiProperty()
+  refId: string;
 
-    @ApiProperty()
-    refId: string
+  @ApiPropertyOptional()
+  aadhaar: number;
 
-    @ApiPropertyOptional()
-    aadhaar: number
+  @ApiProperty()
+  firstName: string;
 
-    @ApiProperty()
-    firstName: string
+  @ApiProperty()
+  lastName: string;
 
-    @ApiProperty()
-    lastName: string
+  @ApiProperty()
+  schoolId: string;
 
-    @ApiProperty()
-    schoolId: string
+  @ApiProperty()
+  currentClassId: string;
 
-    @ApiProperty()
-    currentClassId: string
+  @ApiProperty()
+  gender: string;
 
-    @ApiProperty()
-    gender: string
+  @ApiPropertyOptional()
+  socialCategory: string;
 
-    @ApiPropertyOptional()
-    socialCategory: string
+  @ApiPropertyOptional()
+  iscwsn: string;
 
-    @ApiPropertyOptional()
-    iscwsn: string
+  @ApiPropertyOptional()
+  religion: string;
 
-    @ApiPropertyOptional()
-    religion: string
+  @ApiPropertyOptional()
+  singleGirl: boolean;
 
-    @ApiPropertyOptional()
-    singleGirl: boolean
+  @ApiPropertyOptional()
+  weight: string;
 
-    @ApiPropertyOptional()
-    weight: string
+  @ApiPropertyOptional()
+  height: string;
 
-    @ApiPropertyOptional()
-    height: string
+  @ApiPropertyOptional()
+  bloodGroup: string;
 
-    @ApiPropertyOptional()
-    bloodGroup: string
+  @ApiProperty()
+  birthDate: Date;
 
-    @ApiProperty()
-    birthDate: Date
+  @ApiPropertyOptional()
+  homeless: boolean;
 
-    @ApiPropertyOptional()
-    homeless: boolean
+  @ApiProperty()
+  bpl: boolean;
 
-    @ApiProperty()
-    bpl: boolean
+  @ApiProperty()
+  migrant: boolean;
 
-    @ApiProperty()
-    migrant: boolean
+  @ApiProperty()
+  status: string;
 
-    @ApiProperty()
-    status: string
+  @ApiPropertyOptional()
+  email: string;
 
-    @ApiPropertyOptional()
-    email: string
+  @Expose()
+  createdAt: string;
 
-    @Expose()
-    createdAt: string;
-  
-    @Expose()
-    updatedAt: string;
-  
-    @Expose()
-    createdBy: string;
-  
-    @Expose()
-    updatedBy: string;
-  
+  @Expose()
+  updatedAt: string;
+
+  @Expose()
+  createdBy: string;
+
+  @Expose()
+  updatedBy: string;
+  constructor(obj: StudentDto) {
+    Object.assign(this, obj);
   }
+}
