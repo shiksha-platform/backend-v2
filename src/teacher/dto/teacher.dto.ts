@@ -189,16 +189,16 @@ export class TeacherDto {
   workingStatus: string;
 
   @Expose()
-  osCreatedAt: string;
+  createdAt: string;
 
   @Expose()
-  osUpdatedAt: string;
+  updatedAt: string;
 
   @Expose()
-  osCreatedBy: string;
+  createdBy: string;
 
   @Expose()
-  osUpdatedBy: string;
+  updatedBy: string;
 
   constructor(obj: TeacherDto) {
     Object.assign(this, obj);

@@ -46,10 +46,10 @@ export class TeacherService {
           acrId: "",
           retirementDate: "",
           workingStatus: "",
-          osCreatedAt: data.osCreatedAt,
-          osUpdatedAt: data.osUpdatedAt,
-          osCreatedBy: data.osCreatedBy,
-          osUpdatedBy: data.osUpdatedBy,
+          createdAt: data.osCreatedAt,
+          updatedAt: data.osUpdatedAt,
+          createdBy: data.osCreatedBy,
+          updatedBy: data.osUpdatedBy,
         };
 
         const teacherDto = new TeacherDto(teacher);
