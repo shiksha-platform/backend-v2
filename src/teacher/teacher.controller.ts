@@ -59,7 +59,6 @@ export class TeacherController {
   @Put("/:id")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Teacher has been updated successfully." })
-  //@ApiBody({ type: TeacherDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async updateTeacher(

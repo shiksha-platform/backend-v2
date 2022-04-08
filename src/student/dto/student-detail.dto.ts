@@ -1,87 +1,66 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 
-export class StudentDto {
-  @ApiProperty()
+export class StudentDetailDto {
   @Expose()
   studentId: string;
 
-  @ApiProperty()
   @Expose()
   refId: string;
 
-  @ApiPropertyOptional()
   @Expose()
   aadhaar: Number;
 
-  @ApiProperty()
   @Expose()
   firstName: string;
 
-  @ApiProperty()
   lastName: string;
 
-  @ApiProperty()
   @Expose()
   schoolId: string;
 
-  @ApiProperty()
   @Expose()
   currentClassId: string;
 
-  @ApiProperty()
   @Expose()
   gender: string;
 
-  @ApiPropertyOptional()
   @Expose()
   socialCategory: string;
 
-  @ApiPropertyOptional()
   @Expose()
   iscwsn: string;
 
-  @ApiPropertyOptional()
   @Expose()
   religion: string;
 
-  // @ApiPropertyOptional()
-  // @Expose()
-  // singleGirl: boolean;
+  @Expose()
+  singleGirl: string;
 
-  @ApiPropertyOptional()
   @Expose()
   weight: string;
 
-  @ApiPropertyOptional()
   @Expose()
   height: string;
 
-  @ApiPropertyOptional()
   @Expose()
   bloodGroup: string;
 
-  @ApiProperty()
   @Expose()
   birthDate: string;
 
-  // @ApiPropertyOptional()
-  // @Expose()
-  // homeless: boolean;
+  @Expose()
+  homeless: string;
 
-  // @ApiProperty()
-  // @Expose()
-  // bpl: boolean;
+  @Expose()
+  bpl: string;
 
-  // @ApiProperty()
-  // @Expose()
-  // migrant: boolean;
+  @Expose()
+  migrant: string;
 
-  @ApiProperty()
   @Expose()
   status: string;
 
-  @ApiPropertyOptional()
   @Expose()
   email: string;
 
@@ -96,7 +75,8 @@ export class StudentDto {
 
   @Expose()
   updatedBy: string;
-  constructor(obj: StudentDto) {
+
+  constructor(obj: StudentDetailDto) {
     Object.assign(this, obj);
   }
 }
