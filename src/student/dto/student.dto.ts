@@ -45,9 +45,9 @@ export class StudentDto {
   @Expose()
   religion: string;
 
-  // @ApiPropertyOptional()
-  // @Expose()
-  // singleGirl: boolean;
+  @ApiPropertyOptional()
+  @Expose()
+  singleGirl: boolean;
 
   @ApiPropertyOptional()
   @Expose()
@@ -65,17 +65,17 @@ export class StudentDto {
   @Expose()
   birthDate: string;
 
-  // @ApiPropertyOptional()
-  // @Expose()
-  // homeless: boolean;
+  @ApiPropertyOptional()
+  @Expose()
+  homeless: boolean;
 
-  // @ApiProperty()
-  // @Expose()
-  // bpl: boolean;
+  @ApiProperty()
+  @Expose()
+  bpl: boolean;
 
-  // @ApiProperty()
-  // @Expose()
-  // migrant: boolean;
+  @ApiProperty()
+  @Expose()
+  migrant: boolean;
 
   @ApiProperty()
   @Expose()
