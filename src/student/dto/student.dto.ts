@@ -85,6 +85,26 @@ export class StudentDto {
   @Expose()
   email: string;
 
+  @ApiPropertyOptional()
+  @Expose()
+  fullName: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  fatherName: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  phoneNumber: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  admissionNo: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  address: string;
+
   @Expose()
   createdAt: string;
 

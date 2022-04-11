@@ -66,6 +66,21 @@ export class StudentDetailDto {
   email: string;
 
   @Expose()
+  fullName: string;
+
+  @Expose()
+  fatherName: string;
+
+  @Expose()
+  phoneNumber: string;
+
+  @Expose()
+  admissionNo: string;
+
+  @Expose()
+  address: string;
+
+  @Expose()
   createdAt: string;
 
   @Expose()

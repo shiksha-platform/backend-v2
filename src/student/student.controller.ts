@@ -47,7 +47,7 @@ export class StudentController {
   @ApiBody({ type: StudentDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createTeacher(
+  public async createStudent(
     @Req() request: Request,
     @Body() studentDto: StudentDto
   ) {
