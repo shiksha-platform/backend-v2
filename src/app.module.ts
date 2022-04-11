@@ -6,6 +6,7 @@ import { TeacherModule } from "./teacher/teacher.module";
 import { SchoolModule } from "./school/school.module";
 import { AttendanceModule } from "./attendance/attendance.module";
 import { GroupModule } from "./group/group.module";
+import { HolidayModule } from "./holiday/holiday.module";
 import { ConfigModule } from "@nestjs/config";
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule } from "@nestjs/config";
     SchoolModule,
     GroupModule,
     AttendanceModule,
+    HolidayModule,
   ],
   controllers: [AppController],
   providers: [AppService],
