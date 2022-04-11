@@ -40,6 +40,17 @@ export class HolidayDto {
   @Expose()
   contextId: string;
 
+  @Expose()
+  createdAt: string;
+
+  @Expose()
+  updatedAt: string;
+
+  @Expose()
+  createdBy: string;
+
+  @Expose()
+  updatedBy: string;
   constructor(obj: HolidayDto) {
     Object.assign(this, obj);
   }

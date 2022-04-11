@@ -21,6 +21,7 @@ import {
 } from "@nestjs/swagger";
 import { HolidayService } from "src/adapters/default/holiday.adapter";
 import { HolidayDto } from "./dto/holiday.dto";
+import { HolidaySearchDto } from "./dto/holiday-search.dto";
 import { Request } from "@nestjs/common";
 @ApiTags("Holiday")
 @Controller("holiday")
@@ -49,5 +50,34 @@ export class HolidayController {
     @Body() holidayDto: HolidayDto
   ) {
     return this.service.createHoliday(request, holidayDto);
+  }
+
+  @Put("/:id")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Holiday has been updated successfully." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async updateHoliday(
+    @Param("id") holidayId: string,
+    @Req() request: Request,
+    @Body() holidayDto: HolidayDto
+  ) {
+    return await this.service.updateHoliday(holidayId, request, holidayDto);
+  }
+
+  @Post("/search")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Holiday list." })
+  @ApiBody({ type: HolidaySearchDto })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  public async searchHoliday(
+    @Req() request: Request,
+    @Body() holidaySearchDto: HolidaySearchDto
+  ) {
+    return await this.service.searchHoliday(request, holidaySearchDto);
   }
 }
