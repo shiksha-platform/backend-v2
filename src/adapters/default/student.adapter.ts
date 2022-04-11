@@ -107,7 +107,7 @@ export class StudentService {
   }
 
   public async searchStudent(request: any, studentSearchDto: StudentSearchDto) {
-    var template = {
+    const template = {
       studentId: "osid",
       refId: "refId",
       aadhaar: "aadhaar",
@@ -138,7 +138,7 @@ export class StudentService {
       .post(`${this.url}/search`, studentSearchDto, request)
       .pipe(
         map((response) => {
-          const responsedata = response.data.map((item) => {
+          const responsedata = response.data.map((item: any) => {
             const studentDetailDto = new StudentDetailDto(template);
             Object.keys(template).forEach((key) => {
               studentDetailDto[key] = resolvePath(item, template[key]);

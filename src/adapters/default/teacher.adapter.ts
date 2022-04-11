@@ -74,22 +74,28 @@ export class TeacherService {
   }
 
   public async createTeacher(request: any, teacherDto: TeacherDto) {
-    return this.httpService.post(`${this.url}`, teacherDto, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "Teacher created Successfully",
-          data: axiosResponse.data,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
+    return this.httpService
+      .post(`${this.url}`, teacherDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "Teacher created Successfully",
+            data: axiosResponse.data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
 
   public async updateTeacher(id: string, request: any, teacherDto: TeacherDto) {
@@ -113,7 +119,7 @@ export class TeacherService {
   }
   public async searchTeacher(request: any, teacherSearchDto: TeacherSearchDto) {
     var template = {
-      teacherId: "teacherId",
+      teacherId: "osid",
       firstName: "firstName",
       lastName: "lastName",
       gender: "gender",

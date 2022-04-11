@@ -12,7 +12,7 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  aadhaar: Number;
+  aadhaar: string;
 
   @ApiProperty()
   @Expose()
@@ -47,7 +47,7 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  singleGirl: boolean;
+  singleGirl: string;
 
   @ApiPropertyOptional()
   @Expose()
@@ -67,15 +67,15 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  homeless: boolean;
+  homeless: string;
 
   @ApiProperty()
   @Expose()
-  bpl: boolean;
+  bpl: string;
 
   @ApiProperty()
   @Expose()
-  migrant: boolean;
+  migrant: string;
 
   @ApiProperty()
   @Expose()
@@ -96,6 +96,7 @@ export class StudentDto {
 
   @Expose()
   updatedBy: string;
+
   constructor(obj: StudentDto) {
     Object.assign(this, obj);
   }

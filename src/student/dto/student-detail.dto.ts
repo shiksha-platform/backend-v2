@@ -9,11 +9,12 @@ export class StudentDetailDto {
   refId: string;
 
   @Expose()
-  aadhaar: Number;
+  aadhaar: string;
 
   @Expose()
   firstName: string;
 
+  @Expose()
   lastName: string;
 
   @Expose()
@@ -76,7 +77,8 @@ export class StudentDetailDto {
   @Expose()
   updatedBy: string;
 
-  constructor(obj: StudentDetailDto) {
+  constructor(obj: object = {}) {
+    Object.keys(obj).forEach((key) => (obj[key] === "" ? delete obj[key] : {}));
     Object.assign(this, obj);
   }
 }
