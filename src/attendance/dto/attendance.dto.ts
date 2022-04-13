@@ -23,6 +23,14 @@ export class AttendanceDto {
 
   @ApiProperty({
     type: String,
+    description: "The userType of the attendance",
+    default: "",
+  })
+  @Expose()
+  userType: string;
+
+  @ApiProperty({
+    type: String,
     description: "The userid of the attendance",
     default: "",
   })
@@ -61,7 +69,7 @@ export class AttendanceDto {
     default: new Date(),
   })
   @Expose()
-  date: string;
+  attendanceDate: string;
 
   @ApiProperty({
     type: String,
@@ -82,30 +90,12 @@ export class AttendanceDto {
 
   @ApiProperty({
     type: String,
-    description: "The approved of the attendance",
-    default: "",
-  })
-  @Expose()
-  @ApiPropertyOptional()
-  approved: string;
-
-  @ApiProperty({
-    type: String,
-    description: "The approved By of the attendance",
-    default: "",
-  })
-  @Expose()
-  @ApiPropertyOptional()
-  approvedBy: string;
-
-  @ApiProperty({
-    type: String,
     description: "The latitude of the attendance",
     default: 0,
   })
   @Expose()
   @ApiPropertyOptional()
-  latitude: string;
+  latitude: Number;
 
   @ApiProperty({
     type: String,
@@ -114,7 +104,7 @@ export class AttendanceDto {
   })
   @Expose()
   @ApiPropertyOptional()
-  longitude: string;
+  longitude: Number;
 
   @ApiProperty({
     type: "string",
@@ -138,6 +128,10 @@ export class AttendanceDto {
   @Expose()
   updatedBy: string;
 
+  @ApiPropertyOptional()
+  @Expose()
+  syncTime: string;
+
   constructor(partial: AttendanceDto) {
     Object.assign(this, partial);
     this.attendanceId = `${this.attendanceId}`;
@@ -148,11 +142,10 @@ export class AttendanceDto {
     this.eventId = `${this.eventId}`;
     this.remark = `${this.remark}`;
     this.attendance = `${this.attendance}`;
-    this.date = `${this.date}`;
-    this.approved = `${this.approved}`;
-    this.approvedBy = `${this.approvedBy}`;
-    this.latitude = `${this.latitude}`;
-    this.longitude = `${this.longitude}`;
+    this.attendanceDate = `${this.attendanceDate}`;
+    this.latitude = this.latitude;
+    this.longitude = this.longitude;
     this.image = `${this.image}`;
+    this.syncTime = `${this.syncTime}`;
   }
 }

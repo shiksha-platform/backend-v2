@@ -8,7 +8,11 @@ export class StudentDto {
 
   @ApiProperty()
   @Expose()
-  refId: string;
+  refId1: string;
+
+  @ApiProperty()
+  @Expose()
+  refId2: string;
 
   @ApiPropertyOptional()
   @Expose()
@@ -27,7 +31,7 @@ export class StudentDto {
 
   @ApiProperty()
   @Expose()
-  currentClassId: string;
+  groupId: string;
 
   @ApiProperty()
   @Expose()
@@ -87,23 +91,34 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  fullName: string;
-
-  @ApiPropertyOptional()
-  @Expose()
   fatherName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  phoneNumber: string;
+  motherName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  admissionNo: string;
+  guardianName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  address: string;
+  fatherPhoneNumber: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  motherPhoneNumber: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  guardianPhoneNumber: string;
+
+  @ApiPropertyOptional({
+    type: "string",
+    format: "binary",
+  })
+  @Expose()
+  image: string;
 
   @Expose()
   createdAt: string;

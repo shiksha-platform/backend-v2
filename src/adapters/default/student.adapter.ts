@@ -29,13 +29,14 @@ export class StudentService {
           let data = axiosResponse.data;
           const student = {
             studentId: studentId,
-            refId: data.refId,
+            refId1: data.refId1,
+            refId2: data.refId2,
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
-            currentClassId: data.currentClassID,
             aadhaar: data.aadhaar,
             schoolId: data.schoolId,
+            groupId: data.groupId,
             gender: data.gender,
             socialCategory: data.socialCategory,
             iscwsn: data.iscwsn,
@@ -49,11 +50,13 @@ export class StudentService {
             homeless: data.homeless,
             migrant: data.migrant,
             status: data.status,
-            fullName: data.fullName,
             fatherName: data.fatherName,
-            phoneNumber: data.phoneNumber,
-            admissionNo: data.admissionNo,
-            address: data.address,
+            motherName: data.motherName,
+            guardianName: data.guardianName,
+            fatherPhoneNumber: data.fatherPhoneNumber,
+            motherPhoneNumber: data.motherPhoneNumber,
+            guardianPhoneNumber: data.guardianPhoneNumber,
+            image: data.image,
             createdAt: data.osCreatedAt,
             updatedAt: data.osUpdatedAt,
             createdBy: data.osCreatedBy,
@@ -126,12 +129,13 @@ export class StudentService {
   public async searchStudent(request: any, studentSearchDto: StudentSearchDto) {
     const template = {
       studentId: "osid",
-      refId: "refId",
+      refId1: "refId1",
+      refId2: "refId2",
       aadhaar: "aadhaar",
       firstName: "firstName",
       lastName: "lastName",
       schoolId: "schoolId",
-      currentClassId: "currentClassId",
+      groupId: "groupId",
       iscwsn: "iscwsn",
       gender: "gender",
       socialCategory: "socialCategory",
@@ -146,11 +150,13 @@ export class StudentService {
       migrant: "migrant",
       status: "status",
       email: "email",
-      fullName: "fullName",
       fatherName: "fatherName",
-      phoneNumber: "phoneNumber",
-      admissionNo: "admissionNo",
-      address: "address",
+      motherName: "motherName",
+      guardianName: "guardianName",
+      fatherPhoneNumber: "fatherPhoneNumber",
+      motherPhoneNumber: "motherPhoneNumber",
+      guardianPhoneNumber: "guardianPhoneNumber",
+      image: "image",
       createdAt: "osCreatedAt",
       updatedAt: "osUpdatedAt",
       createdBy: "osCreatedBy",
@@ -165,7 +171,7 @@ export class StudentService {
       .pipe(
         map((response) => {
           const responsedata = response.data.map((item: any) => {
-            const studentDetailDto = new StudentDetailDto(template);
+            const studentDetailDto = new StudentDto(template);
             Object.keys(template).forEach((key) => {
               studentDetailDto[key] = resolvePath(item, template[key]);
             });

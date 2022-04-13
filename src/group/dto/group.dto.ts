@@ -40,6 +40,17 @@ export class GroupDto {
   @Expose()
   status: string;
 
+  @ApiProperty({
+    type: String,
+    description: "The mediumOfInstruction of the group",
+  })
+  @Expose()
+  mediumOfInstruction: string;
+
+  @ApiProperty({ type: "string", format: "binary" })
+  @Expose()
+  image: string;
+
   @Expose()
   createdAt: string;
 

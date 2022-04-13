@@ -6,7 +6,10 @@ import { join } from "path";
 import express = require("express");
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use("/uploads", express.static(join(__dirname, "..", "uploads")));
+  app.use(
+    process.env.IMAGEPATH,
+    express.static(join(__dirname, "..", "uploads"))
+  );
   app.setGlobalPrefix("api/v1", {
     exclude: [{ path: "health", method: RequestMethod.GET }],
   });
