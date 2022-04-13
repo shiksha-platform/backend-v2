@@ -19,47 +19,59 @@ export class GroupService {
   url = `${process.env.BASEAPIURL}/Class`;
 
   public async getGroup(groupId: string, request: any) {
-    return this.httpService.get(`${this.url}/${groupId}`, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        let data = axiosResponse.data;
-        const group = {
-          groupId: data.osid,
-          name: data.name,
-          schoolId: data.schoolId,
-          type: data.type,
-          status: data.status,
-          createdAt: data.osCreatedAt,
-          updatedAt: data.osUpdatedAt,
-          createdBy: data.osCreatedBy,
-          updatedBy: data.osUpdatedBy,
-        };
-        const groupDto = new GroupDto(group);
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "Ok..",
-          data: groupDto,
-        });
+    return this.httpService
+      .get(`${this.url}/${groupId}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          let data = axiosResponse.data;
+          const group = {
+            groupId: data.osid,
+            name: data.name,
+            schoolId: data.schoolId,
+            type: data.type,
+            status: data.status,
+            createdAt: data.osCreatedAt,
+            updatedAt: data.osUpdatedAt,
+            createdBy: data.osCreatedBy,
+            updatedBy: data.osUpdatedBy,
+          };
+          const groupDto = new GroupDto(group);
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "Ok..",
+            data: groupDto,
+          });
+        })
+      );
   }
 
   public async createGroup(request: any, groupDto: GroupDto) {
-    return this.httpService.post(`${this.url}`, groupDto, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "Ok.",
-          data: axiosResponse.data,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
+    return this.httpService
+      .post(`${this.url}`, groupDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "Ok.",
+            data: axiosResponse.data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
   public async updateGroup(groupId: string, request: any, groupDto: GroupDto) {
     var axios = require("axios");
@@ -94,7 +106,11 @@ export class GroupService {
       updatedBy: "osUpdatedBy",
     };
     return this.httpService
-      .post(`${this.url}/search`, groupSearchDto, request)
+      .post(`${this.url}/search`, groupSearchDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
       .pipe(
         map((response) => {
           const responsedata = response.data.map((item: any) => {

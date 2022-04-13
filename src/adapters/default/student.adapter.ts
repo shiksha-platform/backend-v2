@@ -18,77 +18,89 @@ export class StudentService {
   url = `${process.env.BASEAPIURL}/Student`;
 
   public async getStudent(studentId: any, request: any) {
-    return this.httpService.get(`${this.url}/${studentId}`, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        let data = axiosResponse.data;
-        const student = {
-          studentId: studentId,
-          refId: data.refId,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          currentClassId: data.currentClassID,
-          aadhaar: data.aadhaar,
-          schoolId: data.schoolId,
-          gender: data.gender,
-          socialCategory: data.socialCategory,
-          iscwsn: data.iscwsn,
-          religion: data.religion,
-          singleGirl: data.singleGirl,
-          bpl: data.bpl,
-          birthDate: data.birthDate,
-          weight: data.weight,
-          height: data.height,
-          bloodGroup: data.bloodGroup,
-          homeless: data.homeless,
-          migrant: data.migrant,
-          status: data.status,
-          fullName: data.fullName,
-          fatherName: data.fatherName,
-          phoneNumber: data.phoneNumber,
-          admissionNo: data.admissionNo,
-          address: data.address,
-          createdAt: data.osCreatedAt,
-          updatedAt: data.osUpdatedAt,
-          createdBy: data.osCreatedBy,
-          updatedBy: data.osUpdatedBy,
-        };
-
-        const studentDto = new StudentDto(student);
-
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "student found Successfully",
-          data: studentDto,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
+    return this.httpService
+      .get(`${this.url}/${studentId}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          let data = axiosResponse.data;
+          const student = {
+            studentId: studentId,
+            refId: data.refId,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            currentClassId: data.currentClassID,
+            aadhaar: data.aadhaar,
+            schoolId: data.schoolId,
+            gender: data.gender,
+            socialCategory: data.socialCategory,
+            iscwsn: data.iscwsn,
+            religion: data.religion,
+            singleGirl: data.singleGirl,
+            bpl: data.bpl,
+            birthDate: data.birthDate,
+            weight: data.weight,
+            height: data.height,
+            bloodGroup: data.bloodGroup,
+            homeless: data.homeless,
+            migrant: data.migrant,
+            status: data.status,
+            fullName: data.fullName,
+            fatherName: data.fatherName,
+            phoneNumber: data.phoneNumber,
+            admissionNo: data.admissionNo,
+            address: data.address,
+            createdAt: data.osCreatedAt,
+            updatedAt: data.osUpdatedAt,
+            createdBy: data.osCreatedBy,
+            updatedBy: data.osUpdatedBy,
+          };
+
+          const studentDto = new StudentDto(student);
+
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "student found Successfully",
+            data: studentDto,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
 
   public async createStudent(request: any, studentDto: StudentDto) {
-    return this.httpService.post(`${this.url}`, studentDto, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "Ok.",
-          data: axiosResponse.data,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
+    return this.httpService
+      .post(`${this.url}`, studentDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "Ok.",
+            data: axiosResponse.data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
 
   public async updateStudent(id: string, request: any, studentDto: StudentDto) {
@@ -145,7 +157,11 @@ export class StudentService {
       updatedBy: "osUpdatedBy",
     };
     return this.httpService
-      .post(`${this.url}/search`, studentSearchDto, request)
+      .post(`${this.url}/search`, studentSearchDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
       .pipe(
         map((response) => {
           const responsedata = response.data.map((item: any) => {
