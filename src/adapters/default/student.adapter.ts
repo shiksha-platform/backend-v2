@@ -157,7 +157,11 @@ export class StudentService {
       updatedBy: "osUpdatedBy",
     };
     return this.httpService
-      .post(`${this.url}/search`, studentSearchDto, request)
+      .post(`${this.url}/search`, studentSearchDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
       .pipe(
         map((response) => {
           const responsedata = response.data.map((item: any) => {
