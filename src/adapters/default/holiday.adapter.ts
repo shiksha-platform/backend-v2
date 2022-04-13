@@ -14,55 +14,67 @@ export class HolidayService {
   url = `${process.env.BASEAPIURL}/Holiday`;
 
   public async getHoliday(holidayId: string, request: any) {
-    return this.httpService.get(`${this.url}/${holidayId}`, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        let data = axiosResponse.data;
-        const holiday = {
-          holidayId: holidayId,
-          date: data.Date,
-          remark: data.remark,
-          year: data.year,
-          context: data.context,
-          contextId: data.contextId,
-          createdAt: data.osCreatedAt,
-          updatedAt: data.osUpdatedAt,
-          createdBy: data.osCreatedBy,
-          updatedBy: data.osUpdatedBy,
-        };
-
-        const holidayDto = new HolidayDto(holiday);
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "ok.",
-          data: holidayDto,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
+    return this.httpService
+      .get(`${this.url}/${holidayId}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          let data = axiosResponse.data;
+          const holiday = {
+            holidayId: holidayId,
+            date: data.Date,
+            remark: data.remark,
+            year: data.year,
+            context: data.context,
+            contextId: data.contextId,
+            createdAt: data.osCreatedAt,
+            updatedAt: data.osUpdatedAt,
+            createdBy: data.osCreatedBy,
+            updatedBy: data.osUpdatedBy,
+          };
+
+          const holidayDto = new HolidayDto(holiday);
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "ok.",
+            data: holidayDto,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
   public async createHoliday(request: any, holidayDto: HolidayDto) {
-    return this.httpService.post(`${this.url}`, holidayDto, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "Ok.",
-          data: axiosResponse.data,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
+    return this.httpService
+      .post(`${this.url}`, holidayDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "Ok.",
+            data: axiosResponse.data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
 
   public async updateHoliday(
@@ -103,7 +115,11 @@ export class HolidayService {
       updatedBy: "osUpdatedBy",
     };
     return this.httpService
-      .post(`${this.url}/search`, holidaySearchDto, request)
+      .post(`${this.url}/search`, holidaySearchDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
       .pipe(
         map((response) => {
           const responsedata = response.data.map((item: any) => {

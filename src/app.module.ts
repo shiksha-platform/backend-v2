@@ -8,6 +8,7 @@ import { AttendanceModule } from "./attendance/attendance.module";
 import { GroupModule } from "./group/group.module";
 import { HolidayModule } from "./holiday/holiday.module";
 import { ConfigModule } from "@nestjs/config";
+import { GroupMembershipModule } from "./groupMembership/groupMembership.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -17,6 +18,7 @@ import { ConfigModule } from "@nestjs/config";
     GroupModule,
     AttendanceModule,
     HolidayModule,
+    GroupMembershipModule,
   ],
   controllers: [AppController],
   providers: [AppService],

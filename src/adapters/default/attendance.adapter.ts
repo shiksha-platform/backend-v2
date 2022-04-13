@@ -17,35 +17,47 @@ export class AttendanceService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   public async getAttendance(attendanceId: any, request: any) {
-    return this.httpService.get(`${this.url}/${attendanceId}`, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        const data = axiosResponse.data;
-        const attendanceDto = new AttendanceDto(data);
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "ok.",
-          data: attendanceDto,
-        });
+    return this.httpService
+      .get(`${this.url}/${attendanceId}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          const data = axiosResponse.data;
+          const attendanceDto = new AttendanceDto(data);
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "ok.",
+            data: attendanceDto,
+          });
+        })
+      );
   }
   public async createAttendance(request: any, attendanceDto: AttendanceDto) {
-    return this.httpService.post(`${this.url}`, attendanceDto, request).pipe(
-      map((axiosResponse: AxiosResponse) => {
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "Ok.",
-          data: axiosResponse.data,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response?.status,
-          errorMessage: e.response?.data?.params?.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
+    return this.httpService
+      .post(`${this.url}`, attendanceDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
       })
-    );
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "Ok.",
+            data: axiosResponse.data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
 
   public async updateAttendance(
@@ -77,7 +89,11 @@ export class AttendanceService {
     attendanceSearchDto: AttendanceSearchDto
   ) {
     return this.httpService
-      .post(`${this.url}/search`, attendanceSearchDto, request)
+      .post(`${this.url}/search`, attendanceSearchDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
       .pipe(
         map((response) => {
           return response.data.map((item) => {
