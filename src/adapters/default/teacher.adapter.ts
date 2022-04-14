@@ -42,18 +42,19 @@ export class TeacherService {
             cadre: data.cadre,
             profQualification: data.profQualification,
             joiningDate: data.joiningDate,
-            subjectId: data.subjectId,
+            subjectIds: data.subjectIds,
             bloodGroup: data.bloodGroup,
             maritalStatus: data.maritalStatus,
-            blockI: data.blockI,
+            blockId: data.blockId,
             address: data.address,
             compSkills: data.compSkills,
             disability: data.disability,
             religion: data.religion,
             homeDistance: data.homeDistance,
-            roles: data.roles,
+            employmentType: data.employmentType,
             schoolId: data.schoolId,
-            acrId: data.acrId,
+            image: data.image,
+            status: data.status,
             retirementDate: data.retirementDate,
             workingStatus: data.workingStatus,
             createdAt: data.osCreatedAt,
@@ -124,39 +125,6 @@ export class TeacherService {
     });
   }
   public async searchTeacher(request: any, teacherSearchDto: TeacherSearchDto) {
-    var template = {
-      teacherId: "osid",
-      firstName: "firstName",
-      lastName: "lastName",
-      gender: "gender",
-      dob: "dob",
-      email: "email",
-      contactNumber: "mobile",
-      address: "address",
-      socialCategory: "socialCategory",
-      birthDate: "birthDate",
-      designation: "designation",
-      cadre: "cadre",
-      profQualification: "profQualification",
-      joiningDate: "joiningDate",
-      subjectId: "subjectId",
-      bloodGroup: "bloodGroup",
-      maritalStatus: "maritalStatus",
-      blockI: "blockI",
-      compSkills: "compSkills",
-      disability: "disability",
-      religion: "religion",
-      homeDistance: "homeDistance",
-      roles: "roles",
-      schoolId: "schoolId",
-      acrId: "acrId",
-      retirementDate: "retirementDate",
-      workingStatus: "workingStatus",
-      createdAt: "createdAt",
-      updatedAt: "updatedAt",
-      createdBy: "createdBy",
-      updatedBy: "updatedBy",
-    };
     return this.httpService
       .post(`${this.url}/search`, teacherSearchDto, {
         headers: {
@@ -165,18 +133,14 @@ export class TeacherService {
       })
       .pipe(
         map((response) => {
-          const responsedata = response.data.map((item) => {
-            const teacherDetailDto = new TeacherDetailDto(template);
-            Object.keys(template).forEach((key) => {
-              teacherDetailDto[key] = resolvePath(item, template[key]);
-            });
-            return teacherDetailDto;
-          });
+          return response.data.map((item) => {
+            const responsedata = new TeacherDto(item);
 
-          return new SuccessResponse({
-            statusCode: response.status,
-            message: "Teacher found Successfully",
-            data: responsedata,
+            return new SuccessResponse({
+              statusCode: response.status,
+              message: "Teacher found Successfully",
+              data: responsedata,
+            });
           });
         }),
         catchError((e) => {

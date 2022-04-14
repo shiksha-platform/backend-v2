@@ -58,7 +58,7 @@ export class AttendanceController {
   @UseInterceptors(
     FileInterceptor("image", {
       storage: diskStorage({
-        destination: "./uploads",
+        destination: process.env.IMAGEPATH,
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
