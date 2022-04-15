@@ -26,7 +26,6 @@ import {
 import { GroupMembershipService } from "../adapters/default/groupMembership.adapter";
 import { GroupMembershipDto } from "./dto/groupMembership.dto";
 import { GroupMembershipSearchDto } from "./dto/groupMembership-search.dto";
-
 @ApiTags("GroupMembership")
 @Controller("groupMembership")
 export class GroupMembershipController {
