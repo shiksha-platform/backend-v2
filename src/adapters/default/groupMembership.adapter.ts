@@ -13,6 +13,7 @@ import { StudentDto } from "src/student/dto/student.dto";
 import axios from "axios";
 import { TeacherDto } from "src/teacher/dto/teacher.dto";
 import { GroupDto } from "src/group/dto/group.dto";
+import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
 @Injectable()
 export class GroupMembershipService {
   constructor(private httpService: HttpService) {}
@@ -20,41 +21,6 @@ export class GroupMembershipService {
 
   public async findMembersOfGroup(id: string, role: string, request: any) {
     if (role == "Student") {
-      const template = {
-        studentId: "osid",
-        refId1: "refId1",
-        refId2: "refId2",
-        aadhaar: "aadhaar",
-        firstName: "firstName",
-        lastName: "lastName",
-        schoolId: "schoolId",
-        groupId: "groupId",
-        iscwsn: "iscwsn",
-        gender: "gender",
-        socialCategory: "socialCategory",
-        religion: "religion",
-        singleGirl: "singleGirl",
-        weight: "weight",
-        height: "height",
-        bloodGroup: "bloodGroup",
-        birthDate: "birthDate",
-        homeless: "homeless",
-        bpl: "bpl",
-        migrant: "migrant",
-        status: "status",
-        email: "email",
-        fatherName: "fatherName",
-        motherName: "motherName",
-        guardianName: "guardianName",
-        fatherPhoneNumber: "fatherPhoneNumber",
-        motherPhoneNumber: "motherPhoneNumber",
-        guardianPhoneNumber: "guardianPhoneNumber",
-        image: "image",
-        createdAt: "osCreatedAt",
-        updatedAt: "osUpdatedAt",
-        createdBy: "osCreatedBy",
-        updatedBy: "osUpdatedBy",
-      };
       let axios = require("axios");
       let data = {
         filters: {
@@ -74,14 +40,9 @@ export class GroupMembershipService {
       };
 
       const response = await axios(config);
-      let responseData = response.data;
-      let result = responseData.map((item: any) => {
-        const studentDetailDto = new StudentDto(template);
-        Object.keys(template).forEach((key) => {
-          studentDetailDto[key] = resolvePath(item, template[key]);
-        });
-        return studentDetailDto;
-      });
+      let result =
+        response?.data &&
+        response.data.map((item: any) => new StudentDto(item));
 
       return new SuccessResponse({
         statusCode: 200,
@@ -89,39 +50,6 @@ export class GroupMembershipService {
         data: result,
       });
     } else if (role == "Teacher") {
-      const temp = {
-        teacherId: "osid",
-        firstName: "firstName",
-        lastName: "lastName",
-        contactNumber: "contactNumber",
-        email: "email",
-        gender: "gender",
-        socialCategory: "socialCategory",
-        birthDate: "birthDate",
-        designation: "designation",
-        cadre: "cadre",
-        profQualification: "profQualification",
-        joiningDate: "joiningDate",
-        subjectIds: "subjectIds",
-        bloodGroup: "bloodGroup",
-        maritalStatus: "maritalStatus",
-        blockId: "blockId",
-        address: "address",
-        compSkills: "compSkills",
-        disability: "disability",
-        religion: "religion",
-        homeDistance: "homeDistance",
-        employmentType: "employmentType",
-        schoolId: "schoolId",
-        image: "image",
-        status: "status",
-        retirementDate: "retirementDate",
-        workingStatus: "workingStatus",
-        createdAt: "osCreatedAt",
-        updatedAt: "osUpdatedAt",
-        createdBy: "osCreatedBy",
-        updatedBy: "osUpdatedBy",
-      };
       let axios = require("axios");
 
       let final = {
@@ -146,10 +74,8 @@ export class GroupMembershipService {
 
         const responseData = await axios(classFinal);
 
-        const teacherDetailDto = new TeacherDto(temp);
-        Object.keys(temp).forEach((key) => {
-          teacherDetailDto[key] = resolvePath(responseData.data, temp[key]);
-        });
+        const teacherDetailDto = new TeacherDto(responseData.data);
+
         resData = [teacherDetailDto];
       }
       return new SuccessResponse({
@@ -167,19 +93,6 @@ export class GroupMembershipService {
   }
 
   public async findGroupsByUserId(id: string, role: string, request: any) {
-    const temp = {
-      groupId: "osid",
-      schoolId: "schoolId",
-      name: "className",
-      type: "type",
-      status: "status",
-      mediumOfInstruction: "mediumOfInstruction",
-      image: "image",
-      createdAt: "osCreatedAt",
-      updatedAt: "osUpdatedAt",
-      createdBy: "osCreatedBy",
-      updatedBy: "osUpdatedBy",
-    };
     let responseData = [];
 
     if (role === "Teacher") {
@@ -225,17 +138,11 @@ export class GroupMembershipService {
           },
         };
         const resData = await axios(studentFinal);
+
         responseData = resData?.data ? [resData.data] : [];
       }
     }
-    let result = responseData.map((item: any) => {
-      const studentDetailDto = new GroupDto(temp);
-      Object.keys(temp).forEach((key) => {
-        studentDetailDto[key] = resolvePath(item, temp[key]);
-      });
-      return studentDetailDto;
-    });
-
+    let result = responseData.map((item: any) => new GroupDto(item));
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
