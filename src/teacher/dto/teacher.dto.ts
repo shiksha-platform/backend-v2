@@ -95,7 +95,7 @@ export class TeacherDto {
     description: "The subjectId of the teacher",
   })
   @Expose()
-  subjectIds: [String];
+  subjectIds: string;
 
   @ApiProperty({
     type: String,

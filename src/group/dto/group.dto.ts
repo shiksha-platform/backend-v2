@@ -65,5 +65,6 @@ export class GroupDto {
 
   constructor(partial: GroupDto) {
     Object.assign(this, partial);
+    this.name = this.name ? this.name : "";
   }
 }

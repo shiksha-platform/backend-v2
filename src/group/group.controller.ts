@@ -1,4 +1,5 @@
 import { GroupService } from "../adapters/default/group.adapter";
+import { GroupMembershipService } from "src/adapters/default/groupMembership.adapter";
 import {
   ApiTags,
   ApiBody,
@@ -6,6 +7,7 @@ import {
   ApiForbiddenResponse,
   ApiCreatedResponse,
   ApiBasicAuth,
+  ApiQuery,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -19,14 +21,19 @@ import {
   ClassSerializerInterceptor,
   SerializeOptions,
   Req,
+  Query,
 } from "@nestjs/common";
 import { GroupSearchDto } from "./dto/group-search.dto";
 import { Request } from "@nestjs/common";
 import { GroupDto } from "./dto/group.dto";
+
 @ApiTags("Group")
 @Controller("group")
 export class GroupController {
-  constructor(private service: GroupService) {}
+  constructor(
+    private service: GroupService,
+    private membershipService: GroupMembershipService
+  ) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get("/:id")
@@ -80,5 +87,29 @@ export class GroupController {
     @Body() groupSearchDto: GroupSearchDto
   ) {
     return await this.service.searchGroup(request, groupSearchDto);
+  }
+
+  @Post(":id/members")
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Group detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async findMembersOfGroup(
+    @Param("id") id: string,
+    @Query("role") role: string,
+    @Req() request: Request
+  ) {
+    return await this.membershipService.findMembersOfGroup(id, role, request);
+  }
+
+  @Post("/:userId")
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Group detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async getGroupsByUserId(
+    @Param("userId") id: string,
+    @Query("role") role: string,
+    @Req() request: Request
+  ) {
+    return await this.membershipService.findGroupsByUserId(id, role, request);
   }
 }
