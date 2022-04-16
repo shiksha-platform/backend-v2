@@ -89,7 +89,7 @@ export class GroupController {
     return await this.service.searchGroup(request, groupSearchDto);
   }
 
-  @Post(":id/members")
+  @Get(":id/members")
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -101,7 +101,7 @@ export class GroupController {
     return await this.membershipService.findMembersOfGroup(id, role, request);
   }
 
-  @Post("/:userId")
+  @Get("/:userId")
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
