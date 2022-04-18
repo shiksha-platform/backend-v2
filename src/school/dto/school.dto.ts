@@ -105,11 +105,11 @@ export class SchoolDto {
   pincode: Number;
 
   @ApiProperty({
-    type: Number,
+    type: String,
     description: "The locationId of the school",
   })
   @Expose()
-  locationId: Number;
+  locationId: string;
 
   @ApiProperty({
     type: String,
