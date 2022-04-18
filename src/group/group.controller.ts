@@ -101,7 +101,7 @@ export class GroupController {
     return await this.membershipService.findMembersOfGroup(id, role, request);
   }
 
-  @Get("/:userId")
+  @Get("memberships/:userId")
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
