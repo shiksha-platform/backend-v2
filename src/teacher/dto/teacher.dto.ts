@@ -6,7 +6,7 @@ import {
   IsString,
   IsNumber,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class TeacherDto {
   @Expose()
@@ -21,6 +21,13 @@ export class TeacherDto {
 
   @ApiProperty({
     type: String,
+    description: "The middle name of the teacher",
+  })
+  @Expose()
+  middleName: string;
+
+  @ApiProperty({
+    type: String,
     description: "The lastname of the teacher",
   })
   @Expose()
@@ -30,8 +37,9 @@ export class TeacherDto {
     type: String,
     description: "The contact number of the teacher",
   })
+  @Expose()
   @IsNumber()
-  contactNumber: string;
+  phoneNumber: Number;
 
   @ApiProperty({
     type: String,
@@ -195,6 +203,10 @@ export class TeacherDto {
   @Expose()
   status: string;
 
+  @ApiPropertyOptional()
+  @Expose()
+  metaData: [string];
+
   @Expose()
   createdAt: string;
 
@@ -211,7 +223,7 @@ export class TeacherDto {
     this.teacherId = obj?.osid ? `${obj.osid}` : "";
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
-    this.contactNumber = obj?.contactNumber ? `${obj.contactNumber}` : "";
+    this.phoneNumber = obj?.phoneNumber ? obj.phoneNumber : "";
     this.email = obj?.email ? `${obj.email}` : "";
     this.gender = obj?.gender ? `${obj.gender}` : "";
     this.socialCategory = obj?.socialCategory ? `${obj.socialCategory}` : "";

@@ -33,7 +33,7 @@ export class TeacherService {
             teacherId: id,
             firstName: data?.firstName ? data.firstName : "",
             lastName: data.lastName,
-            contactNumber: data.contactNumber,
+            phoneNumber: data.phoneNumber,
             email: data.email,
             gender: data.gendar,
             socialCategory: data.socialCategory,

@@ -6,7 +6,7 @@ import {
   IsString,
   IsNumber,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class SchoolDto {
   @Expose()
@@ -34,11 +34,19 @@ export class SchoolDto {
   udise: string;
 
   @ApiProperty({
-    type: String,
-    description: "The Primary Medium of the school",
+    type: [String],
+    description: "The  medium of instruction of the school",
   })
   @Expose()
-  primaryMedium: string;
+  mediumOfInstruction: [string];
+
+  @ApiProperty({
+    type: Number,
+    description: "The phone number of the school",
+  })
+  @IsNumber()
+  @Expose()
+  phoneNumber: Number;
 
   @ApiProperty({
     type: String,
@@ -90,11 +98,18 @@ export class SchoolDto {
   stateId: string;
 
   @ApiProperty({
-    type: String,
+    type: Number,
+    description: "The pincode of the school",
+  })
+  @Expose()
+  pincode: Number;
+
+  @ApiProperty({
+    type: Number,
     description: "The locationId of the school",
   })
   @Expose()
-  locationId: string;
+  locationId: Number;
 
   @ApiProperty({
     type: String,
@@ -111,18 +126,22 @@ export class SchoolDto {
   status: string;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: "The latitude of the school",
   })
   @Expose()
   latitude: Number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
     description: "The longitude of the school",
   })
   @Expose()
   longitude: Number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  metaData: [string];
 
   constructor(obj: SchoolDto) {
     Object.assign(this, obj);
