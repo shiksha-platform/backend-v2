@@ -89,19 +89,19 @@ export class GroupController {
     return await this.service.searchGroup(request, groupSearchDto);
   }
 
-  @Get(":id/members")
+  @Get(":groupId/participants")
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   public async findMembersOfGroup(
-    @Param("id") id: string,
+    @Param("groupId") id: string,
     @Query("role") role: string,
     @Req() request: Request
   ) {
     return await this.membershipService.findMembersOfGroup(id, role, request);
   }
 
-  @Get("memberships/:userId")
+  @Get("participant/:userId")
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
