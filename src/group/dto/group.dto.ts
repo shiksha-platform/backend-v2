@@ -63,7 +63,19 @@ export class GroupDto {
   @Expose()
   updatedBy: string;
 
-  constructor(partial: GroupDto) {
-    Object.assign(this, partial);
+  constructor(obj: any) {
+    this.groupId = obj?.osid ? `${obj.osid}` : "";
+    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.name = obj?.className ? `${obj.className}` : "";
+    this.type = obj?.type ? `${obj.type}` : "";
+    this.status = obj?.status ? `${obj.status}` : "";
+    this.mediumOfInstruction = obj?.mediumOfInstruction
+      ? `${obj.mediumOfInstruction}`
+      : "";
+    this.image = obj?.image ? `${obj.image}` : "";
+    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
+    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
+    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
 }
