@@ -95,7 +95,7 @@ export class TeacherDto {
     description: "The subjectId of the teacher",
   })
   @Expose()
-  subjectIds: [String];
+  subjectIds: [string];
 
   @ApiProperty({
     type: String,
@@ -207,38 +207,39 @@ export class TeacherDto {
   @Expose()
   updatedBy: string;
 
-  constructor(obj: TeacherDto) {
-    Object.assign(this, obj);
-    this.teacherId = `${this.teacherId}`;
-    this.firstName = `${this.firstName}`;
-    this.lastName = `${this.lastName}`;
-    this.contactNumber = `${this.contactNumber}`;
-    this.email = `${this.email}`;
-    this.gender = `${this.gender}`;
-    this.socialCategory = `${this.socialCategory}`;
-    this.birthDate = `${this.birthDate}`;
-    this.designation = `${this.designation}`;
-    this.cadre = `${this.cadre}`;
-    this.profQualification = `${this.profQualification}`;
-    this.joiningDate = `${this.joiningDate}`;
-    this.subjectIds = this.subjectIds;
-    this.bloodGroup = `${this.bloodGroup}`;
-    this.maritalStatus = `${this.maritalStatus}`;
-    this.blockId = `${this.blockId}`;
-    this.address = `${this.address}`;
-    this.compSkills = `${this.compSkills}`;
-    this.disability = `${this.disability}`;
-    this.religion = `${this.religion}`;
-    this.homeDistance = `${this.homeDistance}`;
-    this.employmentType = `${this.employmentType}`;
-    this.schoolId = `${this.schoolId}`;
-    this.image = `${this.image}`;
-    this.status = `${this.status}`;
-    this.retirementDate = `${this.retirementDate}`;
-    this.workingStatus = `${this.workingStatus}`;
-    this.createdAt = `${this.createdAt}`;
-    this.updatedAt = `${this.updatedAt}`;
-    this.createdBy = `${this.createdBy}`;
-    this.updatedBy = `${this.updatedBy}`;
+  constructor(obj: any) {
+    this.teacherId = obj?.osid ? `${obj.osid}` : "";
+    this.firstName = obj?.firstName ? `${obj.firstName}` : "";
+    this.lastName = obj?.lastName ? `${obj.lastName}` : "";
+    this.contactNumber = obj?.contactNumber ? `${obj.contactNumber}` : "";
+    this.email = obj?.email ? `${obj.email}` : "";
+    this.gender = obj?.gender ? `${obj.gender}` : "";
+    this.socialCategory = obj?.socialCategory ? `${obj.socialCategory}` : "";
+    this.birthDate = obj?.birthDate ? `${obj.birthDate}` : "";
+    this.designation = obj?.designation ? `${obj.designation}` : "";
+    this.cadre = obj?.cadre ? `${obj.cadre}` : "";
+    this.profQualification = obj?.profQualification
+      ? `${obj.profQualification}`
+      : "";
+    this.joiningDate = obj?.joiningDate ? `${obj.joiningDate}` : "";
+    this.subjectIds = obj.subjectIds;
+    this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
+    this.maritalStatus = obj?.maritalStatus ? `${obj.maritalStatus}` : "";
+    this.blockId = obj?.blockId ? `${obj.blockId}` : "";
+    this.address = obj?.address ? `${obj.address}` : "";
+    this.compSkills = obj?.compSkills ? `${obj.compSkills}` : "";
+    this.disability = obj?.disability ? `${obj.disability}` : "";
+    this.religion = obj?.religion ? `${obj.religion}` : "";
+    this.homeDistance = obj?.homeDistance ? `${obj.homeDistance}` : "";
+    this.employmentType = obj?.employmentType ? `${obj.employmentType}` : "";
+    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.image = obj?.image ? `${obj.image}` : "";
+    this.status = obj?.status ? `${obj.status}` : "";
+    this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
+    this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
+    this.createdAt = obj?.createdAt ? `${obj.createdAt}` : "";
+    this.updatedAt = obj?.updatedAt ? `${obj.updatedAt}` : "";
+    this.createdBy = obj?.createdBy ? `${obj.createdBy}` : "";
+    this.updatedBy = obj?.updatedBy ? `${obj.updatedBy}` : "";
   }
 }

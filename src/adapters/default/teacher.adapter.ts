@@ -31,7 +31,7 @@ export class TeacherService {
           let data = axiosResponse.data;
           const teacher = {
             teacherId: id,
-            firstName: data.firstName,
+            firstName: data?.firstName ? data.firstName : "",
             lastName: data.lastName,
             contactNumber: data.contactNumber,
             email: data.email,
