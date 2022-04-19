@@ -36,7 +36,7 @@ jobs:
       with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.GL_DOCKER_SSH_PRIVATE_KEY }}
+          key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
 
