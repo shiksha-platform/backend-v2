@@ -26,10 +26,13 @@ jobs:
           tags: jonathanrogers/nestjsv2:${{ github.sha }}
           
           
-jobs:
+
   deploy:
     runs-on: ubuntu-latest
     steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
     - 
       name: Deploy Stack
       uses: appleboy/ssh-action@master
