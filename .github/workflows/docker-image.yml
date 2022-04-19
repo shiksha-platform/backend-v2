@@ -46,7 +46,7 @@ jobs:
 
               docker container stop ${{ secrets.CONTAINER_NAME }}
               
-              docker system prune -a
+              docker rm ${{ secrets.CONTAINER_NAME }}
 
               docker pull jonathanrogers/nestjsv2:${{ github.sha }}
          
