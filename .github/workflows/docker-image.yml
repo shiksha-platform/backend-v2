@@ -23,7 +23,7 @@ jobs:
         with:
           context: .
           push: true
-          tags:  coolbung/shiksha-backend:${{ github.sha }}
+          tags:  ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
           
           
 
@@ -50,4 +50,4 @@ jobs:
 
               docker pull ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
          
-              docker run -d --name ${{ secrets.CONTAINER_NAME }} --network ${{ secrets.NETWORK }} -p 9229:9229 -t ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
+              docker run -d --name ${{ secrets.CONTAINER_NAME }} --network ${{ secrets.NETWORK }} -p ${{ secrets.CONTAINER_PORT }} -t ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
