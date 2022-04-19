@@ -23,7 +23,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: jonathanrogers/nestjsv2:${{ github.sha }}
+          tags:  coolbung/shiksha-backend:${{ github.sha }}
           
           
 
@@ -48,6 +48,6 @@ jobs:
               
               docker rm ${{ secrets.CONTAINER_NAME }}
 
-              docker pull jonathanrogers/nestjsv2:${{ github.sha }}
+              docker pull ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
          
-              docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 9229:9229 -t jonathanrogers/nestjsv2:${{ github.sha }}
+              docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 9229:9229 -t ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
