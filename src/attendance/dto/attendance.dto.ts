@@ -116,6 +116,10 @@ export class AttendanceDto {
   @ApiPropertyOptional()
   image: string;
 
+  @ApiPropertyOptional()
+  @Expose()
+  metaData: [string];
+
   @Expose()
   createdAt: string;
 

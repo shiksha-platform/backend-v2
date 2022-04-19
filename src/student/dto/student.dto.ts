@@ -23,15 +23,15 @@ export class StudentDto {
   firstName: string;
 
   @ApiProperty()
+  @Expose()
+  middleName: string;
+
+  @ApiProperty()
   lastName: string;
 
   @ApiProperty()
   @Expose()
   schoolId: string;
-
-  @ApiProperty()
-  @Expose()
-  groupId: string;
 
   @ApiProperty()
   @Expose()
@@ -51,7 +51,7 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  singleGirl: string;
+  singleGirl: Boolean;
 
   @ApiPropertyOptional()
   @Expose()
@@ -71,15 +71,15 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  homeless: string;
+  homeless: Boolean;
 
   @ApiProperty()
   @Expose()
-  bpl: string;
+  bpl: Boolean;
 
   @ApiProperty()
   @Expose()
-  migrant: string;
+  migrant: Boolean;
 
   @ApiProperty()
   @Expose()
@@ -91,27 +91,51 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  fatherName: string;
+  fatherFirstName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  motherName: string;
+  fatherMiddleName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  guardianName: string;
+  fatherLastName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  fatherPhoneNumber: string;
+  motherFirstName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  motherPhoneNumber: string;
+  motherMiddleName: string;
 
   @ApiPropertyOptional()
   @Expose()
-  guardianPhoneNumber: string;
+  motherLastName: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  guardianFirstName: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  guardianMiddleName: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  guardianLastName: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  fatherPhoneNumber: Number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  motherPhoneNumber: Number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  guardianPhoneNumber: Number;
 
   @ApiPropertyOptional({
     type: "string",
@@ -119,6 +143,10 @@ export class StudentDto {
   })
   @Expose()
   image: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  metaData: [string];
 
   @Expose()
   createdAt: string;
@@ -140,32 +168,47 @@ export class StudentDto {
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
     this.iscwsn = obj?.iscwsn ? `${obj.iscwsn}` : "";
     this.gender = obj?.gender ? `${obj.gender}` : "";
     this.socialCategory = obj?.socialCategory ? `${obj.socialCategory}` : "";
     this.religion = obj?.religion ? `${obj.religion}` : "";
-    this.singleGirl = obj?.singleGirl ? `${obj.singleGirl}` : "";
+    this.singleGirl = obj?.singleGirl ? obj.singleGirl : "";
     this.weight = obj?.weight ? `${obj.weight}` : "";
     this.height = obj?.height ? `${obj.height}` : "";
     this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
     this.birthDate = obj?.birthDate ? `${obj.birthDate}` : "";
-    this.homeless = obj?.homeless ? `${obj.homeless}` : "";
-    this.bpl = obj?.bpl ? `${obj.bpl}` : "";
-    this.migrant = obj?.migrant ? `${obj.migrant}` : "";
+    this.homeless = obj?.homeless ? obj.homeless : "";
+    this.bpl = obj?.bpl ? obj.bpl : "";
+    this.migrant = obj?.migrant ? obj.migrant : "";
     this.status = obj?.status ? `${obj.status}` : "";
     this.email = obj?.email ? `${obj.email}` : "";
-    this.fatherName = obj?.fatherName ? `${obj.fatherName}` : "";
-    this.motherName = obj?.motherName ? `${obj.motherName}` : "";
-    this.guardianName = obj?.guardianName ? `${obj.guardianName}` : "";
+    this.fatherFirstName = obj?.fatherFirstName ? `${obj.fatherFirstName}` : "";
+    this.motherFirstName = obj?.motherFirstName ? `${obj.motherFirstName}` : "";
+    this.guardianFirstName = obj?.guardianFirstName
+      ? `${obj.guardianFirstName}`
+      : "";
+    this.fatherMiddleName = obj?.fatherMiddleName
+      ? `${obj.fatherMiddleName}`
+      : "";
+    this.motherMiddleName = obj?.motherMiddleName
+      ? `${obj.motherMiddleName}`
+      : "";
+    this.guardianMiddleName = obj?.guardianMiddleName
+      ? `${obj.guardianMiddleName}`
+      : "";
+    this.fatherLastName = obj?.fatherLastName ? `${obj.fatherLastName}` : "";
+    this.motherLastName = obj?.motherLastName ? `${obj.motherLastName}` : "";
+    this.guardianLastName = obj?.guardianLastName
+      ? `${obj.guardianLastName}`
+      : "";
     this.fatherPhoneNumber = obj?.fatherPhoneNumber
-      ? `${obj.fatherPhoneNumber}`
+      ? obj.fatherPhoneNumber
       : "";
     this.motherPhoneNumber = obj?.motherPhoneNumber
-      ? `${obj.motherPhoneNumber}`
+      ? obj.motherPhoneNumber
       : "";
     this.guardianPhoneNumber = obj?.guardianPhoneNumber
-      ? `${obj.guardianPhoneNumber}`
+      ? obj.guardianPhoneNumber
       : "";
     this.image = obj?.image ? `${obj.image}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
