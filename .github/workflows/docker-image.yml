@@ -40,7 +40,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
 
-              docker container kill $(docker ps | awk '/shiksha-backend/ {print $1}')
+              docker container stop $(docker ps | awk '/shiksha-backend/ {print $1}')
               
               docker system prune -a
 
