@@ -6,7 +6,7 @@ import {
   IsString,
   IsNumber,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class GroupDto {
   @Expose()
@@ -50,6 +50,10 @@ export class GroupDto {
   @ApiProperty({ type: "string", format: "binary" })
   @Expose()
   image: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  metaData: [string];
 
   @Expose()
   createdAt: string;

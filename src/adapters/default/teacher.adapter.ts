@@ -32,8 +32,9 @@ export class TeacherService {
           const teacher = {
             teacherId: id,
             firstName: data?.firstName ? data.firstName : "",
+            middleName: data?.middleName ? data.middleName : "",
             lastName: data.lastName,
-            contactNumber: data.contactNumber,
+            phoneNumber: data.phoneNumber,
             email: data.email,
             gender: data.gendar,
             socialCategory: data.socialCategory,
