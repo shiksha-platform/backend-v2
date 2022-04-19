@@ -46,4 +46,4 @@ jobs:
 
               docker pull jonathanrogers/nestjsv2:${{ github.sha }}
          
-              docker run -d -p 9229:9229 -t jonathanrogers/nestjsv2:${{ github.sha }}
+              docker run -d --name shiksha-backend -p 9229:9229 -t jonathanrogers/nestjsv2:${{ github.sha }}
