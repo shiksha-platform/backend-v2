@@ -50,4 +50,4 @@ jobs:
 
               docker pull ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
          
-              docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 9229:9229 -t ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
+              docker run -d --name ${{ secrets.CONTAINER_NAME }} --network ${{ secrets.NETWORK }} -p 9229:9229 -t ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
