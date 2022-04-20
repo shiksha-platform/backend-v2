@@ -143,7 +143,44 @@ export class SchoolDto {
   @Expose()
   metaData: [string];
 
-  constructor(obj: SchoolDto) {
-    Object.assign(this, obj);
+  @Expose()
+  createdAt: string;
+
+  @Expose()
+  updatedAt: string;
+
+  @Expose()
+  createdBy: string;
+
+  @Expose()
+  updatedBy: string;
+
+  constructor(obj: any) {
+    this.schoolId = obj?.osid ? `${obj.osid}` : "";
+    this.schoolName = obj?.schoolName ? `${obj.schoolName}` : "";
+    this.email = obj?.email ? `${obj.email}` : "";
+    this.udise = obj?.udise ? `${obj.udise}` : "";
+    this.mediumOfInstruction = obj?.mediumOfInstruction
+      ? obj.mediumOfInstruction
+      : "";
+    this.phoneNumber = obj?.phoneNumber ? obj.phoneNumber : "";
+    this.address = obj?.address ? obj.address : "";
+    this.schoolType = obj?.schoolType ? `${obj.schoolType}` : "";
+    this.website = obj?.website ? `${obj.website}` : "";
+    this.village = obj?.village ? `${obj.village}` : "";
+    this.block = obj?.block ? `${obj.block}` : "";
+    this.district = obj?.district ? `${obj.district}` : "";
+    this.stateId = obj?.stateId ? `${obj.stateId}` : "";
+    this.pincode = obj?.pincode ? obj.pincode : "";
+    this.locationId = obj?.locationId ? `${obj.locationId}` : "";
+    this.enrollCount = obj?.enrollCount ? `${obj.enrollCount}` : "";
+    this.status = obj?.status ? `${obj.status}` : "";
+    this.latitude = obj?.latitude ? obj.latitude : "";
+    this.longitude = obj?.longitude ? obj.longitude : "";
+    this.metaData = obj?.metaData ? obj.metaData : [];
+    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
+    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
+    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
 }

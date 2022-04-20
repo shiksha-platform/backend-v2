@@ -28,20 +28,7 @@ export class GroupService {
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
-          const group = {
-            groupId: data.osid,
-            name: data.name,
-            schoolId: data.schoolId,
-            type: data.type,
-            status: data.status,
-            mediumOfInstruction: data.mediumOfInstruction,
-            image: data.image,
-            createdAt: data.osCreatedAt,
-            updatedAt: data.osUpdatedAt,
-            createdBy: data.osCreatedBy,
-            updatedBy: data.osUpdatedBy,
-          };
-          const groupDto = new GroupDto(group);
+          const groupDto = new GroupDto(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "Ok..",
@@ -96,19 +83,6 @@ export class GroupService {
   }
 
   public async searchGroup(request: any, groupSearchDto: GroupSearchDto) {
-    const template = {
-      groupId: "osid",
-      schoolId: "schoolId",
-      name: "name",
-      type: "type",
-      status: "status",
-      mediumOfInstruction: "mediumOfInstruction",
-      image: "image",
-      createdAt: "osCreatedAt",
-      updatedAt: "osUpdatedAt",
-      createdBy: "osCreatedBy",
-      updatedBy: "osUpdatedBy",
-    };
     return this.httpService
       .post(`${this.url}/search`, groupSearchDto, {
         headers: {
@@ -117,13 +91,9 @@ export class GroupService {
       })
       .pipe(
         map((response) => {
-          const responsedata = response.data.map((item: any) => {
-            const groupDetailDto = new GroupDto(template);
-            Object.keys(template).forEach((key) => {
-              groupDetailDto[key] = resolvePath(item, template[key]);
-            });
-            return groupDetailDto;
-          });
+          const responsedata = response.data.map(
+            (item: any) => new GroupDto(item)
+          );
 
           return new SuccessResponse({
             statusCode: response.status,

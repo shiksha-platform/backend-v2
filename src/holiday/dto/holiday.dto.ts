@@ -51,7 +51,16 @@ export class HolidayDto {
 
   @Expose()
   updatedBy: string;
-  constructor(obj: HolidayDto) {
-    Object.assign(this, obj);
+  constructor(obj: any) {
+    this.holidayId = obj?.osid ? `${obj.osid}` : "";
+    this.date = `${obj.date}`;
+    this.remark = obj?.remark ? `${obj.remark}` : "";
+    this.year = obj?.year ? `${obj.year}` : "";
+    this.context = obj?.context ? `${obj.context}` : "";
+    this.contextId = obj?.contextId ? `${obj.contextId}` : "";
+    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
+    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
+    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
 }

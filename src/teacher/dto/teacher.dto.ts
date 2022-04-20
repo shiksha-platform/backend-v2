@@ -249,9 +249,9 @@ export class TeacherDto {
     this.status = obj?.status ? `${obj.status}` : "";
     this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
-    this.createdAt = obj?.createdAt ? `${obj.createdAt}` : "";
-    this.updatedAt = obj?.updatedAt ? `${obj.updatedAt}` : "";
-    this.createdBy = obj?.createdBy ? `${obj.createdBy}` : "";
-    this.updatedBy = obj?.updatedBy ? `${obj.updatedBy}` : "";
+    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
+    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
+    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
 }

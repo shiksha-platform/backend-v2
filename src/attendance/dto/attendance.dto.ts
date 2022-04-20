@@ -1,15 +1,8 @@
 import { Exclude, Expose } from "class-transformer";
-import {
-  MaxLength,
-  IsNotEmpty,
-  IsEmail,
-  IsString,
-  IsNumber,
-} from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AttendanceDto {
-  @Exclude()
+  @Expose()
   attendanceId: string;
 
   @ApiProperty({
@@ -136,20 +129,23 @@ export class AttendanceDto {
   @Expose()
   syncTime: string;
 
-  constructor(partial: AttendanceDto) {
-    Object.assign(this, partial);
-    this.attendanceId = `${this.attendanceId}`;
-    this.schoolId = `${this.schoolId}`;
-    this.userId = `${this.userId}`;
-    this.groupId = `${this.groupId}`;
-    this.topicId = `${this.topicId}`;
-    this.eventId = `${this.eventId}`;
-    this.remark = `${this.remark}`;
-    this.attendance = `${this.attendance}`;
-    this.attendanceDate = `${this.attendanceDate}`;
-    this.latitude = this.latitude;
-    this.longitude = this.longitude;
-    this.image = `${this.image}`;
-    this.syncTime = `${this.syncTime}`;
+  constructor(obj: any) {
+    this.attendanceId = obj?.osid ? `${obj.osid}` : "";
+    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.userId = obj?.userId ? `${obj.userId}` : "";
+    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
+    this.topicId = obj?.topicId ? `${obj.topicId}` : "";
+    this.eventId = obj?.eventId ? `${obj.eventId}` : "";
+    this.remark = obj?.remark ? `${obj.remark}` : "";
+    this.attendance = obj?.attendance ? `${obj.attendance}` : "";
+    this.attendanceDate = obj?.attendanceDate ? `${obj.attendanceDate}` : "";
+    this.latitude = obj?.latitude ? obj.latitude : 0;
+    this.longitude = obj?.longitude ? obj.longitude : 0;
+    this.image = obj?.image ? `${obj.image}` : "";
+    this.syncTime = obj?.syncTime ? `${obj.syncTime}` : "";
+    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
+    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
+    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
 }
