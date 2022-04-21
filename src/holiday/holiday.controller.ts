@@ -4,12 +4,12 @@ import {
   Post,
   Body,
   Put,
-  Patch,
   Param,
   UseInterceptors,
   ClassSerializerInterceptor,
   SerializeOptions,
   Req,
+  CacheInterceptor,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -28,8 +28,8 @@ import { Request } from "@nestjs/common";
 export class HolidayController {
   constructor(private readonly service: HolidayService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Holiday detail." })
   @SerializeOptions({

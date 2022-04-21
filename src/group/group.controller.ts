@@ -7,7 +7,6 @@ import {
   ApiForbiddenResponse,
   ApiCreatedResponse,
   ApiBasicAuth,
-  ApiQuery,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -15,13 +14,13 @@ import {
   Post,
   Body,
   Put,
-  Patch,
   Param,
   UseInterceptors,
   ClassSerializerInterceptor,
   SerializeOptions,
   Req,
   Query,
+  CacheInterceptor,
 } from "@nestjs/common";
 import { GroupSearchDto } from "./dto/group-search.dto";
 import { Request } from "@nestjs/common";
@@ -35,8 +34,8 @@ export class GroupController {
     private membershipService: GroupMembershipService
   ) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Group detail" })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -90,6 +89,7 @@ export class GroupController {
   }
 
   @Get(":groupId/participants")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -102,6 +102,7 @@ export class GroupController {
   }
 
   @Get("participant/:userId")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })

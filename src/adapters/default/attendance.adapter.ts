@@ -1,19 +1,14 @@
 import { Injectable, HttpException } from "@nestjs/common";
-import { AttendanceInterface } from "../../attendance/interfaces/attendance.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
-import { first, map, Observable } from "rxjs";
-import { response } from "express";
+import { map } from "rxjs";
 import { AttendanceDto } from "src/attendance/dto/attendance.dto";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
 import { catchError } from "rxjs/operators";
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
-const resolvePath = require("object-resolve-path");
 @Injectable()
 export class AttendanceService {
-  private attendance: AttendanceInterface;
-
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   public async getAttendance(attendanceId: any, request: any) {

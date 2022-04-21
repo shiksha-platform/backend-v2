@@ -11,6 +11,7 @@ import {
   SerializeOptions,
   Req,
   Request,
+  CacheInterceptor,
 } from "@nestjs/common";
 import { SchoolService } from "../adapters/default/school.adapter";
 import { SchoolDto } from "./dto/school.dto";
@@ -28,8 +29,8 @@ import { SchoolSearchDto } from "./dto/school-search.dto";
 export class SchoolController {
   constructor(private service: SchoolService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "School detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })

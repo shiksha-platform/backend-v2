@@ -22,6 +22,7 @@ import {
   Req,
   Request,
   UploadedFile,
+  CacheInterceptor,
 } from "@nestjs/common";
 import { AttendanceDto } from "./dto/attendance.dto";
 import { request } from "http";
@@ -34,8 +35,8 @@ import { AttendanceSearchDto } from "./dto/attendance-search.dto";
 export class AttendanceController {
   constructor(private service: AttendanceService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Attendance detail" })
   @ApiForbiddenResponse({ description: "Forbidden" })
