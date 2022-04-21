@@ -41,6 +41,18 @@ export class TeacherController {
     return this.service.getTeacher(id, request);
   }
 
+  @Get()
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Teacher detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  public async getTeacherByAuth(@Req() request: Request) {
+    return this.service.getTeacherByAuth(request);
+  }
+
   @Post()
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Teacher has been created successfully." })

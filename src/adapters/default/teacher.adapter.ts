@@ -7,6 +7,7 @@ import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
 import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import jwt_decode from "jwt-decode";
 
 @Injectable()
 export class TeacherService {
@@ -112,5 +113,37 @@ export class TeacherService {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+
+  public async getTeacherByAuth(request: any) {
+    const authToken = request.headers.authorization;
+    const decoded: any = jwt_decode(authToken);
+    let email = decoded.email;
+
+    let axios = require("axios");
+    let data = {
+      filters: {
+        email: {
+          eq: `${email}`,
+        },
+      },
+    };
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+    const response = await axios(config);
+    let result =
+      response?.data && response.data.map((item: any) => new TeacherDto(item));
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: result,
+    });
   }
 }
