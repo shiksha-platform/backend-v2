@@ -96,13 +96,13 @@ export class AttendanceService {
       })
       .pipe(
         map((response) => {
-          return response.data.map((item) => {
-            const responsedata = new AttendanceDto(item);
-            return new SuccessResponse({
-              statusCode: response.status,
-              message: "Ok.",
-              data: responsedata,
-            });
+          const responsedata = response.data.map(
+            (item: any) => new AttendanceDto(item)
+          );
+          return new SuccessResponse({
+            statusCode: response.status,
+            message: "Ok.",
+            data: responsedata,
           });
         }),
         catchError((e) => {

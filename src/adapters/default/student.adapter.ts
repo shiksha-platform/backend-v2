@@ -2,14 +2,11 @@ import { Injectable, HttpException } from "@nestjs/common";
 import { StudentDto } from "../../student/dto/student.dto";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
-import { first, map, Observable } from "rxjs";
-import { response } from "express";
+import { map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { StudentSearchDto } from "src/student/dto/student-search.dto";
-const resolvePath = require("object-resolve-path");
-import { StudentDetailDto } from "src/student/dto/student-detail.dto";
 @Injectable()
 export class StudentService {
   private student: StudentDto;
@@ -27,43 +24,8 @@ export class StudentService {
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
-          const student = {
-            studentId: studentId,
-            refId1: data.refId1,
-            refId2: data.refId2,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            aadhaar: data.aadhaar,
-            schoolId: data.schoolId,
-            groupId: data.groupId,
-            gender: data.gender,
-            socialCategory: data.socialCategory,
-            iscwsn: data.iscwsn,
-            religion: data.religion,
-            singleGirl: data.singleGirl,
-            bpl: data.bpl,
-            birthDate: data.birthDate,
-            weight: data.weight,
-            height: data.height,
-            bloodGroup: data.bloodGroup,
-            homeless: data.homeless,
-            migrant: data.migrant,
-            status: data.status,
-            fatherName: data.fatherName,
-            motherName: data.motherName,
-            guardianName: data.guardianName,
-            fatherPhoneNumber: data.fatherPhoneNumber,
-            motherPhoneNumber: data.motherPhoneNumber,
-            guardianPhoneNumber: data.guardianPhoneNumber,
-            image: data.image,
-            createdAt: data.osCreatedAt,
-            updatedAt: data.osUpdatedAt,
-            createdBy: data.osCreatedBy,
-            updatedBy: data.osUpdatedBy,
-          };
 
-          const studentDto = new StudentDto(student);
+          const studentDto = new StudentDto(data);
 
           return new SuccessResponse({
             statusCode: 200,
@@ -127,41 +89,6 @@ export class StudentService {
   }
 
   public async searchStudent(request: any, studentSearchDto: StudentSearchDto) {
-    const template = {
-      studentId: "osid",
-      refId1: "refId1",
-      refId2: "refId2",
-      aadhaar: "aadhaar",
-      firstName: "firstName",
-      lastName: "lastName",
-      schoolId: "schoolId",
-      groupId: "groupId",
-      iscwsn: "iscwsn",
-      gender: "gender",
-      socialCategory: "socialCategory",
-      religion: "religion",
-      singleGirl: "singleGirl",
-      weight: "weight",
-      height: "height",
-      bloodGroup: "bloodGroup",
-      birthDate: "birthDate",
-      homeless: "homeless",
-      bpl: "bpl",
-      migrant: "migrant",
-      status: "status",
-      email: "email",
-      fatherName: "fatherName",
-      motherName: "motherName",
-      guardianName: "guardianName",
-      fatherPhoneNumber: "fatherPhoneNumber",
-      motherPhoneNumber: "motherPhoneNumber",
-      guardianPhoneNumber: "guardianPhoneNumber",
-      image: "image",
-      createdAt: "osCreatedAt",
-      updatedAt: "osUpdatedAt",
-      createdBy: "osCreatedBy",
-      updatedBy: "osUpdatedBy",
-    };
     return this.httpService
       .post(`${this.url}/search`, studentSearchDto, {
         headers: {
@@ -170,14 +97,9 @@ export class StudentService {
       })
       .pipe(
         map((response) => {
-          const responsedata = response.data.map((item: any) => {
-            const studentDetailDto = new StudentDto(template);
-            Object.keys(template).forEach((key) => {
-              studentDetailDto[key] = resolvePath(item, template[key]);
-            });
-            return studentDetailDto;
-          });
-
+          const responsedata = response.data.map(
+            (item: any) => new StudentDto(item)
+          );
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",

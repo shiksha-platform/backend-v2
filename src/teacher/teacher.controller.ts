@@ -4,14 +4,13 @@ import {
   Post,
   Body,
   Put,
-  Patch,
   Param,
   UseInterceptors,
   ClassSerializerInterceptor,
   SerializeOptions,
   Req,
+  CacheInterceptor,
 } from "@nestjs/common";
-import { TeacherInterface } from "./interfaces/teacher.interface";
 import { TeacherService } from "../adapters/default/teacher.adapter";
 import { Request } from "@nestjs/common";
 import {
@@ -22,7 +21,6 @@ import {
   ApiCreatedResponse,
   ApiBasicAuth,
 } from "@nestjs/swagger";
-import { request } from "http";
 
 import { TeacherDto } from "./dto/teacher.dto";
 import { TeacherSearchDto } from "./dto/teacher-search.dto";
@@ -31,15 +29,15 @@ import { TeacherSearchDto } from "./dto/teacher-search.dto";
 export class TeacherController {
   constructor(private readonly service: TeacherService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Teacher detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getTeacher(@Param("id") id: string, @Req() request: Request) {
+  public async getTeacher(@Param("id") id: string, @Req() request: Request) {
     return this.service.getTeacher(id, request);
   }
 

@@ -1,25 +1,19 @@
 import { Injectable, HttpException } from "@nestjs/common";
-
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
-import { first, map, Observable } from "rxjs";
+import { map } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-const resolvePath = require("object-resolve-path");
-import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
 import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
-import { TeacherInterface } from "../../teacher/interfaces/teacher.interface";
 
 @Injectable()
 export class TeacherService {
-  private teacher: TeacherInterface;
-
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Teacher`;
 
-  getTeacher(id: any, request: any) {
+  public async getTeacher(id: any, request: any) {
     return this.httpService
       .get(`${this.url}/${id}`, {
         headers: {
@@ -29,42 +23,9 @@ export class TeacherService {
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
-          const teacher = {
-            teacherId: id,
-            firstName: data?.firstName ? data.firstName : "",
-            middleName: data?.middleName ? data.middleName : "",
-            lastName: data.lastName,
-            phoneNumber: data.phoneNumber,
-            email: data.email,
-            gender: data.gendar,
-            socialCategory: data.socialCategory,
-            birthDate: data.birthDate,
-            designation: data.designation,
-            cadre: data.cadre,
-            profQualification: data.profQualification,
-            joiningDate: data.joiningDate,
-            subjectIds: data.subjectIds,
-            bloodGroup: data.bloodGroup,
-            maritalStatus: data.maritalStatus,
-            blockId: data.blockId,
-            address: data.address,
-            compSkills: data.compSkills,
-            disability: data.disability,
-            religion: data.religion,
-            homeDistance: data.homeDistance,
-            employmentType: data.employmentType,
-            schoolId: data.schoolId,
-            image: data.image,
-            status: data.status,
-            retirementDate: data.retirementDate,
-            workingStatus: data.workingStatus,
-            createdAt: data.osCreatedAt,
-            updatedAt: data.osUpdatedAt,
-            createdBy: data.osCreatedBy,
-            updatedBy: data.osUpdatedBy,
-          };
 
-          const teacherDto = new TeacherDto(teacher);
+          const teacherDto = new TeacherDto(data);
+
           return new SuccessResponse({
             statusCode: 200,
             message: "Teacher found Successfully",
@@ -134,14 +95,13 @@ export class TeacherService {
       })
       .pipe(
         map((response) => {
-          return response.data.map((item) => {
-            const responsedata = new TeacherDto(item);
-
-            return new SuccessResponse({
-              statusCode: response.status,
-              message: "Teacher found Successfully",
-              data: responsedata,
-            });
+          const responsedata = response.data.map(
+            (item: any) => new TeacherDto(item)
+          );
+          return new SuccessResponse({
+            statusCode: response.status,
+            message: "Teacher found Successfully",
+            data: responsedata,
           });
         }),
         catchError((e) => {

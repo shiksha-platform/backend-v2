@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { CacheModule, Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { StudentModule } from "./student/student.module";
@@ -12,6 +12,7 @@ import { GroupMembershipModule } from "./groupMembership/groupMembership.module"
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    CacheModule.register(),
     StudentModule,
     TeacherModule,
     SchoolModule,

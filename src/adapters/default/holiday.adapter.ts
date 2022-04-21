@@ -23,20 +23,8 @@ export class HolidayService {
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
-          const holiday = {
-            holidayId: holidayId,
-            date: data.Date,
-            remark: data.remark,
-            year: data.year,
-            context: data.context,
-            contextId: data.contextId,
-            createdAt: data.osCreatedAt,
-            updatedAt: data.osUpdatedAt,
-            createdBy: data.osCreatedBy,
-            updatedBy: data.osUpdatedBy,
-          };
 
-          const holidayDto = new HolidayDto(holiday);
+          const holidayDto = new HolidayDto(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
@@ -102,18 +90,6 @@ export class HolidayService {
   }
 
   public async searchHoliday(request: any, holidaySearchDto: HolidaySearchDto) {
-    const template = {
-      holidayId: "osid",
-      date: "date",
-      remark: "remark",
-      year: "year",
-      context: "context",
-      contextId: "contextId",
-      createdAt: "osCreatedAt",
-      updatedAt: "osUpdatedAt",
-      createdBy: "osCreatedBy",
-      updatedBy: "osUpdatedBy",
-    };
     return this.httpService
       .post(`${this.url}/search`, holidaySearchDto, {
         headers: {
@@ -122,14 +98,9 @@ export class HolidayService {
       })
       .pipe(
         map((response) => {
-          const responsedata = response.data.map((item: any) => {
-            const holidayDetailDto = new HolidayDto(template);
-            Object.keys(template).forEach((key) => {
-              holidayDetailDto[key] = resolvePath(item, template[key]);
-            });
-            return holidayDetailDto;
-          });
-
+          const responsedata = response.data.map(
+            (item: any) => new HolidayDto(item)
+          );
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
