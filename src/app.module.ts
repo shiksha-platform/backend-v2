@@ -12,7 +12,6 @@ import { GroupMembershipModule } from "./groupMembership/groupMembership.module"
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    CacheModule.register(),
     StudentModule,
     TeacherModule,
     SchoolModule,

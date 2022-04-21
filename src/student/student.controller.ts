@@ -1,7 +1,7 @@
 import { StudentInterface } from "./interfaces/student.interface";
 import { StudentService } from "../adapters/default/student.adapter";
 
-import { Request } from "@nestjs/common";
+import { CacheInterceptor, Request } from "@nestjs/common";
 import {
   ApiTags,
   ApiBody,
@@ -29,8 +29,9 @@ import { StudentSearchDto } from "./dto/student-search.dto";
 @Controller("student")
 export class StudentController {
   constructor(private service: StudentService) {}
-  @UseInterceptors(ClassSerializerInterceptor)
+
   @Get("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Student detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
