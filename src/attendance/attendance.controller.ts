@@ -7,6 +7,7 @@ import {
   ApiCreatedResponse,
   ApiBasicAuth,
   ApiConsumes,
+  ApiQuery,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -141,5 +142,33 @@ export class AttendanceController {
     @Req() request: Request
   ) {
     return await this.service.userSegment(attendance, date, request);
+  }
+
+  @Get("")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "fromDate", required: false })
+  @ApiQuery({ name: "toDate", required: false })
+  @ApiQuery({ name: "userId", required: false })
+  @ApiQuery({ name: "userType", required: false })
+  @ApiQuery({ name: "attendance", required: false })
+  public async attendanceFilter(
+    @Query("fromDate") date: string,
+    @Query("toDate") toDate: string,
+    @Query("userId") userId: string,
+    @Query("userType") userType: string,
+    @Query("attendance") attendance: string,
+    @Req() request: Request
+  ) {
+    return await this.service.attendanceFilter(
+      date,
+      toDate,
+      userId,
+      userType,
+      attendance,
+      request
+    );
   }
 }

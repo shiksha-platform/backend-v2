@@ -132,6 +132,7 @@ export class AttendanceDto {
   constructor(obj: any) {
     this.attendanceId = obj?.osid ? `${obj.osid}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.userType = obj?.userType ? `${obj.userType}` : "";
     this.userId = obj?.userId ? `${obj.userId}` : "";
     this.groupId = obj?.groupId ? `${obj.groupId}` : "";
     this.topicId = obj?.topicId ? `${obj.topicId}` : "";

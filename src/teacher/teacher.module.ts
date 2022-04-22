@@ -2,11 +2,12 @@ import { CacheModule, Module } from "@nestjs/common";
 import { TeacherController } from "./teacher.controller";
 import { TeacherService } from "../adapters/default/teacher.adapter";
 import { HttpModule } from "@nestjs/axios";
+const ttl = process.env.TTL as never;
 @Module({
   imports: [
     HttpModule,
     CacheModule.register({
-      ttl: 900,
+      ttl: ttl,
     }),
   ],
   controllers: [TeacherController],

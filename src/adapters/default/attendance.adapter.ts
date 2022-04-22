@@ -7,12 +7,13 @@ import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
 import { catchError } from "rxjs/operators";
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
-import { SegmentDto } from "src/student/dto/segment.dto";
+import { SegmentDto } from "src/common-dto/userSegment.dto";
 @Injectable()
 export class AttendanceService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   secondUrl = `${process.env.BASEAPIURL}/Student`;
+
   public async getAttendance(attendanceId: any, request: any) {
     return this.httpService
       .get(`${this.url}/${attendanceId}`, {
@@ -151,6 +152,51 @@ export class AttendanceService {
     }
     return new SuccessResponse({
       data: studentArray,
+    });
+  }
+
+  public async attendanceFilter(
+    fromDate: string,
+    toDate: string,
+    userId: string,
+    userType: string,
+    attendance: string,
+    request: any
+  ) {
+    let axios = require("axios");
+
+    let data = {
+      filters: {
+        attendanceDate: {
+          eq: `${fromDate}`,
+        },
+        attendance: {
+          eq: `${attendance ? attendance : ""}`,
+        },
+        userId: { eq: `${userId}` },
+        userType: { eq: `${userType}` },
+      },
+    };
+
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+
+    let result =
+      response?.data &&
+      response.data.map((item: any) => new AttendanceDto(item));
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: result,
     });
   }
 }
