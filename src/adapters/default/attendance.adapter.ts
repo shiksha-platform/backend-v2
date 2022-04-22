@@ -7,10 +7,12 @@ import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
 import { catchError } from "rxjs/operators";
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
+import { SegmentDto } from "src/student/dto/segment.dto";
 @Injectable()
 export class AttendanceService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
+  secondUrl = `${process.env.BASEAPIURL}/Student`;
   public async getAttendance(attendanceId: any, request: any) {
     return this.httpService
       .get(`${this.url}/${attendanceId}`, {
@@ -108,5 +110,47 @@ export class AttendanceService {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+
+  public async userSegment(attendance: string, date: string, request: any) {
+    let axios = require("axios");
+
+    let data = {
+      filters: {
+        attendanceDate: {
+          eq: `${date}`,
+        },
+        attendance: {
+          eq: `${attendance}`,
+        },
+      },
+    };
+
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+    let resData = response?.data;
+
+    let arrayIds = resData.map((e: any) => {
+      return e.userId;
+    });
+    let studentArray = [];
+    for (let value of arrayIds) {
+      const response = await axios.get(`${this.secondUrl}/${value}`, request);
+      const data = response.data;
+      let studentDto = new SegmentDto(data);
+
+      studentArray.push(studentDto);
+    }
+    return new SuccessResponse({
+      data: studentArray,
+    });
   }
 }

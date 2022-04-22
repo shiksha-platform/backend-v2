@@ -23,6 +23,7 @@ import {
   Request,
   UploadedFile,
   CacheInterceptor,
+  Query,
 } from "@nestjs/common";
 import { AttendanceDto } from "./dto/attendance.dto";
 import { request } from "http";
@@ -127,5 +128,18 @@ export class AttendanceController {
     @Body() studentSearchDto: AttendanceSearchDto
   ) {
     return await this.service.searchAttendance(request, studentSearchDto);
+  }
+
+  @Get("usersegment/:attendance")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async userSegment(
+    @Param("attendance") attendance: string,
+    @Query("date") date: string,
+    @Req() request: Request
+  ) {
+    return await this.service.userSegment(attendance, date, request);
   }
 }
