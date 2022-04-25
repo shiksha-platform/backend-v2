@@ -154,12 +154,21 @@ export class AttendanceController {
   @ApiQuery({ name: "userId", required: false })
   @ApiQuery({ name: "userType", required: false })
   @ApiQuery({ name: "attendance", required: false })
+  @ApiQuery({ name: "groupId", required: false })
+  @ApiQuery({ name: "schoolId", required: false })
+  @ApiQuery({ name: "eventId", required: false })
+  @ApiQuery({ name: "topicId", required: false })
   public async attendanceFilter(
     @Query("fromDate") date: string,
     @Query("toDate") toDate: string,
     @Query("userId") userId: string,
     @Query("userType") userType: string,
     @Query("attendance") attendance: string,
+    @Query("groupId") groupId: string,
+    @Query("schoolId") schoolId: string,
+    @Query("eventId") eventId: string,
+    @Query("topicId") topicId: string,
+
     @Req() request: Request
   ) {
     return await this.service.attendanceFilter(
@@ -168,6 +177,10 @@ export class AttendanceController {
       userId,
       userType,
       attendance,
+      groupId,
+      schoolId,
+      eventId,
+      topicId,
       request
     );
   }

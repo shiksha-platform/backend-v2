@@ -161,22 +161,35 @@ export class AttendanceService {
     userId: string,
     userType: string,
     attendance: string,
+    groupId: string,
+    schoolId: string,
+    eventId: string,
+    topicId: string,
     request: any
   ) {
     let axios = require("axios");
-
-    let data = {
-      filters: {
-        attendanceDate: {
-          eq: `${fromDate}`,
-        },
-        attendance: {
-          eq: `${attendance ? attendance : ""}`,
-        },
-        userId: { eq: `${userId}` },
-        userType: { eq: `${userType}` },
-      },
+    let filters = {
+      fromDate,
+      toDate,
+      userId,
+      userType,
+      attendance,
+      groupId,
+      schoolId,
+      eventId,
+      topicId,
     };
+    const filterArray = Object.keys(filters).filter(
+      (value, key) => filters[value] && filters[value] !== ""
+    );
+    let data = {};
+    filterArray.forEach((value, key) => {
+      if (["fromDate", "toDate"].includes(value)) {
+        data["date"] = { eq: filters[value] };
+      } else {
+        data[value] = { eq: filters[value] };
+      }
+    });
 
     let config = {
       method: "post",
@@ -184,7 +197,7 @@ export class AttendanceService {
       headers: {
         Authorization: request.headers.authorization,
       },
-      data: data,
+      data: { filters: data },
     };
 
     const response = await axios(config);
