@@ -144,8 +144,15 @@ export class AttendanceService {
     });
     let studentArray = [];
     for (let value of arrayIds) {
-      const response = await axios.get(`${this.secondUrl}/${value}`, request);
-      const data = response.data;
+      let config = {
+        method: "get",
+        url: `${this.secondUrl}/${value}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      };
+      const response = await axios(config);
+      const data = response?.data;
       let studentDto = new SegmentDto(data);
 
       studentArray.push(studentDto);
