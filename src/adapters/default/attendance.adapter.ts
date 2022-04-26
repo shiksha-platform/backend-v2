@@ -12,7 +12,7 @@ import { SegmentDto } from "src/common-dto/userSegment.dto";
 export class AttendanceService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
-  secondUrl = `${process.env.BASEAPIURL}/Student`;
+  studentAPIUrl = `${process.env.BASEAPIURL}/Student`;
 
   public async getAttendance(attendanceId: any, request: any) {
     return this.httpService
@@ -146,7 +146,7 @@ export class AttendanceService {
     for (let value of arrayIds) {
       let config = {
         method: "get",
-        url: `${this.secondUrl}/${value}`,
+        url: `${this.studentAPIUrl}/${value}`,
         headers: {
           Authorization: request.headers.authorization,
         },
