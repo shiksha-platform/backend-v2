@@ -12,7 +12,7 @@ import { SegmentDto } from "src/common-dto/userSegment.dto";
 export class AttendanceService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
-  secondUrl = `${process.env.BASEAPIURL}/Student`;
+  studentAPIUrl = `${process.env.BASEAPIURL}/Student`;
 
   public async getAttendance(attendanceId: any, request: any) {
     return this.httpService
@@ -144,8 +144,15 @@ export class AttendanceService {
     });
     let studentArray = [];
     for (let value of arrayIds) {
-      const response = await axios.get(`${this.secondUrl}/${value}`, request);
-      const data = response.data;
+      let config = {
+        method: "get",
+        url: `${this.studentAPIUrl}/${value}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      };
+      const response = await axios(config);
+      const data = response?.data;
       let studentDto = new SegmentDto(data);
 
       studentArray.push(studentDto);
