@@ -7,6 +7,7 @@ import {
   ApiCreatedResponse,
   ApiBasicAuth,
   ApiConsumes,
+  ApiQuery,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -23,6 +24,7 @@ import {
   Request,
   UploadedFile,
   CacheInterceptor,
+  Query,
 } from "@nestjs/common";
 import { AttendanceDto } from "./dto/attendance.dto";
 import { request } from "http";
@@ -127,5 +129,59 @@ export class AttendanceController {
     @Body() studentSearchDto: AttendanceSearchDto
   ) {
     return await this.service.searchAttendance(request, studentSearchDto);
+  }
+
+  @Get("usersegment/:attendance")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async userSegment(
+    @Param("attendance") attendance: string,
+    @Query("date") date: string,
+    @Req() request: Request
+  ) {
+    return await this.service.userSegment(attendance, date, request);
+  }
+
+  @Get("")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "fromDate", required: false })
+  @ApiQuery({ name: "toDate", required: false })
+  @ApiQuery({ name: "userId", required: false })
+  @ApiQuery({ name: "userType", required: false })
+  @ApiQuery({ name: "attendance", required: false })
+  @ApiQuery({ name: "groupId", required: false })
+  @ApiQuery({ name: "schoolId", required: false })
+  @ApiQuery({ name: "eventId", required: false })
+  @ApiQuery({ name: "topicId", required: false })
+  public async attendanceFilter(
+    @Query("fromDate") date: string,
+    @Query("toDate") toDate: string,
+    @Query("userId") userId: string,
+    @Query("userType") userType: string,
+    @Query("attendance") attendance: string,
+    @Query("groupId") groupId: string,
+    @Query("schoolId") schoolId: string,
+    @Query("eventId") eventId: string,
+    @Query("topicId") topicId: string,
+
+    @Req() request: Request
+  ) {
+    return await this.service.attendanceFilter(
+      date,
+      toDate,
+      userId,
+      userType,
+      attendance,
+      groupId,
+      schoolId,
+      eventId,
+      topicId,
+      request
+    );
   }
 }
