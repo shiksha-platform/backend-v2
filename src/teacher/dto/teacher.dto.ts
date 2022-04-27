@@ -137,13 +137,6 @@ export class TeacherDto {
 
   @ApiProperty({
     type: String,
-    description: "The blockId of the teacher",
-  })
-  @Expose()
-  blockId: string;
-
-  @ApiProperty({
-    type: String,
     description: "The address of the teacher",
   })
   @Expose()
@@ -183,6 +176,34 @@ export class TeacherDto {
   })
   @Expose()
   schoolId: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  teacherAddress: string;
+
+  @ApiProperty()
+  @Expose()
+  village: string;
+
+  @ApiProperty()
+  @Expose()
+  block: string;
+
+  @ApiProperty()
+  @Expose()
+  district: string;
+
+  @ApiProperty()
+  @Expose()
+  stateId: string;
+
+  @ApiProperty()
+  @Expose()
+  pincode: Number;
+
+  @ApiProperty()
+  @Expose()
+  locationId: string;
 
   @ApiProperty({
     type: String,
@@ -269,7 +290,6 @@ export class TeacherDto {
     this.subjectIds = obj.subjectIds;
     this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
     this.maritalStatus = obj?.maritalStatus ? `${obj.maritalStatus}` : "";
-    this.blockId = obj?.blockId ? `${obj.blockId}` : "";
     this.address = obj?.address ? `${obj.address}` : "";
     this.compSkills = obj?.compSkills ? `${obj.compSkills}` : "";
     this.disability = obj?.disability ? `${obj.disability}` : "";
@@ -277,6 +297,13 @@ export class TeacherDto {
     this.homeDistance = obj?.homeDistance ? `${obj.homeDistance}` : "";
     this.employmentType = obj?.employmentType ? `${obj.employmentType}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.teacherAddress = obj?.teacherAddress ? `${obj.teacherAddress}` : "";
+    this.village = obj?.village ? `${obj.village}` : "";
+    this.block = obj?.block ? `${obj.block}` : "";
+    this.district = obj?.district ? `${obj.district}` : "";
+    this.stateId = obj?.stateId ? `${obj.stateId}` : "";
+    this.pincode = obj?.pincode ? obj.pincode : "";
+    this.locationId = obj?.locationId ? `${obj.locationId}` : "";
     this.image = obj?.image ? `${obj.image}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
     this.deactivationReason = obj?.deactivationReason
