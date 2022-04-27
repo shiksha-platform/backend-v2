@@ -133,7 +133,7 @@ export class AttendanceController {
 
   @Get("usersegment/:attendance")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
+  // @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   public async userSegment(
