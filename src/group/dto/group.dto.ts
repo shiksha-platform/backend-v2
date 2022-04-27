@@ -40,6 +40,10 @@ export class GroupDto {
   @Expose()
   status: string;
 
+  @ApiProperty()
+  @Expose()
+  deactivationReason: string;
+
   @ApiProperty({
     type: String,
     description: "The mediumOfInstruction of the group",
@@ -73,6 +77,9 @@ export class GroupDto {
     this.name = obj?.className ? `${obj.className}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
+    this.deactivationReason = obj?.deactivationReason
+      ? `${obj.deactivationReason}`
+      : "";
     this.mediumOfInstruction = obj?.mediumOfInstruction
       ? `${obj.mediumOfInstruction}`
       : "";

@@ -143,6 +143,10 @@ export class SchoolDto {
   @Expose()
   metaData: [string];
 
+  @ApiPropertyOptional({})
+  @Expose()
+  deactivationReason: string;
+
   @Expose()
   createdAt: string;
 
@@ -178,6 +182,9 @@ export class SchoolDto {
     this.latitude = obj?.latitude ? obj.latitude : "";
     this.longitude = obj?.longitude ? obj.longitude : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
+    this.deactivationReason = obj?.deactivationReason
+      ? `${obj.deactivationReason}`
+      : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
