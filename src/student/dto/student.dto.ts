@@ -35,6 +35,14 @@ export class StudentDto {
 
   @ApiProperty()
   @Expose()
+  studentPhoneNumber: Number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  studentEmail: string;
+
+  @ApiProperty()
+  @Expose()
   gender: string;
 
   @ApiPropertyOptional()
@@ -87,10 +95,6 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  email: string;
-
-  @ApiPropertyOptional()
-  @Expose()
   fatherFirstName: string;
 
   @ApiPropertyOptional()
@@ -100,6 +104,14 @@ export class StudentDto {
   @ApiPropertyOptional()
   @Expose()
   fatherLastName: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  fatherPhoneNumber: Number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  fatherEmail: string;
 
   @ApiPropertyOptional()
   @Expose()
@@ -115,6 +127,14 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
+  motherPhoneNumber: Number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  motherEmail: string;
+
+  @ApiPropertyOptional()
+  @Expose()
   guardianFirstName: string;
 
   @ApiPropertyOptional()
@@ -127,15 +147,11 @@ export class StudentDto {
 
   @ApiPropertyOptional()
   @Expose()
-  fatherPhoneNumber: Number;
-
-  @ApiPropertyOptional()
-  @Expose()
-  motherPhoneNumber: Number;
-
-  @ApiPropertyOptional()
-  @Expose()
   guardianPhoneNumber: Number;
+
+  @ApiPropertyOptional()
+  @Expose()
+  guardianEmail: string;
 
   @ApiPropertyOptional({
     type: "string",
@@ -143,6 +159,38 @@ export class StudentDto {
   })
   @Expose()
   image: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  studentAddress: string;
+
+  @ApiProperty()
+  @Expose()
+  village: string;
+
+  @ApiProperty()
+  @Expose()
+  block: string;
+
+  @ApiProperty()
+  @Expose()
+  district: string;
+
+  @ApiProperty()
+  @Expose()
+  stateId: string;
+
+  @ApiProperty()
+  @Expose()
+  pincode: Number;
+
+  @ApiProperty()
+  @Expose()
+  locationId: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  deactivationReason: string;
 
   @ApiPropertyOptional()
   @Expose()
@@ -168,6 +216,10 @@ export class StudentDto {
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.studentEmail = obj?.studentEmail ? `${obj.studentEmail}` : "";
+    this.studentPhoneNumber = obj?.studentPhoneNumber
+      ? obj.studentPhoneNumber
+      : "";
     this.iscwsn = obj?.iscwsn ? `${obj.iscwsn}` : "";
     this.gender = obj?.gender ? `${obj.gender}` : "";
     this.socialCategory = obj?.socialCategory ? `${obj.socialCategory}` : "";
@@ -181,36 +233,54 @@ export class StudentDto {
     this.bpl = obj?.bpl ? obj.bpl : "";
     this.migrant = obj?.migrant ? obj.migrant : "";
     this.status = obj?.status ? `${obj.status}` : "";
-    this.email = obj?.email ? `${obj.email}` : "";
+
     this.fatherFirstName = obj?.fatherFirstName ? `${obj.fatherFirstName}` : "";
-    this.motherFirstName = obj?.motherFirstName ? `${obj.motherFirstName}` : "";
-    this.guardianFirstName = obj?.guardianFirstName
-      ? `${obj.guardianFirstName}`
-      : "";
+
     this.fatherMiddleName = obj?.fatherMiddleName
       ? `${obj.fatherMiddleName}`
       : "";
+
+    this.fatherLastName = obj?.fatherLastName ? `${obj.fatherLastName}` : "";
+    this.fatherPhoneNumber = obj?.fatherPhoneNumber
+      ? obj.fatherPhoneNumber
+      : "";
+    this.fatherEmail = obj?.fatherEmail ? `${obj.fatherEmail}` : "";
+
+    this.motherFirstName = obj?.motherFirstName ? `${obj.motherFirstName}` : "";
     this.motherMiddleName = obj?.motherMiddleName
       ? `${obj.motherMiddleName}`
+      : "";
+    this.motherLastName = obj?.motherLastName ? `${obj.motherLastName}` : "";
+    this.motherPhoneNumber = obj?.motherPhoneNumber
+      ? obj.motherPhoneNumber
+      : "";
+    this.motherEmail = obj?.motherEmail ? `${obj.motherEmail}` : "";
+
+    this.guardianFirstName = obj?.guardianFirstName
+      ? `${obj.guardianFirstName}`
       : "";
     this.guardianMiddleName = obj?.guardianMiddleName
       ? `${obj.guardianMiddleName}`
       : "";
-    this.fatherLastName = obj?.fatherLastName ? `${obj.fatherLastName}` : "";
-    this.motherLastName = obj?.motherLastName ? `${obj.motherLastName}` : "";
     this.guardianLastName = obj?.guardianLastName
       ? `${obj.guardianLastName}`
-      : "";
-    this.fatherPhoneNumber = obj?.fatherPhoneNumber
-      ? obj.fatherPhoneNumber
-      : "";
-    this.motherPhoneNumber = obj?.motherPhoneNumber
-      ? obj.motherPhoneNumber
       : "";
     this.guardianPhoneNumber = obj?.guardianPhoneNumber
       ? obj.guardianPhoneNumber
       : "";
+    this.guardianEmail = obj?.guardianEmail ? `${obj.guardianEmail}` : "";
     this.image = obj?.image ? `${obj.image}` : "";
+    this.deactivationReason = obj?.deactivationReason
+      ? `${obj.deactivationReason}`
+      : "";
+    this.studentAddress = obj?.studentAddress ? `${obj.studentAddress}` : "";
+    this.village = obj?.village ? `${obj.village}` : "";
+    this.block = obj?.block ? `${obj.block}` : "";
+    this.district = obj?.district ? `${obj.district}` : "";
+    this.stateId = obj?.stateId ? `${obj.stateId}` : "";
+    this.pincode = obj?.pincode ? obj.pincode : "";
+    this.locationId = obj?.locationId ? `${obj.locationId}` : "";
+    this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";

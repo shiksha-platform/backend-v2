@@ -16,6 +16,18 @@ export class TeacherDto {
     type: String,
     description: "The firstname of the teacher",
   })
+  @ApiProperty()
+  @Expose()
+  refId1: string;
+
+  @ApiProperty()
+  @Expose()
+  refId2: string;
+
+  @ApiProperty()
+  @Expose()
+  refId3: string;
+
   @Expose()
   firstName: string;
 
@@ -48,6 +60,10 @@ export class TeacherDto {
   @Expose()
   @IsEmail()
   email: string;
+
+  @ApiProperty()
+  @Expose()
+  aadhaar: string;
 
   @ApiProperty({
     type: String,
@@ -203,6 +219,17 @@ export class TeacherDto {
   @Expose()
   status: string;
 
+  @ApiProperty({
+    type: String,
+    description: "The deactivation reason of the teacher",
+  })
+  @Expose()
+  deactivationReason: string;
+
+  @ApiProperty()
+  @Expose()
+  reportsTo: string;
+
   @ApiPropertyOptional()
   @Expose()
   metaData: [string];
@@ -221,10 +248,15 @@ export class TeacherDto {
 
   constructor(obj: any) {
     this.teacherId = obj?.osid ? `${obj.osid}` : "";
+    this.refId1 = obj?.refId1 ? `${obj.refId1}` : "";
+    this.refId2 = obj?.refId2 ? `${obj.refId2}` : "";
+    this.refId3 = obj?.refId3 ? `${obj.refId3}` : "";
+
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
     this.phoneNumber = obj?.phoneNumber ? obj.phoneNumber : "";
     this.email = obj?.email ? `${obj.email}` : "";
+    this.aadhaar = obj?.aadhaar ? `${obj.aadhaar}` : "";
     this.gender = obj?.gender ? `${obj.gender}` : "";
     this.socialCategory = obj?.socialCategory ? `${obj.socialCategory}` : "";
     this.birthDate = obj?.birthDate ? `${obj.birthDate}` : "";
@@ -247,6 +279,10 @@ export class TeacherDto {
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
     this.image = obj?.image ? `${obj.image}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
+    this.deactivationReason = obj?.deactivationReason
+      ? `${obj.deactivationReason}`
+      : "";
+    this.reportsTo = obj?.reportsTo ? `${obj.reportsTo}` : "";
     this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
