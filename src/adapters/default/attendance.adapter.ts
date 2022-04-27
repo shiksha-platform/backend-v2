@@ -130,9 +130,7 @@ export class AttendanceService {
     let config = {
       method: "post",
       url: `${this.url}/search`,
-      headers: {
-        Authorization: request.headers.authorization,
-      },
+
       data: data,
     };
 
@@ -147,9 +145,6 @@ export class AttendanceService {
       let config = {
         method: "get",
         url: `${this.studentAPIUrl}/${value}`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
       };
       const response = await axios(config);
       const data = response?.data;
@@ -189,10 +184,10 @@ export class AttendanceService {
     const filterArray = Object.keys(filters).filter(
       (value, key) => filters[value] && filters[value] !== ""
     );
-    let data = {};
+    let data = { date: { between: [] } };
     filterArray.forEach((value, key) => {
       if (["fromDate", "toDate"].includes(value)) {
-        data["date"] = { eq: filters[value] };
+        data["date"].between.push(filters[value]);
       } else {
         data[value] = { eq: filters[value] };
       }
