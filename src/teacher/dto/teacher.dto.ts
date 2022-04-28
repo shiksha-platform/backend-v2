@@ -137,13 +137,6 @@ export class TeacherDto {
 
   @ApiProperty({
     type: String,
-    description: "The address of the teacher",
-  })
-  @Expose()
-  address: string;
-
-  @ApiProperty({
-    type: String,
     description: "The compSkills of the teacher",
   })
   @Expose()
@@ -290,7 +283,6 @@ export class TeacherDto {
     this.subjectIds = obj.subjectIds;
     this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
     this.maritalStatus = obj?.maritalStatus ? `${obj.maritalStatus}` : "";
-    this.address = obj?.address ? `${obj.address}` : "";
     this.compSkills = obj?.compSkills ? `${obj.compSkills}` : "";
     this.disability = obj?.disability ? `${obj.disability}` : "";
     this.religion = obj?.religion ? `${obj.religion}` : "";
