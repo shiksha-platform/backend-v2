@@ -184,10 +184,10 @@ export class AttendanceService {
     const filterArray = Object.keys(filters).filter(
       (value, key) => filters[value] && filters[value] !== ""
     );
-    let data = { date: { between: [] } };
+    let data = { attendanceDate: { between: [] } };
     filterArray.forEach((value, key) => {
       if (["fromDate", "toDate"].includes(value)) {
-        data["date"].between.push(filters[value]);
+        data["attendanceDate"].between.push(filters[value]);
       } else {
         data[value] = { eq: filters[value] };
       }
