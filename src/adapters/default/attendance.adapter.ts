@@ -8,9 +8,14 @@ import { ErrorResponse } from "src/error-response";
 import { catchError } from "rxjs/operators";
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 import { SegmentDto } from "src/common-dto/userSegment.dto";
+import { Cron, SchedulerRegistry } from "@nestjs/schedule";
+import moment from "moment";
 @Injectable()
 export class AttendanceService {
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    private schedulerRegistry: SchedulerRegistry
+  ) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   studentAPIUrl = `${process.env.BASEAPIURL}/Student`;
 
@@ -116,16 +121,44 @@ export class AttendanceService {
   public async userSegment(attendance: string, date: string, request: any) {
     let axios = require("axios");
 
-    let data = {
+    let data: any = {
       filters: {
-        attendanceDate: {
-          eq: `${date}`,
-        },
         attendance: {
           eq: `${attendance}`,
         },
       },
     };
+    switch (date) {
+      case "today":
+        data.filters = {
+          ...data.filters,
+          attendanceDate: {
+            eq: `${moment().format("Y-MM-DD")}`,
+          },
+        };
+        break;
+
+      case "yesterday":
+        data.filters = {
+          ...data.filters,
+          attendanceDate: {
+            eq: `${moment().add(-1, "days").format("Y-MM-DD")}`,
+          },
+        };
+        break;
+
+      case "thisweek":
+        data.filters = {
+          ...data.filters,
+          attendanceDate: {
+            between: [
+              moment().startOf("week").format("Y-MM-DD"),
+              moment().endOf("week").format("Y-MM-DD"),
+            ],
+          },
+        };
+        break;
+    }
 
     let config = {
       method: "post",
@@ -213,5 +246,9 @@ export class AttendanceService {
       message: "ok",
       data: result,
     });
+  }
+  @Cron("0 10 15 * * 1-5")
+  async sendSMSNotificaiotns() {
+    console.log("sending SMS notification");
   }
 }
