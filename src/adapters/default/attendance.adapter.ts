@@ -158,6 +158,53 @@ export class AttendanceService {
           },
         };
         break;
+
+      case "lastweek":
+        data.filters = {
+          ...data.filters,
+          attendanceDate: {
+            between: [
+              moment()
+                .subtract(1, "weeks")
+                .startOf("week")
+                .format("YYYY-MM-DD"),
+              moment().subtract(1, "weeks").endOf("week").format("YYYY-MM-DD"),
+            ],
+          },
+        };
+
+        break;
+
+      case "thismonth":
+        data.filters = {
+          ...data.filters,
+          attendanceDate: {
+            between: [
+              moment().startOf("month").format("Y-MM-DD"),
+              moment().endOf("month").format("Y-MM-DD"),
+            ],
+          },
+        };
+        break;
+
+      case "lastmonth":
+        data.filters = {
+          ...data.filters,
+          attendanceDate: {
+            between: [
+              moment()
+                .subtract(1, "months")
+                .startOf("month")
+                .format("YYYY-MM-DD"),
+              moment()
+                .subtract(1, "months")
+                .endOf("month")
+                .format("YYYY-MM-DD"),
+            ],
+          },
+        };
+
+        break;
     }
 
     let config = {
