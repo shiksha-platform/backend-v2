@@ -267,6 +267,7 @@ export class TeacherDto {
     this.refId3 = obj?.refId3 ? `${obj.refId3}` : "";
 
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
+    this.middleName = obj?.middleName ? `${obj.middleName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
     this.phoneNumber = obj?.phoneNumber ? obj.phoneNumber : "";
     this.email = obj?.email ? `${obj.email}` : "";
@@ -280,7 +281,7 @@ export class TeacherDto {
       ? `${obj.profQualification}`
       : "";
     this.joiningDate = obj?.joiningDate ? `${obj.joiningDate}` : "";
-    this.subjectIds = obj.subjectIds;
+    this.subjectIds = obj.subjectIds ? obj.subjectIds : [];
     this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
     this.maritalStatus = obj?.maritalStatus ? `${obj.maritalStatus}` : "";
     this.compSkills = obj?.compSkills ? `${obj.compSkills}` : "";
@@ -304,6 +305,7 @@ export class TeacherDto {
     this.reportsTo = obj?.reportsTo ? `${obj.reportsTo}` : "";
     this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
+    this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";

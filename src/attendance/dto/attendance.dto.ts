@@ -144,6 +144,7 @@ export class AttendanceDto {
     this.longitude = obj?.longitude ? obj.longitude : 0;
     this.image = obj?.image ? `${obj.image}` : "";
     this.syncTime = obj?.syncTime ? `${obj.syncTime}` : "";
+    this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";

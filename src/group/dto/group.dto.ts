@@ -84,6 +84,7 @@ export class GroupDto {
       ? `${obj.mediumOfInstruction}`
       : "";
     this.image = obj?.image ? `${obj.image}` : "";
+    this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";

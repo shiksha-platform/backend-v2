@@ -27,6 +27,7 @@ export class StudentDto {
   middleName: string;
 
   @ApiProperty()
+  @Expose()
   lastName: string;
 
   @ApiProperty()
@@ -214,6 +215,7 @@ export class StudentDto {
     this.refId2 = obj?.refId2 ? `${obj.refId2}` : "";
     this.aadhaar = obj?.aadhaar ? `${obj.aadhaar}` : "";
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
+    this.middleName = obj?.middleName ? `${obj.middleName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
     this.studentEmail = obj?.studentEmail ? `${obj.studentEmail}` : "";
