@@ -32,6 +32,7 @@ export class ConfigController {
     private service: ConfigService
   ) {}
 
+
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
@@ -42,6 +43,30 @@ export class ConfigController {
   })
   public async getConfig(@Param("id") configId: string, @Req() request: Request) {
     return this.service.getConfig(configId, request);
+  }
+
+  @Get()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Config detail" })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  public async getConfigForTeacher(@Req() request: Request) {
+    return this.service.getConfigForTeacher(request);
+  }
+
+  @Get("Module/:module")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Config detail by module" })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async findConfigByModule(
+    @Param("module") module: string,
+    @Req() request: Request
+  ) {
+    return this.service.findConfigByModule(module, request);
   }
 
   @Post()
@@ -85,30 +110,4 @@ export class ConfigController {
   ) {
     return await this.service.searchConfig(request, configSearchDto);
   }
-
-  // @Get(":groupId/participants")
-  // @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // @ApiBasicAuth("access-token")
-  // @ApiOkResponse({ description: "Group detail." })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // public async findMembersOfGroup(
-  //   @Param("groupId") id: string,
-  //   @Query("role") role: string,
-  //   @Req() request: Request
-  // ) {
-  //   return await this.membershipService.findMembersOfGroup(id, role, request);
-  // }
-
-  // @Get("participant/:userId")
-  // @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // @ApiBasicAuth("access-token")
-  // @ApiOkResponse({ description: "Group detail." })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // public async getGroupsByUserId(
-  //   @Param("userId") id: string,
-  //   @Query("role") role: string,
-  //   @Req() request: Request
-  // ) {
-  //   return await this.membershipService.findGroupsByUserId(id, role, request);
-  // }
 }

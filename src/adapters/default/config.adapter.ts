@@ -8,6 +8,8 @@ import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { ConfigSearchDto } from "src/configs/dto/config-search.dto";
+import jwt_decode from "jwt-decode";
+import { TeacherDto } from "../../teacher/dto/teacher.dto";
 @Injectable()
 export class ConfigService {
   constructor(private httpService: HttpService) {}
@@ -24,11 +26,11 @@ export class ConfigService {
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
 
-          const holidayDto = new ConfigDto(data);
+          const configDto = new ConfigDto(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: holidayDto,
+            data: configDto,
           });
         }),
         catchError((e) => {
@@ -40,6 +42,40 @@ export class ConfigService {
         })
       );
   }
+
+  public async findConfigByModule(module: string, request: any) {
+    let responseData = [];
+
+      let axios = require("axios");
+      let data = {
+        filters: {
+          module: {
+            eq: `${module}`,
+          },
+        },
+      };
+
+      let final = {
+        method: "post",
+        url: `${this.url}/search`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: data,
+      };
+
+      const response = await axios(final);
+      responseData = response.data;
+
+    let result = responseData.map((item: any) => new ConfigDto(item));
+    
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: result,
+    });
+  }
+
   public async createConfig(request: any, configDto: ConfigDto) {
     return this.httpService
       .post(`${this.url}`, configDto, {
@@ -115,5 +151,64 @@ export class ConfigService {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+
+  public async getConfigForTeacher(request: any) {
+    const authToken = request.headers.authorization;
+    const decoded: any = jwt_decode(authToken);
+    let email = decoded.email;
+
+    let axios = require("axios");
+    let teacherData = {
+      filters: {
+        email: {
+          eq: `${email}`,
+        },
+      },
+    };
+    let config = {
+      method: "post",
+      url: `${process.env.BASEAPIURL}/Teacher/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: teacherData,
+    };
+    const response = await axios(config);
+
+    let teacherProfileData =
+      response?.data && response.data.map((item: any) => new TeacherDto(item));
+      
+      let schoolId = teacherProfileData.map(function (TeacherDto) {
+        return TeacherDto.schoolId
+      })
+
+      let data = {
+        filters: {
+          contextId: {
+            eq: `${schoolId}`,
+          },
+        },
+      };
+
+      let final = {
+        method: "post",
+        url: `${this.url}/search`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: data,
+      };
+
+      const confifResponse = await axios(final);
+      let result =
+      confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
+
+      console.log(result);
+      return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: result,
+    });
   }
 }
