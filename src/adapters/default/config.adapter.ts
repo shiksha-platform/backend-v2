@@ -203,8 +203,6 @@ export class ConfigService {
       const confifResponse = await axios(final);
       let result =
       confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
-
-      console.log(result);
       return new SuccessResponse({
       statusCode: 200,
       message: "ok",

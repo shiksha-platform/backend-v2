@@ -68,6 +68,18 @@ export class ConfigDto {
   @Expose()
   isPublic: boolean;
 
+  @Expose()
+  createdAt: string;
+
+  @Expose()
+  updatedAt: string;
+
+  @Expose()
+  createdBy: string;
+
+  @Expose()
+  updatedBy: string;
+
   constructor(obj: any) {
     this.configId = obj?.osid ? `${obj.osid}` : "";
     this.module = obj?.module ? `${obj.module}` : "";
@@ -78,5 +90,9 @@ export class ConfigDto {
     this.canOverride = obj?.canOverride;
     this.overrideBy = obj?.overrideBy ? `${obj.overrideBy}` : "";
     this.isPublic = obj?.isPublic;
+    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
+    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
+    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
 }
