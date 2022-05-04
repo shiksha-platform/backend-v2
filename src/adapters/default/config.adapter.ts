@@ -76,8 +76,62 @@ export class ConfigService {
     });
   }
 
-  public async createConfig(request: any, configDto: ConfigDto) {
-    return this.httpService
+  public async createConfig(request: any, configDto: ConfigDto)
+  {
+    let axios = require("axios");
+    let data = {
+      filters: {
+        module: {
+          eq: `${configDto.module}`,
+        },
+        key: {
+          eq: `${configDto.key}`,
+        },
+        contextId: {
+          eq: `${configDto.contextId}`,
+        },
+      },
+    };
+
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+
+      data: data,
+    };
+
+    const response = await axios(config);
+    let resData = response?.data;
+    let result = resData.map((item: any) => new ConfigDto(item));
+
+    let configId = result.map(function (ConfigDto) {
+      return ConfigDto.configId
+    })
+
+    if (resData.length > 0)
+    {
+      var udateData = configDto;
+      var updateConfig = {
+      method: "put",
+      url: `${this.url}/${configId}`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: udateData,
+      };
+      const response = await axios(updateConfig);
+      console.log("123");
+      console.log(configId);
+      console.log(response);
+      return new SuccessResponse({
+        statusCode: 200,
+        message: " Ok.",
+        data: response.data,
+      });
+    }
+    else
+    {
+      return this.httpService
       .post(`${this.url}`, configDto, {
         headers: {
           Authorization: request.headers.authorization,
@@ -85,6 +139,7 @@ export class ConfigService {
       })
       .pipe(
         map((axiosResponse: AxiosResponse) => {
+          console.log("140" + axiosResponse.data);
           return new SuccessResponse({
             statusCode: 200,
             message: "Ok.",
@@ -99,6 +154,7 @@ export class ConfigService {
           throw new HttpException(error, e.response.status);
         })
       );
+    }
   }
 
   public async updateConfig(

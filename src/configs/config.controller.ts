@@ -69,7 +69,7 @@ export class ConfigController {
     return this.service.findConfigByModule(module, request);
   }
 
-  @Post()
+  @Post(":module")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Config has been created successfully." })
   @ApiBody({ type: ConfigDto })
