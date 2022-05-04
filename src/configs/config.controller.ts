@@ -32,20 +32,7 @@ export class ConfigController {
     private service: ConfigService
   ) {}
 
-
-  @Get("/:id")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Config detail" })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @SerializeOptions({
-    strategy: "excludeAll",
-  })
-  public async getConfig(@Param("id") configId: string, @Req() request: Request) {
-    return this.service.getConfig(configId, request);
-  }
-
-  @Get()
+  @Get(":module/all")
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Config detail" })
@@ -55,18 +42,6 @@ export class ConfigController {
   })
   public async getConfigForTeacher(@Req() request: Request) {
     return this.service.getConfigForTeacher(request);
-  }
-
-  @Get("Module/:module")
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Config detail by module" })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  public async findConfigByModule(
-    @Param("module") module: string,
-    @Req() request: Request
-  ) {
-    return this.service.findConfigByModule(module, request);
   }
 
   @Post(":module")
@@ -80,34 +55,5 @@ export class ConfigController {
     @Body() configDto: ConfigDto
   ) {
     return this.service.createConfig(request, configDto);
-  }
-
-  @Put("/:id")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Config has been updated successfully." })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @UseInterceptors(ClassSerializerInterceptor)
-  public async updateConfig(
-    @Param("id") configId: string,
-    @Req() request: Request,
-    @Body() configDto: ConfigDto
-  ) {
-    return await this.service.updateConfig(configId, request, configDto);
-  }
-
-  @Post("/search")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Config list." })
-  @ApiBody({ type: ConfigSearchDto })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    strategy: "excludeAll",
-  })
-  public async searchConfig(
-    @Req() request: Request,
-    @Body() configSearchDto: ConfigSearchDto
-  ) {
-    return await this.service.searchConfig(request, configSearchDto);
   }
 }
