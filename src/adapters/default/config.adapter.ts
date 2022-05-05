@@ -59,9 +59,6 @@ export class ConfigService {
       data: udateData,
       };
       const response = await axios(updateConfig);
-      console.log("123");
-      console.log(configId);
-      console.log(response);
       return new SuccessResponse({
         statusCode: 200,
         message: " Ok.",
@@ -100,7 +97,7 @@ export class ConfigService {
     const authToken = request.headers.authorization;
     const decoded: any = jwt_decode(authToken);
     let email = decoded.email;
-
+    let result = [];
     let axios = require("axios");
     let teacherData = {
       filters: {
@@ -134,7 +131,7 @@ export class ConfigService {
         },
       };
 
-      let final = {
+      let contextConfigData = {
         method: "post",
         url: `${this.url}/search`,
         headers: {
@@ -143,9 +140,27 @@ export class ConfigService {
         data: data,
       };
 
-      const confifResponse = await axios(final);
-      let result =
-      confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
+      const confifResponse = await axios(contextConfigData);
+  
+      if(confifResponse.length > 0)
+      {
+        result =
+        confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
+      }
+      else
+      {
+        let contextConfigData = {
+          method: "post",
+          url: `${this.url}/search`,
+          headers: {
+            Authorization: request.headers.authorization,
+          }
+        };
+        const confifResponse = await axios(contextConfigData);
+        result =
+        confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
+      }
+
       return new SuccessResponse({
       statusCode: 200,
       message: "ok",
