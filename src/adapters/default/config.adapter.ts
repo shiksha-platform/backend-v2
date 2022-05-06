@@ -59,6 +59,9 @@ export class ConfigService {
       data: udateData,
       };
       const response = await axios(updateConfig);
+      console.log("123");
+      console.log(configId);
+      console.log(response);
       return new SuccessResponse({
         statusCode: 200,
         message: " Ok.",
@@ -93,12 +96,29 @@ export class ConfigService {
     }
   }
 
-  public async getConfigForTeacher(request: any) {
+  public async getConfig(request: any) {
+    let axios = require("axios");
+    let data = {
+      filters: {
+      },
+    };
+    let globalConfig = {
+      method: "post",
+      url: `${this.url}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data
+    };
+
+    const globalConfigData = await axios(globalConfig);
+   let gobalConfigResult =
+    globalConfigData?.data && globalConfigData.data.map((item: any) => new ConfigDto(item));
+ 
+    // get Logged In user data
     const authToken = request.headers.authorization;
     const decoded: any = jwt_decode(authToken);
     let email = decoded.email;
-    let result = [];
-    let axios = require("axios");
     let teacherData = {
       filters: {
         email: {
@@ -117,51 +137,44 @@ export class ConfigService {
     const response = await axios(config);
 
     let teacherProfileData =
-      response?.data && response.data.map((item: any) => new TeacherDto(item));
-      
-      let schoolId = teacherProfileData.map(function (TeacherDto) {
-        return TeacherDto.schoolId
-      })
+    response?.data && response.data.map((item: any) => new TeacherDto(item));
+    
+    let schoolId = teacherProfileData.map(function (TeacherDto) {
+      return TeacherDto.schoolId
+    })
 
-      let data = {
-        filters: {
-          contextId: {
-            eq: `${schoolId}`,
-          },
+    let teacherConfig = {
+      filters: {
+        contextId: {
+          eq: `${schoolId}`,
         },
-      };
+      },
+    };
 
-      let contextConfigData = {
-        method: "post",
-        url: `${this.url}/search`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-        data: data,
-      };
+    let final = {
+      method: "post",
+      url: `${this.url}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: teacherConfig,
+    };
+    const confifResponse = await axios(final);
+    let overridenResult =
+    confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
 
-      const confifResponse = await axios(contextConfigData);
-  
-      if(confifResponse.length > 0)
+    var result = gobalConfigResult.filter(obj=> obj.contextId == '')
+
+    for(let i =0; i<result.length; i++)
+    {
+      let overridenData = overridenResult.filter(obj=>obj.key == result[i].key && obj.module == result[i].module)
+      if(overridenData.length>0)
       {
-        result =
-        confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
+        result[i]=overridenData[0];
       }
-      else
-      {
-        let contextConfigData = {
-          method: "post",
-          url: `${this.url}/search`,
-          headers: {
-            Authorization: request.headers.authorization,
-          }
-        };
-        const confifResponse = await axios(contextConfigData);
-        result =
-        confifResponse?.data && confifResponse.data.map((item: any) => new ConfigDto(item));
-      }
+    }
 
-      return new SuccessResponse({
+    return new SuccessResponse({
       statusCode: 200,
       message: "ok",
       data: result,

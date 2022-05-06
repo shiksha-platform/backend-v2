@@ -40,8 +40,8 @@ export class ConfigController {
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async getConfigForTeacher(@Req() request: Request) {
-    return this.service.getConfigForTeacher(request);
+  public async getConfig(@Req() request: Request) {
+    return this.service.getConfig(request);
   }
 
   @Post(":module")
