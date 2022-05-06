@@ -18,6 +18,7 @@ export class AttendanceService {
   ) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   studentAPIUrl = `${process.env.BASEAPIURL}/Student`;
+  UCIURL = `${process.env.UCIAPI}`;
 
   public async getAttendance(attendanceId: any, request: any) {
     return this.httpService
@@ -294,8 +295,78 @@ export class AttendanceService {
       data: result,
     });
   }
-  @Cron("0 10 15 * * 1-5")
-  async sendSMSNotificaiotns() {
-    console.log("sending SMS notification");
+  @Cron("0 00 18 * * 1-5")
+  public async sendSMSNotificaiotns() {
+    var axios = require("axios");
+    const result = Math.random().toString(27).substring(6, 8);
+    // Conversation Logic
+    var data = {
+      data: {
+        name: `Siksha SMS Notification Broadcast ${result}`,
+        transformers: [
+          {
+            id: "774cd134-6657-4688-85f6-6338e2323dde",
+            meta: {
+              body: "Kindly note your OTP @__123__@. Submission of the OTP will be taken as authentication that you have personally verified and overseen the distribution of smartphone to the mentioned student ID of your school. Thank you! - Samagra Shiksha, Himachal Pradesh",
+              type: "JS_TEMPLATE_LITERALS",
+              user: "25bbdbf7-5286-4b85-a03c-c53d1d990a23",
+            },
+            type: "broadcast",
+          },
+        ],
+        adapter: "582980ae-95c6-404e-a1a2-5a25104218a8",
+      },
+    };
+
+    var config = {
+      method: "post",
+      url: `${this.UCIURL}/conversationLogic/create`,
+      headers: {
+        "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+    const resData = response.data;
+    const consversationLogicID = resData.result.data.id;
+
+    // Bot Logic
+
+    var botData = {
+      data: {
+        startingMessage: `Hi Siksha SMS broadcast ${result}`,
+        name: `Siksha SMS Notifications Broadcasts ${result}`,
+        users: ["ab1616ad-861c-4824-868b-b5d1206f673f"],
+        logic: [consversationLogicID],
+        status: "enabled",
+        startDate: "2022-05-06",
+        endDate: "2023-05-6",
+      },
+    };
+
+    var botConfig = {
+      method: "post",
+      url: `${this.UCIURL}/bot/create`,
+      headers: {
+        "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+        "Content-Type": "application/json",
+      },
+      data: botData,
+    };
+    const botResponse = await axios(botConfig);
+    const botResData = botResponse.data;
+    const botCreateID = botResData.result.data.id;
+
+    var configs = {
+      method: "get",
+      url: `${process.env.BOTCALL}${botCreateID}`,
+      headers: {},
+    };
+
+    const botres = await axios(configs);
+    const sendData = botres.data;
+    console.log(sendData, "SMS Notification Sent Successfully");
   }
 }
