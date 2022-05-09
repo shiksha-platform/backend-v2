@@ -59,9 +59,6 @@ export class ConfigService {
       data: udateData,
       };
       const response = await axios(updateConfig);
-      console.log("123");
-      console.log(configId);
-      console.log(response);
       return new SuccessResponse({
         statusCode: 200,
         message: " Ok.",
@@ -78,7 +75,6 @@ export class ConfigService {
       })
       .pipe(
         map((axiosResponse: AxiosResponse) => {
-          console.log("140" + axiosResponse.data);
           return new SuccessResponse({
             statusCode: 200,
             message: "Ok.",
