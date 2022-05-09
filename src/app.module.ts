@@ -7,6 +7,7 @@ import { SchoolModule } from "./school/school.module";
 import { AttendanceModule } from "./attendance/attendance.module";
 import { GroupModule } from "./group/group.module";
 import { HolidayModule } from "./holiday/holiday.module";
+import { ConfigurationModule } from "./configs/configuration.module";
 import { ConfigModule } from "@nestjs/config";
 import { GroupMembershipModule } from "./groupMembership/groupMembership.module";
 @Module({
@@ -18,7 +19,9 @@ import { GroupMembershipModule } from "./groupMembership/groupMembership.module"
     GroupModule,
     AttendanceModule,
     HolidayModule,
+    ConfigurationModule,
     GroupMembershipModule,
+    
   ],
   controllers: [AppController],
   providers: [AppService],
