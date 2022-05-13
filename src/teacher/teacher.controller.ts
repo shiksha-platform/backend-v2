@@ -9,7 +9,6 @@ import {
   ClassSerializerInterceptor,
   SerializeOptions,
   Req,
-  CacheInterceptor,
 } from "@nestjs/common";
 import { TeacherService } from "../adapters/default/teacher.adapter";
 import { Request } from "@nestjs/common";
@@ -30,7 +29,7 @@ export class TeacherController {
   constructor(private readonly service: TeacherService) {}
 
   @Get("/:id")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Teacher detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -42,7 +41,7 @@ export class TeacherController {
   }
 
   @Get()
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Teacher detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })

@@ -20,7 +20,6 @@ import {
   SerializeOptions,
   Req,
   Query,
-  CacheInterceptor,
 } from "@nestjs/common";
 import { GroupSearchDto } from "./dto/group-search.dto";
 import { Request } from "@nestjs/common";
@@ -35,7 +34,7 @@ export class GroupController {
   ) {}
 
   @Get("/:id")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Group detail" })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -89,7 +88,7 @@ export class GroupController {
   }
 
   @Get(":groupId/participants")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -102,7 +101,7 @@ export class GroupController {
   }
 
   @Get("participant/:userId")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Group detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })

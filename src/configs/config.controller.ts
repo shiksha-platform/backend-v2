@@ -19,7 +19,6 @@ import {
   SerializeOptions,
   Req,
   Query,
-  CacheInterceptor,
 } from "@nestjs/common";
 import { ConfigSearchDto } from "./dto/config-search.dto";
 import { Request } from "@nestjs/common";
@@ -28,9 +27,7 @@ import { ConfigDto } from "./dto/config.dto";
 @ApiTags("Config")
 @Controller("config")
 export class ConfigController {
-  constructor(
-    private service: ConfigService
-  ) {}
+  constructor(private service: ConfigService) {}
 
   @Get(":module/all")
   @UseInterceptors(ClassSerializerInterceptor)
