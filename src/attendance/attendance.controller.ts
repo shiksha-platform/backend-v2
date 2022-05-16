@@ -25,6 +25,8 @@ import {
   UploadedFile,
   CacheInterceptor,
   Query,
+  Inject,
+  CACHE_MANAGER,
 } from "@nestjs/common";
 import { AttendanceDto } from "./dto/attendance.dto";
 import { request } from "http";

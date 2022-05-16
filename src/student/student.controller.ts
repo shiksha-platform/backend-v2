@@ -1,7 +1,12 @@
 import { StudentInterface } from "./interfaces/student.interface";
 import { StudentService } from "../adapters/default/student.adapter";
 
-import { CacheInterceptor, Request } from "@nestjs/common";
+import {
+  CacheInterceptor,
+  CACHE_MANAGER,
+  Inject,
+  Request,
+} from "@nestjs/common";
 import {
   ApiTags,
   ApiBody,
@@ -28,7 +33,10 @@ import { StudentSearchDto } from "./dto/student-search.dto";
 @ApiTags("Student")
 @Controller("student")
 export class StudentController {
-  constructor(private service: StudentService) {}
+  constructor(
+    private service: StudentService,
+    @Inject(CACHE_MANAGER) private cacheManager
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)

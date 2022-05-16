@@ -28,9 +28,7 @@ import { ConfigDto } from "./dto/config.dto";
 @ApiTags("Config")
 @Controller("config")
 export class ConfigController {
-  constructor(
-    private service: ConfigService
-  ) {}
+  constructor(private service: ConfigService) {}
 
   @Get(":module/all")
   @UseInterceptors(ClassSerializerInterceptor)
