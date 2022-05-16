@@ -19,6 +19,7 @@ import {
   SerializeOptions,
   Req,
   Query,
+  CacheInterceptor,
 } from "@nestjs/common";
 import { ConfigSearchDto } from "./dto/config-search.dto";
 import { Request } from "@nestjs/common";

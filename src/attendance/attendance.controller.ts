@@ -15,6 +15,7 @@ import {
   Post,
   Body,
   Put,
+  Patch,
   Param,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -22,9 +23,13 @@ import {
   Req,
   Request,
   UploadedFile,
+  CacheInterceptor,
   Query,
+  Inject,
+  CACHE_MANAGER,
 } from "@nestjs/common";
 import { AttendanceDto } from "./dto/attendance.dto";
+import { request } from "http";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
@@ -35,7 +40,7 @@ export class AttendanceController {
   constructor(private service: AttendanceService) {}
 
   @Get("/:id")
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Attendance detail" })
   @ApiForbiddenResponse({ description: "Forbidden" })
@@ -129,7 +134,7 @@ export class AttendanceController {
   }
 
   @Get("usersegment/:attendance")
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   // @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
