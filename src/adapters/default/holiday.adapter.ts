@@ -116,4 +116,41 @@ export class HolidayService {
         })
       );
   }
+
+  public async holidayFilter(fromDate: string, toDate: string, request: any) {
+    let axios = require("axios");
+    let filters = {
+      fromDate,
+      toDate,
+    };
+    const filterArray = Object.keys(filters).filter(
+      (value, key) => filters[value] && filters[value] !== ""
+    );
+    let data = { date: { between: [] } };
+    filterArray.forEach((value, key) => {
+      if (["fromDate", "toDate"].includes(value)) {
+        data["date"].between.push(filters[value]);
+      }
+    });
+
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: { filters: data },
+    };
+
+    const response = await axios(config);
+
+    let result =
+      response?.data && response.data.map((item: any) => new HolidayDto(item));
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: result,
+    });
+  }
 }
