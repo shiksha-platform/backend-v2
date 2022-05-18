@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 
 export class StudentDto {
-  @ApiProperty()
   @Expose()
   studentId: string;
 
