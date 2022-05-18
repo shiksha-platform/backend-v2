@@ -215,7 +215,7 @@ export class StudentDto {
 
   constructor(obj: any) {
     this.studentId = obj?.osid ? `${obj.osid}` : "";
-    this.refId1 = obj?.refId1 ? `${obj.refId1}` : "";
+    this.refId1 = obj?.admissionNo ? `${obj.admissionNo}` : "";
     this.refId2 = obj?.refId2 ? `${obj.refId2}` : "";
     this.aadhaar = obj?.aadhaar ? `${obj.aadhaar}` : "";
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
