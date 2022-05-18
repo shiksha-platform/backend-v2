@@ -46,6 +46,10 @@ export class StudentDto {
   @Expose()
   gender: string;
 
+  @ApiProperty()
+  @Expose()
+  groupId: string;
+
   @ApiPropertyOptional()
   @Expose()
   socialCategory: string;
@@ -217,6 +221,7 @@ export class StudentDto {
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
     this.middleName = obj?.middleName ? `${obj.middleName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
+    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
     this.studentEmail = obj?.studentEmail ? `${obj.studentEmail}` : "";
     this.studentPhoneNumber = obj?.studentPhoneNumber

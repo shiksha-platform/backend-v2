@@ -9,27 +9,39 @@ export class TemplateDto {
   @Expose()
   templateId: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Key for template",
+  })
   @Expose()
   key: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Title of template",
+  })
   @Expose()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Module of template",
+  })
   @Expose()
   module: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "State of template",
+  })
   @Expose()
   state: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "replacement Tags for template",
+  })
   @Expose()
   replacementTags: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "User control of template",
+  })
   @Expose()
   userControl: boolean;
 

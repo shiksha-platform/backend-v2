@@ -5,49 +5,57 @@ export class TemplateContentDto {
   @Expose()
   templateContentId: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Template Id of template table",
+  })
   @Expose()
   templateId: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "State of tempalate content ",
+  })
   @Expose()
   state: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: "Language of tamplate" })
   @Expose()
   language: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Subject of template",
+  })
   @Expose()
   subject: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Body of template",
+  })
   @Expose()
   body: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Replacement Tags for template content",
+  })
   @Expose()
-  replacementTags: [string];
+  replacementTags: [];
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "User Control of template content",
+  })
   @Expose()
   userControl: boolean;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "Options for template",
+  })
   @Expose()
-  type: string;
+  options: [];
 
-  @ApiProperty()
+  @ApiProperty({
+    description: "schedule for notification",
+  })
   @Expose()
-  user: string;
-
-  @ApiProperty()
-  @Expose()
-  adapter: string;
-
-  @ApiProperty()
-  @Expose()
-  adminToken: string;
+  scheduleOn: string;
 
   constructor(obj: any) {
     this.templateContentId = obj?.osid ? `${obj.osid}` : "";
@@ -58,9 +66,7 @@ export class TemplateContentDto {
     this.body = obj?.body ? `${obj.body}` : "";
     this.replacementTags = obj?.replacementTags ? obj.replacementTags : "";
     this.userControl = obj?.userControl ? obj.userControl : "";
-    this.type = obj?.type ? obj.type : "";
-    this.user = obj?.user ? obj.user : "";
-    this.adapter = obj?.adapter ? obj.adapter : "";
-    this.adminToken = obj?.adminToken ? obj.adminToken : "";
+    this.options = obj?.options ? obj.options : "";
+    this.scheduleOn = obj?.scheduleOn ? `${obj.scheduleOn}` : "";
   }
 }

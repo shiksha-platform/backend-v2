@@ -45,7 +45,7 @@ export class TemplateController {
     return this.service.createTemplate(request, templateDto);
   }
 
-  @Post("template/Content")
+  @Post("template/content")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
     description: "Template Content has been created successfully.",
