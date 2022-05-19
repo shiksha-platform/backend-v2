@@ -81,7 +81,7 @@ export class GroupDto {
   constructor(obj: any) {
     this.groupId = obj?.osid ? `${obj.osid}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.name = obj?.name ? `${obj.name}` : "";
+    this.name = obj?.className ? `${obj.className}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.section = obj?.section ? `${obj.section}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
