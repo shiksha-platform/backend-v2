@@ -35,6 +35,13 @@ export class GroupDto {
 
   @ApiProperty({
     type: String,
+    description: "The section of the group",
+  })
+  @Expose()
+  section: string;
+
+  @ApiProperty({
+    type: String,
     description: "The status of the group",
   })
   @Expose()
@@ -74,8 +81,9 @@ export class GroupDto {
   constructor(obj: any) {
     this.groupId = obj?.osid ? `${obj.osid}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.name = obj?.className ? `${obj.className}` : "";
+    this.name = obj?.name ? `${obj.name}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
+    this.section = obj?.section ? `${obj.section}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
     this.deactivationReason = obj?.deactivationReason
       ? `${obj.deactivationReason}`

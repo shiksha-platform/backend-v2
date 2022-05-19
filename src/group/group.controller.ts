@@ -7,6 +7,7 @@ import {
   ApiForbiddenResponse,
   ApiCreatedResponse,
   ApiBasicAuth,
+  ApiConsumes,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -21,10 +22,14 @@ import {
   Req,
   Query,
   CacheInterceptor,
+  UploadedFile,
 } from "@nestjs/common";
 import { GroupSearchDto } from "./dto/group-search.dto";
 import { Request } from "@nestjs/common";
 import { GroupDto } from "./dto/group.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
+import { diskStorage } from "multer";
 
 @ApiTags("Group")
 @Controller("group")
@@ -47,28 +52,59 @@ export class GroupController {
   }
 
   @Post()
+  @ApiConsumes("multipart/form-data")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Group has been created successfully." })
+  @UseInterceptors(
+    FileInterceptor("image", {
+      storage: diskStorage({
+        destination: process.env.IMAGEPATH,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    })
+  )
   @ApiBody({ type: GroupDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async createGroup(
     @Req() request: Request,
-    @Body() groupDto: GroupDto
+    @Body() groupDto: GroupDto,
+    @UploadedFile() image
   ) {
+    const response = {
+      image: image?.filename,
+    };
+    Object.assign(groupDto, response);
     return this.service.createGroup(request, groupDto);
   }
 
   @Put("/:id")
+  @ApiConsumes("multipart/form-data")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Group has been updated successfully." })
+  @UseInterceptors(
+    FileInterceptor("image", {
+      storage: diskStorage({
+        destination: process.env.IMAGEPATH,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    })
+  )
+  @ApiBody({ type: GroupDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async updateGroup(
     @Param("id") groupId: string,
     @Req() request: Request,
-    @Body() groupDto: GroupDto
+    @Body() groupDto: GroupDto,
+    @UploadedFile() image
   ) {
+    const response = {
+      image: image?.filename,
+    };
+    Object.assign(groupDto, response);
     return await this.service.updateGroup(groupId, request, groupDto);
   }
 

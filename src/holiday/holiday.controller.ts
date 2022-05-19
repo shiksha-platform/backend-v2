@@ -10,6 +10,7 @@ import {
   SerializeOptions,
   Req,
   CacheInterceptor,
+  Query,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -18,6 +19,7 @@ import {
   ApiForbiddenResponse,
   ApiCreatedResponse,
   ApiBasicAuth,
+  ApiQuery,
 } from "@nestjs/swagger";
 import { HolidayService } from "src/adapters/default/holiday.adapter";
 import { HolidayDto } from "./dto/holiday.dto";
@@ -79,5 +81,25 @@ export class HolidayController {
     @Body() holidaySearchDto: HolidaySearchDto
   ) {
     return await this.service.searchHoliday(request, holidaySearchDto);
+  }
+
+  @Get("")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "fromDate" })
+  @ApiQuery({ name: "toDate" })
+  public async holidayFilter(
+    @Query("fromDate") date: string,
+    @Query("toDate") toDate: string,
+    @Req() request: Request
+  ) {
+    return await this.service.holidayFilter(
+      date,
+      toDate,
+
+      request
+    );
   }
 }
