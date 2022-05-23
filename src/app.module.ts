@@ -12,9 +12,6 @@ import { ConfigModule } from "@nestjs/config";
 import { GroupMembershipModule } from "./groupMembership/groupMembership.module";
 import { NotificationModule } from "./notification/notification.module";
 import { TemplateModule } from "./template/template.module";
-import { WorksheetModule } from "./worksheet/worksheet.module";
-import { QuestionModule } from "./Question/question.module";
-import { WorksheetTemplateModule } from "./worksheetTemplate/worksheetTemplate.module";
 import { MulterModule } from "@nestjs/platform-express/multer";
 @Module({
   imports: [
@@ -32,9 +29,6 @@ import { MulterModule } from "@nestjs/platform-express/multer";
     GroupMembershipModule,
     TemplateModule,
     NotificationModule,
-    WorksheetModule,
-    QuestionModule,
-    WorksheetTemplateModule,
   ],
   controllers: [AppController],
   providers: [AppService],
