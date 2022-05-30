@@ -1,18 +1,19 @@
 import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
-
 import { QuestionDto } from "src/Question/dto/question.dto";
 
 @Injectable()
 export class QumlQuestionService {
+  baseURL = process.env.DIKSHABASEURL;
   constructor(private httpService: HttpService) {}
 
   public async getAllQuestions(
     questionType: string,
     subject: string,
     language: string,
-    medium: string
+    medium: string,
+    request: any
   ) {
     var axios = require("axios");
     var data = {
@@ -29,9 +30,9 @@ export class QumlQuestionService {
     };
     var config = {
       method: "post",
-      url: "https://vdn.diksha.gov.in/action/composite/v3/search",
+      url: `${this.baseURL}/composite/v3/search`,
       headers: {
-        "Content-Type": "application/json",
+        Authorization: request.headers.authorization,
       },
       data: data,
     };
@@ -47,7 +48,7 @@ export class QumlQuestionService {
     for (let value of arrayIds) {
       let config = {
         method: "get",
-        url: `https://vdn.diksha.gov.in/action/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks`,
+        url: `${this.baseURL}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks`,
       };
       const response = await axios(config);
       const data = response?.data;

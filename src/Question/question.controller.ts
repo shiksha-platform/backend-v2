@@ -13,6 +13,8 @@ import {
   UseInterceptors,
   Query,
   Param,
+  Req,
+  Request,
 } from "@nestjs/common";
 import { QumlQuestionService } from "src/adapters/diksha/quml.adapter";
 
@@ -37,14 +39,16 @@ export class QuestionController {
     @Query("questionType") questionType: string,
     @Query("subject") subject: string,
     @Query("language") language: string,
-    @Query("medium") medium: string
+    @Query("medium") medium: string,
+    @Req() request: Request
   ) {
     if (adapter === "diksha") {
       return this.service.getAllQuestions(
         questionType,
         subject,
         language,
-        medium
+        medium,
+        request
       );
     }
     // } else if (adapter === "khanAcadmey") {
