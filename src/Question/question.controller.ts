@@ -12,16 +12,18 @@ import {
   Get,
   UseInterceptors,
   Query,
+  Param,
 } from "@nestjs/common";
-
-import { QuestionService } from "src/adapters/default/vidyadanQuestion.adapter";
+import { QumlQuestionService } from "src/adapters/diksha/quml.adapter";
 
 @ApiTags("Question")
 @Controller("question")
 export class QuestionController {
-  constructor(private service: QuestionService) {}
+  constructor(
+    private service: QumlQuestionService // private khanAcademyService: QumlQuestionService
+  ) {}
 
-  @Get("vidyadan/getall")
+  @Get(":adapter/search")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all Questions detail." })
@@ -31,16 +33,27 @@ export class QuestionController {
   @ApiQuery({ name: "language", required: false })
   @ApiQuery({ name: "medium", required: false })
   public async getAllQuestions(
+    @Param("adapter") adapter: string,
     @Query("questionType") questionType: string,
     @Query("subject") subject: string,
     @Query("language") language: string,
     @Query("medium") medium: string
   ) {
-    return this.service.getAllQuestions(
-      questionType,
-      subject,
-      language,
-      medium
-    );
+    if (adapter === "diksha") {
+      return this.service.getAllQuestions(
+        questionType,
+        subject,
+        language,
+        medium
+      );
+    }
+    // } else if (adapter === "khanAcadmey") {
+    //   return this.khanAcademyService.getAllQuestions(
+    //     questionType,
+    //     subject,
+    //     language,
+    //     medium
+    //   );
+    // }
   }
 }

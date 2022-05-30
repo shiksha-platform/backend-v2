@@ -5,7 +5,7 @@ import { SuccessResponse } from "src/success-response";
 import { QuestionDto } from "src/Question/dto/question.dto";
 
 @Injectable()
-export class QuestionService {
+export class QumlQuestionService {
   constructor(private httpService: HttpService) {}
 
   public async getAllQuestions(
