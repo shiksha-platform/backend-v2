@@ -1,4 +1,4 @@
-import { CacheModule, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { StudentModule } from "./student/student.module";
@@ -9,10 +9,12 @@ import { GroupModule } from "./group/group.module";
 import { HolidayModule } from "./holiday/holiday.module";
 import { ConfigurationModule } from "./configs/configuration.module";
 import { ConfigModule } from "@nestjs/config";
+import { DatabaseProviders } from "./database.provider";
 import { GroupMembershipModule } from "./groupMembership/groupMembership.module";
 import { NotificationModule } from "./notification/notification.module";
 import { TemplateModule } from "./template/template.module";
 import { MulterModule } from "@nestjs/platform-express/multer";
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -31,6 +33,6 @@ import { MulterModule } from "@nestjs/platform-express/multer";
     NotificationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ...DatabaseProviders],
 })
 export class AppModule {}
