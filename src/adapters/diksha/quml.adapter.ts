@@ -5,10 +5,10 @@ import { QuestionDto } from "src/Question/dto/question.dto";
 
 @Injectable()
 export class QumlQuestionService {
-  baseURL = process.env.DIKSHABASEURL;
   constructor(private httpService: HttpService) {}
 
   public async getAllQuestions(
+    url: string,
     questionType: string,
     subject: string,
     language: string,
@@ -28,9 +28,10 @@ export class QumlQuestionService {
         },
       },
     };
+
     var config = {
       method: "post",
-      url: `${this.baseURL}/composite/v3/search`,
+      url: `${url}/composite/v3/search`,
       headers: {
         Authorization: request.headers.authorization,
       },
@@ -39,6 +40,7 @@ export class QumlQuestionService {
 
     const response = await axios(config);
     const responseData = response.data.result.Question;
+    console.log(responseData);
 
     let arrayIds = responseData.map((e: any) => {
       return e.identifier;
@@ -48,7 +50,7 @@ export class QumlQuestionService {
     for (let value of arrayIds) {
       let config = {
         method: "get",
-        url: `${this.baseURL}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks`,
+        url: `${url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks`,
       };
       const response = await axios(config);
       const data = response?.data;
