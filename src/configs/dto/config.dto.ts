@@ -28,28 +28,32 @@ export class ConfigDto {
 
   @ApiProperty({
     type: String,
-    description: "The value for the key eg: ['Present', 'Absent', 'Late'] for the attendance_states key",
+    description:
+      "The value for the key eg: ['Present', 'Absent', 'Late'] for the attendance_states key",
   })
   @Expose()
   value: string;
 
   @ApiProperty({
     type: String,
-    description: "If the config has been overriden at a school level the context will be school, otherwise it will be empty",
+    description:
+      "If the config has been overriden at a school level the context will be school, otherwise it will be empty",
   })
   @Expose()
   context: string;
 
   @ApiProperty({
     type: String,
-    description: "If this is a school level config (indicated by context = school), this field has the schoolId",
+    description:
+      "If this is a school level config (indicated by context = school), this field has the schoolId",
   })
   @Expose()
   contextId: string;
 
   @ApiProperty({
     type: Boolean,
-    description: "Indicates if this config is allowed to be updated by a user with another role (eg: can the deployer set this config to be updated by other roles)",
+    description:
+      "Indicates if this config is allowed to be updated by a user with another role (eg: can the deployer set this config to be updated by other roles)",
   })
   @Expose()
   canOverride: boolean;
@@ -63,7 +67,8 @@ export class ConfigDto {
 
   @ApiProperty({
     type: Boolean,
-    description: "Is this config that can be passed on to the client side eg: to the react frontend. Configs like API credentials should not be allowed to be accessed in the frontend",
+    description:
+      "Is this config that can be passed on to the client side eg: to the react frontend. Configs like API credentials should not be allowed to be accessed in the frontend",
   })
   @Expose()
   isPublic: boolean;
