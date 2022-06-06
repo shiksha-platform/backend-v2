@@ -28,6 +28,10 @@ export class TeacherDto {
   @Expose()
   refId3: string;
 
+  @ApiProperty({
+    type: String,
+    description: "The first name of the teacher",
+  })
   @Expose()
   firstName: string;
 
