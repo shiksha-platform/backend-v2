@@ -54,17 +54,4 @@ export class ConfigController {
   ) {
     return this.service.createConfig(request, configDto);
   }
-
-  @Post(":module")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Config has been created successfully." })
-  @ApiBody({ type: ConfigDto })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @UseInterceptors(ClassSerializerInterceptor)
-  public async createModuleConfigs(
-    @Req() request: Request,
-    @Body() configDto: ConfigDto
-  ) {
-    return this.service.createConfig(request, configDto);
-  }
 }
