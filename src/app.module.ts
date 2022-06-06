@@ -1,4 +1,4 @@
-import { CacheModule, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { StudentModule } from "./student/student.module";
@@ -14,6 +14,7 @@ import { NotificationModule } from "./notification/notification.module";
 import { TemplateModule } from "./template/template.module";
 import { WorksheetModule } from "./worksheet/worksheet.module";
 import { MulterModule } from "@nestjs/platform-express/multer";
+import { QuestionModule } from "./Question/question.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -31,6 +32,7 @@ import { MulterModule } from "@nestjs/platform-express/multer";
     TemplateModule,
     NotificationModule,
     WorksheetModule,
+    QuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
