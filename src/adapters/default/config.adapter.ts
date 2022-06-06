@@ -25,9 +25,6 @@ export class ConfigService {
         key: {
           eq: `${configDto.key}`,
         },
-        contextId: {
-          eq: `${configDto.contextId}`,
-        },
       },
     };
 
