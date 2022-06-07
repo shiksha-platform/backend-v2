@@ -61,14 +61,14 @@ export class ConfigService {
         data: response.data,
       });
     } else {
-      var udateData = configDto;
+      var createData = configDto;
       var createConfig = {
         method: "post",
         url: `${this.url}`,
         headers: {
           Authorization: request.headers.authorization,
         },
-        data: udateData,
+        data: createData,
       };
       console.log(createConfig);
       const response = await axios(createConfig);
