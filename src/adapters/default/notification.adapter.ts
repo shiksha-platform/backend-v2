@@ -171,6 +171,8 @@ export class NotificationService {
         };
         const logRes = await axios(logConfig);
         const logResponse = logRes.data;
+        console.log(logResponse);
+
         return new SuccessResponse({
           statusCode: 200,
           message: "ok.",
