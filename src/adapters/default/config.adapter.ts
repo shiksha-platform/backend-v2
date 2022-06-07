@@ -5,12 +5,8 @@ import { AxiosResponse } from "axios";
 import { ConfigDto } from "src/configs/dto/config.dto";
 import { first, map, Observable } from "rxjs";
 import { SuccessResponse } from "src/success-response";
-import { catchError } from "rxjs/operators";
-import { ErrorResponse } from "src/error-response";
-import { ConfigSearchDto } from "src/configs/dto/config-search.dto";
 import jwt_decode from "jwt-decode";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
-import { config } from "dotenv";
 @Injectable()
 export class ConfigService {
   constructor(private httpService: HttpService) {}
