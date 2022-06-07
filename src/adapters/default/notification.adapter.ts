@@ -1,6 +1,6 @@
 import { Injectable, HttpException } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
@@ -8,144 +8,332 @@ import { ErrorResponse } from "src/error-response";
 import { NotificationLogDto } from "src/notification/dto/notification.dto";
 import { NotificationSearchDto } from "src/notification/dto/notification-search.dto";
 import moment from "moment";
-import { TemplateContentDto } from "src/template/dto/template-content.dto";
+import { GroupDto } from "src/group/dto/group.dto";
+import { CronJob } from "cron";
+import { SchedulerRegistry } from "@nestjs/schedule";
 @Injectable()
 export class NotificationService {
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    private schedulerRegistry: SchedulerRegistry
+  ) {}
   baseURL = `${process.env.BASEAPIURL}`;
   UCIURL = `${process.env.UCIAPI}`;
+  url = process.env.TEMPLATERURL;
+  groupURL = `${process.env.BASEAPIURL}/Class`;
   public async sendNotification(
     templateId: string,
-    userSegment: string,
+    groupId: string,
+    channel: string,
+    time: string,
+    minutes: String,
+    jobName: string,
     request: any
   ) {
     var axios = require("axios");
-    const result = Math.random().toString(27).substring(6, 8);
-    var data = {
-      filters: {
-        templateId: {
-          eq: templateId,
-        },
-      },
-    };
-    var confi = {
-      method: "post",
-      url: `${this.baseURL}Templatecontent/search`,
-      headers: {
-        Authorization: request.headers.authorization,
-      },
-      data: data,
-    };
-
-    const getContent = await axios(confi);
-    const contentData = getContent.data;
-
-    let result1 = contentData.map((item: any) => new TemplateContentDto(item));
-    const filterObj = result1.filter((e: any) => e);
-
-    // Conversation Logic
-    var conversationData = {
-      data: {
-        name: `${filterObj[0].subject} ${result}`,
-        transformers: [
-          {
-            id: "774cd134-6657-4688-85f6-6338e2323dde",
-            meta: {
-              body: filterObj[0].body,
-              type: "JS_TEMPLATE_LITERALS",
-              user: filterObj[0].user,
-            },
-            type: filterObj[0].type,
+    if (time) {
+      const job = new CronJob(`0 ${minutes} ${time} * * *`, async () => {
+        console.log(`time (${time}:${minutes}) for task ${jobName} to run!`);
+        console.log(new Date());
+        var axios = require("axios");
+        const result = Math.random().toString(27).substring(6, 8);
+        var confi = {
+          method: "get",
+          url: `${this.url}${templateId}`,
+          headers: {
+            Authorization: request.headers.authorization,
           },
-        ],
-        adapter: filterObj[0].adapter,
-      },
-    };
+        };
 
-    var config = {
-      method: "post",
-      url: `${this.UCIURL}/conversationLogic/create`,
-      headers: {
-        "admin-token": filterObj[0].adminToken,
-        "Content-Type": "application/json",
-      },
-      data: conversationData,
-    };
+        const getContent = await axios(confi);
+        const contentData = getContent.data;
 
-    const response = await axios(config);
-    const resData = response.data;
-    const consversationLogicID = resData.result.data.id;
+        // Conversation Logic
+        var conversationData = {
+          data: {
+            name: `Shiksha ${channel} Broadcast ${result}`,
+            transformers: [
+              {
+                id: "774cd134-6657-4688-85f6-6338e2323dde",
+                meta: {
+                  body: contentData.body,
+                  type: contentData.type,
+                  user: "25bbdbf7-5286-4b85-a03c-c53d1d990a23",
+                },
+                type: "broadcast",
+              },
+            ],
+            adapter: contentData.user,
+          },
+        };
 
-    // Bot Logic
+        var config = {
+          method: "post",
+          url: `${this.UCIURL}/conversationLogic/create`,
+          headers: {
+            "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+            "Content-Type": "application/json",
+          },
+          data: conversationData,
+        };
 
-    var botData = {
-      data: {
-        startingMessage: `Hi Shiksha SMS Broadcast ${result}`,
-        name: `Shiksha Notification Broadcast ${result}`,
-        users: [userSegment],
-        logic: [consversationLogicID],
-        status: "enabled",
-        startDate: moment().format("Y-MM-DD"),
-        endDate: moment().format("Y-MM-DD"),
-      },
-    };
+        const response = await axios(config);
+        const resData = response.data;
+        const consversationLogicID = resData.result.data.id;
 
-    var botConfig = {
-      method: "post",
-      url: `${this.UCIURL}/bot/create`,
-      headers: {
-        "admin-token": filterObj[0].adminToken,
-        "Content-Type": "application/json",
-      },
-      data: botData,
-    };
+        var axios = require("axios");
+        var data = {
+          filters: {
+            osid: {
+              eq: groupId,
+            },
+          },
+        };
 
-    const botResponse = await axios(botConfig);
-    const botResData = botResponse.data;
-    const botCreateID = botResData.result.data.id;
+        var getSegment = {
+          method: "post",
+          url: `${this.groupURL}/search`,
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+          data: data,
+        };
 
-    var configs = {
-      method: "get",
-      url: `${process.env.BOTCALL}${botCreateID}`,
-      headers: {},
-    };
+        const responseData = await axios(getSegment);
 
-    const botres = await axios(configs);
+        const dtoResponse = responseData.data.map(
+          (item: any) => new GroupDto(item)
+        );
 
-    const sendData = botres.data;
-    console.log(sendData, "Notification Sent Successfully");
-    // Notification Log
+        const filterObj = dtoResponse.filter((e: any) => e);
+        let option = filterObj[0].option;
+        let optionStr = JSON.stringify(option);
+        var jsonObj = JSON.parse(optionStr);
+        let segment = JSON.parse(jsonObj);
 
-    var notificationData = {
-      data: {
-        medium: conversationData.data.adapter,
-        templateId: templateId,
-        recepients: [botData.data.users, filterObj[0].body],
-        module: contentData.enabled,
-        options: [],
-      },
-    };
+        // Bot Logic
 
-    var logConfig = {
-      method: "post",
-      url: `${this.baseURL}Notificationlog`,
-      headers: {
-        Authorization: request.headers.authorization,
-      },
-      data: notificationData,
-    };
-    const logRes = await axios(logConfig);
-    const logResponse = logRes.data;
-    return new SuccessResponse({
-      statusCode: 200,
-      message: "ok.",
-      data: {
-        status: "SMS Notification Sent Successfully",
-        log: "Notifications Log saved successfully",
+        var botData = {
+          data: {
+            startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+            name: `Shiksha Notification Broadcast ${result}`,
+            users: [segment.today],
+            logic: [consversationLogicID],
+            status: "enabled",
+            startDate: moment().format("Y-MM-DD"),
+            endDate: moment().format("Y-MM-DD"),
+          },
+        };
 
-        logResponse,
-      },
-    });
+        var botConfig = {
+          method: "post",
+          url: `${this.UCIURL}/bot/create`,
+          headers: {
+            "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+            "Content-Type": "application/json",
+          },
+          data: botData,
+        };
+
+        const botResponse = await axios(botConfig);
+        const botResData = botResponse.data;
+        const botCreateID = botResData.result.data.id;
+
+        var configs = {
+          method: "get",
+          url: `${process.env.BOTCALL}${botCreateID}`,
+          headers: {},
+        };
+
+        const botres = await axios(configs);
+
+        const sendData = botres.data;
+        console.log(sendData, "Notification Sent Successfully");
+        // Notification Log
+
+        var notificationData = {
+          data: {
+            medium: conversationData.data.adapter,
+            templateId: templateId,
+            recepients: [segment.today],
+            module: contentData.enabled,
+            options: [contentData.body],
+          },
+        };
+
+        var logConfig = {
+          method: "post",
+          url: `${this.baseURL}Notificationlog`,
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+          data: notificationData,
+        };
+        const logRes = await axios(logConfig);
+        const logResponse = logRes.data;
+        return new SuccessResponse({
+          statusCode: 200,
+          message: "ok.",
+          data: {
+            status: "SMS Notification Sent Successfully",
+            log: "Notifications Log saved successfully",
+
+            logResponse,
+          },
+        });
+      });
+
+      this.schedulerRegistry.addCronJob(jobName, job);
+      job.start();
+
+      return `SMS set for EOD at ${time}:${minutes}`;
+    } else {
+      const result = Math.random().toString(27).substring(6, 8);
+      var confi = {
+        method: "get",
+        url: `${this.url}${templateId}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      };
+
+      const getContent = await axios(confi);
+      const contentData = getContent.data;
+
+      // Conversation Logic
+      var conversationData = {
+        data: {
+          name: `Shiksha ${channel} Broadcast ${result}`,
+          transformers: [
+            {
+              id: "774cd134-6657-4688-85f6-6338e2323dde",
+              meta: {
+                body: contentData.body,
+                type: contentData.type,
+                user: "25bbdbf7-5286-4b85-a03c-c53d1d990a23",
+              },
+              type: "broadcast",
+            },
+          ],
+          adapter: contentData.user,
+        },
+      };
+
+      var config = {
+        method: "post",
+        url: `${this.UCIURL}/conversationLogic/create`,
+        headers: {
+          "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+          "Content-Type": "application/json",
+        },
+        data: conversationData,
+      };
+
+      const response = await axios(config);
+      const resData = response.data;
+      const consversationLogicID = resData.result.data.id;
+
+      var axios = require("axios");
+      var data = {
+        filters: {
+          osid: {
+            eq: groupId,
+          },
+        },
+      };
+
+      var getSegment = {
+        method: "post",
+        url: `${this.groupURL}/search`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: data,
+      };
+
+      const responseData = await axios(getSegment);
+
+      const dtoResponse = responseData.data.map(
+        (item: any) => new GroupDto(item)
+      );
+
+      const filterObj = dtoResponse.filter((e: any) => e);
+      let option = filterObj[0].option;
+      let optionStr = JSON.stringify(option);
+      var jsonObj = JSON.parse(optionStr);
+      let segment = JSON.parse(jsonObj);
+
+      // Bot Logic
+
+      var botData = {
+        data: {
+          startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+          name: `Shiksha Notification Broadcast ${result}`,
+          users: [segment.today],
+          logic: [consversationLogicID],
+          status: "enabled",
+          startDate: moment().format("Y-MM-DD"),
+          endDate: moment().format("Y-MM-DD"),
+        },
+      };
+
+      var botConfig = {
+        method: "post",
+        url: `${this.UCIURL}/bot/create`,
+        headers: {
+          "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+          "Content-Type": "application/json",
+        },
+        data: botData,
+      };
+
+      const botResponse = await axios(botConfig);
+      const botResData = botResponse.data;
+      const botCreateID = botResData.result.data.id;
+
+      var configs = {
+        method: "get",
+        url: `${process.env.BOTCALL}${botCreateID}`,
+        headers: {},
+      };
+
+      const botres = await axios(configs);
+
+      const sendData = botres.data;
+      console.log(sendData, "Notification Sent Successfully");
+      // Notification Log
+
+      var notificationData = {
+        data: {
+          medium: conversationData.data.adapter,
+          templateId: templateId,
+          recepients: [segment.today],
+          module: contentData.enabled,
+          options: [contentData.body],
+        },
+      };
+
+      var logConfig = {
+        method: "post",
+        url: `${this.baseURL}Notificationlog`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: notificationData,
+      };
+      const logRes = await axios(logConfig);
+      const logResponse = logRes.data;
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok.",
+        data: {
+          status: "SMS Notification Sent Successfully",
+          log: "Notifications Log saved successfully",
+
+          logResponse,
+        },
+      });
+    }
   }
 
   public async getNotification(notificationId: string, request: any) {
