@@ -54,4 +54,16 @@ export class ConfigController {
   ) {
     return this.service.createConfig(request, configDto);
   }
+
+  @Post(":multipleConfigs")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Config has been created successfully." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async createModuleConfigs(
+    @Req() request: Request,
+    @Body() configDto: [Object]
+  ) {
+    return this.service.createModuleConfigs(request, configDto);
+  }
 }

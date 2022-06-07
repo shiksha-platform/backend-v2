@@ -63,7 +63,7 @@ export class ConfigDto {
     description: "List of roles that are allowed to update this config",
   })
   @Expose()
-  overrideBy: string;
+  overrideBy: any;
 
   @ApiProperty({
     type: Boolean,

@@ -5,15 +5,12 @@ import { AxiosResponse } from "axios";
 import { ConfigDto } from "src/configs/dto/config.dto";
 import { first, map, Observable } from "rxjs";
 import { SuccessResponse } from "src/success-response";
-import { catchError } from "rxjs/operators";
-import { ErrorResponse } from "src/error-response";
-import { ConfigSearchDto } from "src/configs/dto/config-search.dto";
 import jwt_decode from "jwt-decode";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
 @Injectable()
 export class ConfigService {
   constructor(private httpService: HttpService) {}
-  url = `${process.env.BASEAPIURL}/Config`;
+  url = `${process.env.BASEAPIURL}Config`;
 
   public async createConfig(request: any, configDto: ConfigDto) {
     let axios = require("axios");
@@ -60,28 +57,23 @@ export class ConfigService {
         data: response.data,
       });
     } else {
-      return this.httpService
-        .post(`${this.url}`, configDto, {
-          headers: {
-            Authorization: request.headers.authorization,
-          },
-        })
-        .pipe(
-          map((axiosResponse: AxiosResponse) => {
-            return new SuccessResponse({
-              statusCode: 200,
-              message: "Ok.",
-              data: axiosResponse.data,
-            });
-          }),
-          catchError((e) => {
-            var error = new ErrorResponse({
-              errorCode: e.response?.status,
-              errorMessage: e.response?.data?.params?.errmsg,
-            });
-            throw new HttpException(error, e.response.status);
-          })
-        );
+      var createData = configDto;
+      var createConfig = {
+        method: "post",
+        url: `${this.url}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: createData,
+      };
+      console.log(createConfig);
+      const response = await axios(createConfig);
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: " Ok.",
+        data: response.data,
+      });
     }
   }
 
@@ -168,6 +160,23 @@ export class ConfigService {
       statusCode: 200,
       message: "ok",
       data: result,
+    });
+  }
+
+  public async createModuleConfigs(request: any, configAllData: [Object]) {
+    configAllData.forEach((element) => {
+      element["data"].forEach((data) => {
+        data["module"] = element["module"];
+        data["context"] = element["context"] ? element["context"] : "";
+        data["contextId"] = element["contextId"] ? element["contextId"] : "";
+        data["key"] = data["key"] ? data["key"] : "";
+        data["value"] = data["value"] ? data["value"] : [];
+        data["isPublic"] = data["isPublic"] ? data["isPublic"] : true;
+        data["canOverride"] = data["canOverride"] ? data["canOverride"] : true;
+        data["overrideBy"] = data["overrideBy"] ? data["overrideBy"] : "";
+
+        this.createConfig(request, data);
+      });
     });
   }
 }
