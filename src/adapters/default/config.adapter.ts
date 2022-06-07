@@ -10,10 +10,11 @@ import { ErrorResponse } from "src/error-response";
 import { ConfigSearchDto } from "src/configs/dto/config-search.dto";
 import jwt_decode from "jwt-decode";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import { config } from "dotenv";
 @Injectable()
 export class ConfigService {
   constructor(private httpService: HttpService) {}
-  url = `${process.env.BASEAPIURL}/Config`;
+  url = `${process.env.BASEAPIURL}Config`;
 
   public async createConfig(request: any, configDto: ConfigDto) {
     let axios = require("axios");
@@ -24,9 +25,6 @@ export class ConfigService {
         },
         key: {
           eq: `${configDto.key}`,
-        },
-        contextId: {
-          eq: `${configDto.contextId}`,
         },
       },
     };
@@ -63,28 +61,23 @@ export class ConfigService {
         data: response.data,
       });
     } else {
-      return this.httpService
-        .post(`${this.url}`, configDto, {
-          headers: {
-            Authorization: request.headers.authorization,
-          },
-        })
-        .pipe(
-          map((axiosResponse: AxiosResponse) => {
-            return new SuccessResponse({
-              statusCode: 200,
-              message: "Ok.",
-              data: axiosResponse.data,
-            });
-          }),
-          catchError((e) => {
-            var error = new ErrorResponse({
-              errorCode: e.response?.status,
-              errorMessage: e.response?.data?.params?.errmsg,
-            });
-            throw new HttpException(error, e.response.status);
-          })
-        );
+      var udateData = configDto;
+      var createConfig = {
+        method: "post",
+        url: `${this.url}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: udateData,
+      };
+      console.log(createConfig);
+      const response = await axios(createConfig);
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: " Ok.",
+        data: response.data,
+      });
     }
   }
 
@@ -174,76 +167,20 @@ export class ConfigService {
     });
   }
 
-  public async createModuleConfigs(request: any, configDto: String) {
-    let axios = require("axios");
-    let data = {
-      // filters: {
-      //   module: {
-      //     eq: `${configDto.module}`,
-      //   },
-      //   key: {
-      //     eq: `${configDto.key}`,
-      //   },
-      //   contextId: {
-      //     eq: `${configDto.contextId}`,
-      //   },
-      // },
-    };
+  public async createModuleConfigs(request: any, configAllData: [Object]) {
+    configAllData.forEach((element) => {
+      element["data"].forEach((data) => {
+        data["module"] = element["module"];
+        data["context"] = element["context"] ? element["context"] : "";
+        data["contextId"] = element["contextId"] ? element["contextId"] : "";
+        data["key"] = data["key"] ? data["key"] : "";
+        data["value"] = data["value"] ? data["value"] : [];
+        data["isPublic"] = data["isPublic"] ? data["isPublic"] : true;
+        data["canOverride"] = data["canOverride"] ? data["canOverride"] : true;
+        data["overrideBy"] = data["overrideBy"] ? data["overrideBy"] : "";
 
-    let config = {
-      method: "post",
-      url: `${this.url}/search`,
-
-      data: data,
-    };
-
-    const response = await axios(config);
-    let resData = response?.data;
-    let result = resData.map((item: any) => new ConfigDto(item));
-
-    let configId = result.map(function (ConfigDto) {
-      return ConfigDto.configId;
-    });
-
-    if (resData.length > 0) {
-      var udateData = configDto;
-      var updateConfig = {
-        method: "put",
-        url: `${this.url}/${configId}`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-        data: udateData,
-      };
-      const response = await axios(updateConfig);
-      return new SuccessResponse({
-        statusCode: 200,
-        message: " Ok.",
-        data: response.data,
+        this.createConfig(request, data);
       });
-    } else {
-      return this.httpService
-        .post(`${this.url}`, configDto, {
-          headers: {
-            Authorization: request.headers.authorization,
-          },
-        })
-        .pipe(
-          map((axiosResponse: AxiosResponse) => {
-            return new SuccessResponse({
-              statusCode: 200,
-              message: "Ok.",
-              data: axiosResponse.data,
-            });
-          }),
-          catchError((e) => {
-            var error = new ErrorResponse({
-              errorCode: e.response?.status,
-              errorMessage: e.response?.data?.params?.errmsg,
-            });
-            throw new HttpException(error, e.response.status);
-          })
-        );
-    }
+    });
   }
 }
