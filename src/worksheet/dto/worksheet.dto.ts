@@ -11,6 +11,12 @@ export class WorksheetDto {
       "Instructions on how to understand, attempt or how the question set will be evaluated.",
   })
   @Expose()
+  name: string;
+
+  @ApiProperty({
+    description: "Worksheet Title",
+  })
+  @Expose()
   instructions: string;
 
   @ApiProperty({
@@ -113,6 +119,7 @@ export class WorksheetDto {
 
   constructor(obj: any) {
     this.worksheetId = obj?.osid ? `${obj.osid}` : "";
+    this.instructions = obj?.name ? `${obj.name}` : "";
     this.instructions = obj?.instructions ? `${obj.instructions}` : "";
     this.feedback = obj?.feedback ? `${obj.feedback}` : "";
     this.hints = obj?.hints ? `${obj.hints}` : "";
