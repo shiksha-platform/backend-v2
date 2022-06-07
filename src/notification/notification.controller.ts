@@ -39,25 +39,25 @@ export class NotificationController {
   @ApiQuery({ name: "templateId" })
   @ApiQuery({ name: "groupId" })
   @ApiQuery({ name: "channel" })
-  @ApiQuery({ name: "time", required: false })
+  @ApiQuery({ name: "hours", required: false })
   @ApiQuery({ name: "minutes", required: false })
-  @ApiQuery({ name: "jobName", required: false })
+  @ApiQuery({ name: "taskName", required: false })
   public async tamplate(
     @Query("templateId") templateId: string,
     @Query("groupId") groupId: string,
     @Query("channel") channel: string,
-    @Query("time") time: string,
+    @Query("hours") hours: string,
     @Query("minutes") minutes: string,
-    @Query("jobName") jobName: string,
+    @Query("taskName") taskName: string,
     @Req() request: Request
   ) {
     return this.service.sendNotification(
       templateId,
       groupId,
       channel,
-      time,
+      hours,
       minutes,
-      jobName,
+      taskName,
       request
     );
   }

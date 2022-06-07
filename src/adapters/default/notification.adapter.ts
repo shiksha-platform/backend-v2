@@ -25,16 +25,15 @@ export class NotificationService {
     templateId: string,
     groupId: string,
     channel: string,
-    time: string,
+    hours: string,
     minutes: String,
     jobName: string,
     request: any
   ) {
     var axios = require("axios");
-    if (time) {
-      const job = new CronJob(`0 ${minutes} ${time} * * *`, async () => {
-        console.log(`time (${time}:${minutes}) for task ${jobName} to run!`);
-        console.log(new Date());
+    if (hours) {
+      const job = new CronJob(`0 ${minutes} ${hours} * * *`, async () => {
+        console.log(`hours (${hours}:${minutes}) for task ${jobName} to run!`);
         var axios = require("axios");
         const result = Math.random().toString(27).substring(6, 8);
         var confi = {
@@ -188,7 +187,7 @@ export class NotificationService {
       this.schedulerRegistry.addCronJob(jobName, job);
       job.start();
 
-      return `SMS set for EOD at ${time}:${minutes}`;
+      return `SMS set for EOD at ${hours}:${minutes}`;
     } else {
       const result = Math.random().toString(27).substring(6, 8);
       var confi = {
