@@ -17,6 +17,26 @@ export class WorksheetDto {
     description: "Worksheet Title",
   })
   @Expose()
+  state: string;
+  @ApiProperty({
+    description: "Worksheet state",
+  })
+  @Expose()
+  subject: string;
+  @ApiProperty({
+    description: "Worksheet subject",
+  })
+  @Expose()
+  grade: string;
+  @ApiProperty({
+    description: "Worksheet grade level",
+  })
+  @Expose()
+  level: string;
+  @ApiProperty({
+    description: "Worksheet level",
+  })
+  @Expose()
   instructions: string;
 
   @ApiProperty({
@@ -116,10 +136,25 @@ export class WorksheetDto {
   })
   @Expose()
   qumlVersion: string;
+  @Expose()
+  createdAt: string;
+
+  @Expose()
+  updatedAt: string;
+
+  @Expose()
+  createdBy: string;
+
+  @Expose()
+  updatedBy: string;
 
   constructor(obj: any) {
     this.worksheetId = obj?.osid ? `${obj.osid}` : "";
-    this.instructions = obj?.name ? `${obj.name}` : "";
+    this.name = obj?.name ? `${obj.name}` : "";
+    this.state = obj?.state ? `${obj.state}` : "";
+    this.subject = obj?.subject ? `${obj.subject}` : "";
+    this.grade = obj?.grade ? `${obj.grade}` : "";
+    this.level = obj?.level ? `${obj.level}` : "";
     this.instructions = obj?.instructions ? `${obj.instructions}` : "";
     this.feedback = obj?.feedback ? `${obj.feedback}` : "";
     this.hints = obj?.hints ? `${obj.hints}` : "";
@@ -140,5 +175,9 @@ export class WorksheetDto {
     this.purpose = obj?.purpose ? `${obj.purpose}` : "";
     this.visibility = obj?.visibility ? `${obj.visibility}` : "";
     this.qumlVersion = obj?.qumlVersion ? `${obj.qumlVersion}` : "";
+    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
+    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
+    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
 }
