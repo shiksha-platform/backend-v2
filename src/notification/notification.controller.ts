@@ -37,13 +37,29 @@ export class NotificationController {
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "templateId" })
-  @ApiQuery({ name: "userSegment" })
+  @ApiQuery({ name: "groupId" })
+  @ApiQuery({ name: "channel" })
+  @ApiQuery({ name: "hours", required: false })
+  @ApiQuery({ name: "minutes", required: false })
+  @ApiQuery({ name: "taskName", required: false })
   public async tamplate(
     @Query("templateId") templateId: string,
-    @Query("userSegment") userSegment: string,
+    @Query("groupId") groupId: string,
+    @Query("channel") channel: string,
+    @Query("hours") hours: string,
+    @Query("minutes") minutes: string,
+    @Query("taskName") taskName: string,
     @Req() request: Request
   ) {
-    return this.service.sendNotification(templateId, userSegment, request);
+    return this.service.sendNotification(
+      templateId,
+      groupId,
+      channel,
+      hours,
+      minutes,
+      taskName,
+      request
+    );
   }
 
   @Get("log/:id")

@@ -294,8 +294,4 @@ export class AttendanceService {
       data: result,
     });
   }
-  @Cron("0 10 15 * * 1-5")
-  async sendSMSNotificaiotns() {
-    console.log("sending SMS notification");
-  }
 }
