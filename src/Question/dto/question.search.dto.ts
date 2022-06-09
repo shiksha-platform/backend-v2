@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class TemplateSearchDto {
+export class QuestionSearchDto {
   @ApiProperty({
     type: String,
     description: "Limit",
@@ -14,7 +14,7 @@ export class TemplateSearchDto {
   @ApiPropertyOptional()
   filters: object;
 
-  constructor(partial: Partial<TemplateSearchDto>) {
+  constructor(partial: Partial<QuestionSearchDto>) {
     Object.assign(this, partial);
   }
 }

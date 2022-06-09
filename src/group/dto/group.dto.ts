@@ -12,59 +12,63 @@ export class GroupDto {
   @Expose()
   groupId: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The schoolId of the group",
   })
   @Expose()
   schoolId: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The name of the group",
   })
   @Expose()
   name: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The type of the group",
   })
   @Expose()
   type: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The section of the group",
   })
   @Expose()
   section: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The status of the group",
   })
   @Expose()
   status: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @Expose()
   deactivationReason: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The mediumOfInstruction of the group",
   })
   @Expose()
   mediumOfInstruction: string;
 
-  @ApiProperty({ type: "string", format: "binary" })
+  @ApiPropertyOptional({ type: "string", format: "binary" })
   @Expose()
   image: string;
 
   @ApiPropertyOptional()
   @Expose()
   metaData: [string];
+
+  @ApiPropertyOptional()
+  @Expose()
+  option: [string];
 
   @Expose()
   createdAt: string;
@@ -93,6 +97,7 @@ export class GroupDto {
       : "";
     this.image = obj?.image ? `${obj.image}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
+    this.option = obj?.option ? obj.option : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";

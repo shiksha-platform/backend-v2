@@ -1,139 +1,70 @@
 import {
-  ApiTags,
-  ApiBody,
-  ApiOkResponse,
-  ApiForbiddenResponse,
-  ApiCreatedResponse,
   ApiBasicAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiTags,
 } from "@nestjs/swagger";
 import {
+  Body,
+  CacheInterceptor,
+  ClassSerializerInterceptor,
   Controller,
   Get,
-  Post,
-  Body,
-  Put,
   Param,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  SerializeOptions,
+  Post,
   Req,
+  SerializeOptions,
+  UseInterceptors,
   Request,
-  CacheInterceptor,
 } from "@nestjs/common";
-import { TemplateDto } from "./dto/template.dto";
-import { TemplateSearchDto } from "./dto/template-search.dto";
 import { TemplateService } from "src/adapters/default/template.adapter";
-import { TemplateContentDto } from "./dto/template-content.dto";
+import { TemplateProcessDto } from "./dto/template-process.dto";
+import { TemplateCreateDto } from "./dto/template-create.dto";
 
 @ApiTags("Template")
 @Controller("template")
 export class TemplateController {
   constructor(private service: TemplateService) {}
 
-  @Post()
+  @Post("create")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "Template has been created successfully.",
+    description: " Template has been created successfully.",
   })
-  @ApiBody({ type: TemplateDto })
+  @ApiBody({ type: TemplateCreateDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async tamplate(
+  public async createTemplate(
     @Req() request: Request,
-    @Body() templateDto: TemplateDto
+    @Body() TemplateCreateDto: TemplateCreateDto
   ) {
-    return this.service.createTemplate(request, templateDto);
+    return this.service.createTemplate(request, TemplateCreateDto);
   }
 
-  @Post("template/content")
+  @Post("process")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Template Content has been created successfully.",
-  })
-  @ApiBody({ type: TemplateContentDto })
+  @ApiCreatedResponse({ description: " template process." })
+  @ApiBody({ type: TemplateProcessDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async tamplateContent(
+  public async processTemplate(
     @Req() request: Request,
-    @Body() templateContentDto: TemplateContentDto
+    @Body() TemplateProcessDto: TemplateProcessDto
   ) {
-    return this.service.createTemplateContent(request, templateContentDto);
+    return await this.service.processTemplate(request, TemplateProcessDto);
   }
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Template detail." })
+  @ApiOkResponse({ description: " template detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
   })
   public async getTemplate(@Param("id") id: string, @Req() request: Request) {
     return this.service.getTemplate(id, request);
-  }
-
-  @Get("content/:id")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Template Content detail." })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @SerializeOptions({
-    strategy: "excludeAll",
-  })
-  public async getTemplateContent(
-    @Param("id") id: string,
-    @Req() request: Request
-  ) {
-    return this.service.getTemplateContent(id, request);
-  }
-
-  @Put("/:id")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Template has been updated successfully.",
-  })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @UseInterceptors(ClassSerializerInterceptor)
-  public async updateTemplate(
-    @Param("id") id: string,
-    @Req() request: Request,
-    @Body() templateDto: TemplateDto
-  ) {
-    return await this.service.updateTemplate(id, request, templateDto);
-  }
-
-  @Put("content/:id")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Template content has been updated successfully.",
-  })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @UseInterceptors(ClassSerializerInterceptor)
-  public async updateTemplateContent(
-    @Param("id") id: string,
-    @Req() request: Request,
-    @Body() templateContentDto: TemplateContentDto
-  ) {
-    return await this.service.updateTemplateContent(
-      id,
-      request,
-      templateContentDto
-    );
-  }
-
-  @Post("/search")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Template list." })
-  @ApiBody({ type: TemplateSearchDto })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    strategy: "excludeAll",
-  })
-  public async searchTemplate(
-    @Req() request: Request,
-    @Body() templateSearchDto: TemplateSearchDto
-  ) {
-    return await this.service.searchTemplate(request, templateSearchDto);
   }
 }

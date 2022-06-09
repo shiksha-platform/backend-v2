@@ -12,7 +12,9 @@ import { ConfigModule } from "@nestjs/config";
 import { GroupMembershipModule } from "./groupMembership/groupMembership.module";
 import { NotificationModule } from "./notification/notification.module";
 import { TemplateModule } from "./template/template.module";
+import { WorksheetModule } from "./worksheet/worksheet.module";
 import { MulterModule } from "@nestjs/platform-express/multer";
+import { QuestionModule } from "./Question/question.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -29,6 +31,8 @@ import { MulterModule } from "@nestjs/platform-express/multer";
     GroupMembershipModule,
     TemplateModule,
     NotificationModule,
+    WorksheetModule,
+    QuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

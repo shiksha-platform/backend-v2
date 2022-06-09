@@ -32,7 +32,7 @@ export class ConfigDto {
       "The value for the key eg: ['Present', 'Absent', 'Late'] for the attendance_states key",
   })
   @Expose()
-  value: string;
+  value: any;
 
   @ApiProperty({
     type: String,
@@ -63,7 +63,7 @@ export class ConfigDto {
     description: "List of roles that are allowed to update this config",
   })
   @Expose()
-  overrideBy: string;
+  overrideBy: any;
 
   @ApiProperty({
     type: Boolean,
