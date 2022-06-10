@@ -22,6 +22,7 @@ export class NotificationService {
   url = process.env.TEMPLATERURL;
   groupURL = `${process.env.BASEAPIURL}/Class`;
   public async sendNotification(
+    title: string,
     templateId: string,
     groupId: string,
     channel: string,
@@ -50,7 +51,7 @@ export class NotificationService {
         // Conversation Logic
         var conversationData = {
           data: {
-            name: `Shiksha ${channel} Broadcast ${result}`,
+            name: `${title} ${result}`,
             transformers: [
               {
                 id: "774cd134-6657-4688-85f6-6338e2323dde",
@@ -114,7 +115,7 @@ export class NotificationService {
 
         var botData = {
           data: {
-            startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+            startingMessage: `${title} ${result}`,
             name: `Shiksha Notification Broadcast ${result}`,
             users: [segment.today],
             logic: [consversationLogicID],
@@ -152,6 +153,7 @@ export class NotificationService {
 
         var notificationData = {
           data: {
+            content: title,
             medium: conversationData.data.adapter,
             templateId: templateId,
             recepients: [segment.today],
@@ -306,6 +308,7 @@ export class NotificationService {
 
       var notificationData = {
         data: {
+          content: title,
           medium: conversationData.data.adapter,
           templateId: templateId,
           recepients: [segment.today],
