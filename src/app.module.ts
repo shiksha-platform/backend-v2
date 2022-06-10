@@ -16,6 +16,7 @@ import { WorksheetModule } from "./worksheet/worksheet.module";
 import { MulterModule } from "@nestjs/platform-express/multer";
 import { QuestionModule } from "./Question/question.module";
 import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
+import { FormschemaModule } from "./formschema/formschema.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -35,6 +36,7 @@ import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
     WorksheetModule,
     QuestionModule,
     LessonPlanModule,
+    FormschemaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
