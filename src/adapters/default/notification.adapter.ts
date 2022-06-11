@@ -22,7 +22,8 @@ export class NotificationService {
   url = process.env.TEMPLATERURL;
   groupURL = `${process.env.BASEAPIURL}/Class`;
   public async sendNotification(
-    title: string,
+    module: string,
+    eventTrigger: string,
     templateId: string,
     groupId: string,
     channel: string,
@@ -51,7 +52,7 @@ export class NotificationService {
         // Conversation Logic
         var conversationData = {
           data: {
-            name: `${title} ${result}`,
+            name: `Shiksha ${channel} Broadcast ${result}`,
             transformers: [
               {
                 id: "774cd134-6657-4688-85f6-6338e2323dde",
@@ -111,79 +112,86 @@ export class NotificationService {
         var jsonObj = JSON.parse(optionStr);
         let segment = JSON.parse(jsonObj);
 
-        // Bot Logic
+        if (
+          module === segment.module &&
+          eventTrigger === segment.eventTrigger
+        ) {
+          // Bot Logic
 
-        var botData = {
-          data: {
-            startingMessage: `${title} ${result}`,
-            name: `Shiksha Notification Broadcast ${result}`,
-            users: [segment.today],
-            logic: [consversationLogicID],
-            status: "enabled",
-            startDate: moment().format("Y-MM-DD"),
-            endDate: moment().format("Y-MM-DD"),
-          },
-        };
+          var botData = {
+            data: {
+              startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+              name: `Shiksha Notification Broadcast ${result}`,
+              users: [segment.todaySegment],
+              logic: [consversationLogicID],
+              status: "enabled",
+              startDate: moment().format("Y-MM-DD"),
+              endDate: moment().format("Y-MM-DD"),
+            },
+          };
 
-        var botConfig = {
-          method: "post",
-          url: `${this.UCIURL}/bot/create`,
-          headers: {
-            "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
-            "Content-Type": "application/json",
-          },
-          data: botData,
-        };
+          var botConfig = {
+            method: "post",
+            url: `${this.UCIURL}/bot/create`,
+            headers: {
+              "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+              "Content-Type": "application/json",
+            },
+            data: botData,
+          };
 
-        const botResponse = await axios(botConfig);
-        const botResData = botResponse.data;
-        const botCreateID = botResData.result.data.id;
+          const botResponse = await axios(botConfig);
+          const botResData = botResponse.data;
+          const botCreateID = botResData.result.data.id;
 
-        var configs = {
-          method: "get",
-          url: `${process.env.BOTCALL}${botCreateID}`,
-          headers: {},
-        };
+          var configs = {
+            method: "get",
+            url: `${process.env.BOTCALL}${botCreateID}`,
+            headers: {},
+          };
 
-        const botres = await axios(configs);
+          const botres = await axios(configs);
 
-        const sendData = botres.data;
-        console.log(sendData, "Notification Sent Successfully");
-        // Notification Log
+          const sendData = botres.data;
+          console.log(sendData, "Notification Sent Successfully");
+          // Notification Log
 
-        var notificationData = {
-          data: {
-            content: title,
-            medium: conversationData.data.adapter,
-            templateId: templateId,
-            recepients: [segment.today],
-            module: contentData.enabled,
-            options: [contentData.body],
-          },
-        };
+          var notificationData = {
+            data: {
+              medium: conversationData.data.adapter,
+              templateId: templateId,
+              recepients: [segment.todaySegment],
+              sentDate: new Date(),
+              module: segment.module,
+              options: [contentData.body],
+            },
+          };
 
-        var logConfig = {
-          method: "post",
-          url: `${this.baseURL}Notificationlog`,
-          headers: {
-            Authorization: request.headers.authorization,
-          },
-          data: notificationData,
-        };
-        const logRes = await axios(logConfig);
-        const logResponse = logRes.data;
-        console.log(logResponse);
+          var logConfig = {
+            method: "post",
+            url: `${this.baseURL}Notificationlog`,
+            headers: {
+              Authorization: request.headers.authorization,
+            },
+            data: notificationData,
+          };
+          const logRes = await axios(logConfig);
+          const logResponse = logRes.data;
+          console.log(logResponse);
 
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "ok.",
-          data: {
-            status: "SMS Notification Sent Successfully",
-            log: "Notifications Log saved successfully",
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "ok.",
+            data: {
+              status: "SMS Notification Sent Successfully",
+              log: "Notifications Log saved successfully",
 
-            logResponse,
-          },
-        });
+              logResponse,
+            },
+          });
+        } else {
+          return "module not found";
+        }
       });
 
       this.schedulerRegistry.addCronJob(jobName, job);
@@ -237,6 +245,7 @@ export class NotificationService {
       const consversationLogicID = resData.result.data.id;
 
       var axios = require("axios");
+
       var data = {
         filters: {
           osid: {
@@ -266,77 +275,79 @@ export class NotificationService {
       var jsonObj = JSON.parse(optionStr);
       let segment = JSON.parse(jsonObj);
 
-      // Bot Logic
+      if (module === segment.module && eventTrigger === segment.eventTrigger) {
+        var botData = {
+          data: {
+            startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+            name: `Shiksha Notification Broadcast ${result}`,
+            users: [segment.todaySegment],
+            logic: [consversationLogicID],
+            status: "enabled",
+            startDate: moment().format("Y-MM-DD"),
+            endDate: moment().format("Y-MM-DD"),
+          },
+        };
 
-      var botData = {
-        data: {
-          startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
-          name: `Shiksha Notification Broadcast ${result}`,
-          users: [segment.today],
-          logic: [consversationLogicID],
-          status: "enabled",
-          startDate: moment().format("Y-MM-DD"),
-          endDate: moment().format("Y-MM-DD"),
-        },
-      };
+        var botConfig = {
+          method: "post",
+          url: `${this.UCIURL}/bot/create`,
+          headers: {
+            "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+            "Content-Type": "application/json",
+          },
+          data: botData,
+        };
 
-      var botConfig = {
-        method: "post",
-        url: `${this.UCIURL}/bot/create`,
-        headers: {
-          "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
-          "Content-Type": "application/json",
-        },
-        data: botData,
-      };
+        const botResponse = await axios(botConfig);
+        const botResData = botResponse.data;
+        const botCreateID = botResData.result.data.id;
 
-      const botResponse = await axios(botConfig);
-      const botResData = botResponse.data;
-      const botCreateID = botResData.result.data.id;
+        var configs = {
+          method: "get",
+          url: `${process.env.BOTCALL}${botCreateID}`,
+          headers: {},
+        };
 
-      var configs = {
-        method: "get",
-        url: `${process.env.BOTCALL}${botCreateID}`,
-        headers: {},
-      };
+        const botres = await axios(configs);
 
-      const botres = await axios(configs);
+        const sendData = botres.data;
+        console.log(sendData, "Notification Sent Successfully");
+        // Notification Log
 
-      const sendData = botres.data;
-      console.log(sendData, "Notification Sent Successfully");
-      // Notification Log
+        var notificationData = {
+          data: {
+            medium: conversationData.data.adapter,
+            templateId: templateId,
+            recepients: [segment.todaySegment],
+            sentDate: new Date(),
+            module: segment.module,
+            options: [contentData.body],
+          },
+        };
 
-      var notificationData = {
-        data: {
-          content: title,
-          medium: conversationData.data.adapter,
-          templateId: templateId,
-          recepients: [segment.today],
-          module: contentData.enabled,
-          options: [contentData.body],
-        },
-      };
+        var logConfig = {
+          method: "post",
+          url: `${this.baseURL}Notificationlog`,
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+          data: notificationData,
+        };
+        const logRes = await axios(logConfig);
+        const logResponse = logRes.data;
+        return new SuccessResponse({
+          statusCode: 200,
+          message: "ok.",
+          data: {
+            status: "SMS Notification Sent Successfully",
+            log: "Notifications Log saved successfully",
 
-      var logConfig = {
-        method: "post",
-        url: `${this.baseURL}Notificationlog`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-        data: notificationData,
-      };
-      const logRes = await axios(logConfig);
-      const logResponse = logRes.data;
-      return new SuccessResponse({
-        statusCode: 200,
-        message: "ok.",
-        data: {
-          status: "SMS Notification Sent Successfully",
-          log: "Notifications Log saved successfully",
-
-          logResponse,
-        },
-      });
+            logResponse,
+          },
+        });
+      } else {
+        return "module not found";
+      }
     }
   }
 
