@@ -72,7 +72,7 @@ export class NotificationService {
           method: "post",
           url: `${this.UCIURL}/conversationLogic/create`,
           headers: {
-            "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+            "admin-token": process.env.UCIADMINTOKEN,
             "Content-Type": "application/json",
           },
           data: conversationData,
@@ -110,19 +110,16 @@ export class NotificationService {
         let option = filterObj[0].option;
         let optionStr = JSON.stringify(option);
         var jsonObj = JSON.parse(optionStr);
-        let segment = JSON.parse(jsonObj);
+        let params = JSON.parse(jsonObj);
 
-        if (
-          module === segment.module &&
-          eventTrigger === segment.eventTrigger
-        ) {
+        if (module === params.module && eventTrigger === params.eventTrigger) {
           // Bot Logic
 
           var botData = {
             data: {
               startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
               name: `Shiksha Notification Broadcast ${result}`,
-              users: [segment.todaySegment],
+              users: [params.todaySegment],
               logic: [consversationLogicID],
               status: "enabled",
               startDate: moment().format("Y-MM-DD"),
@@ -134,7 +131,7 @@ export class NotificationService {
             method: "post",
             url: `${this.UCIURL}/bot/create`,
             headers: {
-              "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+              "admin-token": process.env.UCIADMINTOKEN,
               "Content-Type": "application/json",
             },
             data: botData,
@@ -160,35 +157,14 @@ export class NotificationService {
             data: {
               medium: conversationData.data.adapter,
               templateId: templateId,
-              recepients: [segment.todaySegment],
+              recepients: [params.todaySegment],
               sentDate: new Date(),
-              module: segment.module,
+              module: params.module,
               options: [contentData.body],
             },
           };
-
-          var logConfig = {
-            method: "post",
-            url: `${this.baseURL}Notificationlog`,
-            headers: {
-              Authorization: request.headers.authorization,
-            },
-            data: notificationData,
-          };
-          const logRes = await axios(logConfig);
-          const logResponse = logRes.data;
-          console.log(logResponse);
-
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "ok.",
-            data: {
-              status: "SMS Notification Sent Successfully",
-              log: "Notifications Log saved successfully",
-
-              logResponse,
-            },
-          });
+          let log = this.saveNotificationLog(notificationData, request);
+          return log;
         } else {
           return "module not found";
         }
@@ -234,7 +210,7 @@ export class NotificationService {
         method: "post",
         url: `${this.UCIURL}/conversationLogic/create`,
         headers: {
-          "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+          "admin-token": process.env.UCIADMINTOKEN,
           "Content-Type": "application/json",
         },
         data: conversationData,
@@ -273,14 +249,14 @@ export class NotificationService {
       let option = filterObj[0].option;
       let optionStr = JSON.stringify(option);
       var jsonObj = JSON.parse(optionStr);
-      let segment = JSON.parse(jsonObj);
+      let params = JSON.parse(jsonObj);
 
-      if (module === segment.module && eventTrigger === segment.eventTrigger) {
+      if (module === params.module && eventTrigger === params.eventTrigger) {
         var botData = {
           data: {
             startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
             name: `Shiksha Notification Broadcast ${result}`,
-            users: [segment.todaySegment],
+            users: [params.todaySegment],
             logic: [consversationLogicID],
             status: "enabled",
             startDate: moment().format("Y-MM-DD"),
@@ -292,7 +268,7 @@ export class NotificationService {
           method: "post",
           url: `${this.UCIURL}/bot/create`,
           headers: {
-            "admin-token": "EXnYOvDx4KFqcQkdXqI38MHgFvnJcxMS",
+            "admin-token": process.env.UCIADMINTOKEN,
             "Content-Type": "application/json",
           },
           data: botData,
@@ -318,37 +294,40 @@ export class NotificationService {
           data: {
             medium: conversationData.data.adapter,
             templateId: templateId,
-            recepients: [segment.todaySegment],
+            recepients: [params.todaySegment],
             sentDate: new Date(),
-            module: segment.module,
+            module: params.module,
             options: [contentData.body],
           },
         };
-
-        var logConfig = {
-          method: "post",
-          url: `${this.baseURL}Notificationlog`,
-          headers: {
-            Authorization: request.headers.authorization,
-          },
-          data: notificationData,
-        };
-        const logRes = await axios(logConfig);
-        const logResponse = logRes.data;
-        return new SuccessResponse({
-          statusCode: 200,
-          message: "ok.",
-          data: {
-            status: "SMS Notification Sent Successfully",
-            log: "Notifications Log saved successfully",
-
-            logResponse,
-          },
-        });
-      } else {
-        return "module not found";
+        let log = this.saveNotificationLog(notificationData, request);
+        return log;
       }
     }
+  }
+
+  public async saveNotificationLog(notificationData: any, request: any) {
+    var axios = require("axios");
+
+    console.log("save function");
+
+    var logConfig = {
+      method: "post",
+      url: `${this.baseURL}Notificationlog`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: notificationData,
+    };
+    console.log(logConfig.data);
+
+    const logRes = await axios(logConfig);
+    const logResponse = logRes.data;
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok.",
+      data: logResponse,
+    });
   }
 
   public async getNotification(notificationId: string, request: any) {
