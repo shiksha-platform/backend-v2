@@ -308,9 +308,6 @@ export class NotificationService {
 
   public async saveNotificationLog(notificationData: any, request: any) {
     var axios = require("axios");
-
-    console.log("save function");
-
     var logConfig = {
       method: "post",
       url: `${this.baseURL}Notificationlog`,
@@ -319,7 +316,6 @@ export class NotificationService {
       },
       data: notificationData,
     };
-    console.log(logConfig.data);
 
     const logRes = await axios(logConfig);
     const logResponse = logRes.data;
