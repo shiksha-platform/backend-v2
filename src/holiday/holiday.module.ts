@@ -1,6 +1,6 @@
 import { HttpModule } from "@nestjs/axios";
 import { CacheModule, Module } from "@nestjs/common";
-import { HolidayService } from "src/adapters/default/holiday.adapter";
+import { HolidayService } from "src/adapters/sunbirdrc/holiday.adapter";
 import { HolidayController } from "./holiday.controller";
 const ttl = process.env.TTL as never;
 @Module({

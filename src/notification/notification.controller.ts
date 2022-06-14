@@ -22,7 +22,7 @@ import {
   Query,
 } from "@nestjs/common";
 
-import { NotificationService } from "src/adapters/default/notification.adapter";
+import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
 import { NotificationSearchDto } from "./dto/notification-search.dto";
 @ApiTags("Notification")
 @Controller("notification")

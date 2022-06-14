@@ -1,4 +1,4 @@
-import { FormschemaService } from "../adapters/default/formschema";
+import { FormschemaService } from "../adapters/sunbirdrc/formschema";
 
 import {
   CacheInterceptor,

@@ -1,5 +1,5 @@
-import { GroupService } from "../adapters/default/group.adapter";
-import { GroupMembershipService } from "src/adapters/default/groupMembership.adapter";
+import { GroupService } from "../adapters/sunbirdrc/group.adapter";
+import { GroupMembershipService } from "src/adapters/sunbirdrc/groupMembership.adapter";
 import {
   ApiTags,
   ApiBody,

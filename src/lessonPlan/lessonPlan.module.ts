@@ -1,7 +1,7 @@
 import { HttpModule } from "@nestjs/axios";
 import { CacheModule, Module } from "@nestjs/common";
 import { LessonPlanController } from "./lessonPlan.controller";
-import { LessonPlanService } from "src/adapters/default/lessonPlan.adapter";
+import { LessonPlanService } from "src/adapters/sunbirdrc/lessonPlan.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [

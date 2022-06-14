@@ -1,6 +1,6 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { FormschemaController } from "./formschema.controller";
-import { FormschemaService } from "../adapters/default/formschema";
+import { FormschemaService } from "../adapters/sunbirdrc/formschema";
 import { HttpModule } from "@nestjs/axios";
 const ttl = process.env.TTL as never;
 @Module({
