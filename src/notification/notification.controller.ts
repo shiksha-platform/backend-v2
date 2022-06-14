@@ -36,6 +36,8 @@ export class NotificationController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "module" })
+  @ApiQuery({ name: "eventTrigger" })
   @ApiQuery({ name: "templateId" })
   @ApiQuery({ name: "groupId" })
   @ApiQuery({ name: "channel" })
@@ -43,6 +45,8 @@ export class NotificationController {
   @ApiQuery({ name: "minutes", required: false })
   @ApiQuery({ name: "taskName", required: false })
   public async tamplate(
+    @Query("module") module: string,
+    @Query("eventTrigger") eventTrigger: string,
     @Query("templateId") templateId: string,
     @Query("groupId") groupId: string,
     @Query("channel") channel: string,
@@ -52,6 +56,8 @@ export class NotificationController {
     @Req() request: Request
   ) {
     return this.service.sendNotification(
+      module,
+      eventTrigger,
       templateId,
       groupId,
       channel,
