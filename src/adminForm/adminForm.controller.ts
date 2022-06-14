@@ -1,4 +1,4 @@
-import { FormschemaService } from "../adapters/sunbirdrc/formschema";
+import { AdminFormService } from "../adapters/sunbirdrc/adminForm.adapter";
 
 import {
   CacheInterceptor,
@@ -27,71 +27,71 @@ import {
   SerializeOptions,
   Req,
 } from "@nestjs/common";
-import { FormschemaDto } from "./dto/formschema.dto";
-import { FormschemaSearchDto } from "./dto/formschema-search.dto";
-@ApiTags("Formschema")
-@Controller("formschema")
-export class FormschemaController {
+import { AdminFormDto } from "./dto/adminForm.dto";
+import { AdminFormSearchDto } from "./dto/adminForm-search.dto";
+@ApiTags("AdminForm")
+@Controller("adminForm")
+export class AdminFormController {
   constructor(
-    private service: FormschemaService,
+    private service: AdminFormService,
     @Inject(CACHE_MANAGER) private cacheManager
   ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Formschema detail." })
+  @ApiOkResponse({ description: "AdminForm detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getFormschema(@Param("id") formschemaId: string, @Req() request: Request) {
-    return this.service.getFormschema(formschemaId, request);
+  getAdminForm(@Param("id") adminFormId: string, @Req() request: Request) {
+    return this.service.getAdminForm(adminFormId, request);
   }
 
   @Post()
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "Formschema has been created successfully.",
+    description: "AdminForm has been created successfully.",
   })
-  @ApiBody({ type: FormschemaDto })
+  @ApiBody({ type: AdminFormDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createFormschema(
+  public async createAdminForm(
     @Req() request: Request,
-    @Body() formschemaDto: FormschemaDto
+    @Body() adminFormDto: AdminFormDto
   ) {
-    return this.service.createFormschema(request, formschemaDto);
+    return this.service.createAdminForm(request, adminFormDto);
   }
 
   @Put("/:id")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "Formschema has been updated successfully.",
+    description: "AdminForm has been updated successfully.",
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async updateFormschema(
+  public async updateAdminForm(
     @Param("id") id: string,
     @Req() request: Request,
-    @Body() formschemaDto: FormschemaDto
+    @Body() adminFormDto: AdminFormDto
   ) {
-    return await this.service.updateFormschema(id, request, formschemaDto);
+    return await this.service.updateAdminForm(id, request, adminFormDto);
   }
 
   @Post("/search")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Formschema list." })
-  @ApiBody({ type: FormschemaSearchDto })
+  @ApiCreatedResponse({ description: "AdminForm list." })
+  @ApiBody({ type: AdminFormSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async searchFormschema(
+  public async searchAdminForm(
     @Req() request: Request,
-    @Body() formschemaSearchDto: FormschemaSearchDto
+    @Body() adminFormSearchDto: AdminFormSearchDto
   ) {
-    return await this.service.searchFormschema(request, formschemaSearchDto);
+    return await this.service.searchAdminForm(request, adminFormSearchDto);
   }
 }
