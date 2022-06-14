@@ -22,7 +22,7 @@ import {
 import { Request } from "@nestjs/common";
 import { CommentDto } from "./dto/comment.dto";
 import { CommentSearchDto } from "./dto/comment-search.dto";
-import { CommentService } from "src/adapters/default/comment.adapter";
+import { CommentService } from "src/adapters/sunbirdrc/comment.adapter";
 @ApiTags("Comment")
 @Controller("comment")
 export class CommentController {

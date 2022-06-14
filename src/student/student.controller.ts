@@ -1,5 +1,5 @@
 import { StudentInterface } from "./interfaces/student.interface";
-import { StudentService } from "../adapters/default/student.adapter";
+import { StudentService } from "../adapters/sunbirdrc/student.adapter";
 
 import {
   CacheInterceptor,

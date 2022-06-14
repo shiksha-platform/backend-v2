@@ -1,4 +1,4 @@
-import { ConfigService } from "../adapters/default/config.adapter";
+import { ConfigService } from "../adapters/sunbirdrc/config.adapter";
 import {
   ApiTags,
   ApiBody,

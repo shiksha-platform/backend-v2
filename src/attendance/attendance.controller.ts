@@ -1,4 +1,4 @@
-import { AttendanceService } from "../adapters/default/attendance.adapter";
+import { AttendanceService } from "../adapters/sunbirdrc/attendance.adapter";
 import {
   ApiTags,
   ApiBody,
