@@ -9,7 +9,7 @@ export class AdminFormDto {
   moduleId: string;
   @ApiProperty()
   @Expose()
-  schema: any;
+  formSchema: string;
 
   @Expose()
   createdAt: string;
@@ -26,7 +26,7 @@ export class AdminFormDto {
   constructor(obj: any) {
     this.adminFormId = obj?.osid ? `${obj.osid}` : "";
     this.moduleId = obj?.moduleId ? `${obj.moduleId}` : "";
-    this.schema = obj?.schema ? `${obj.schema}` : "";
+    this.formSchema = obj?.formSchema ? `${obj.formSchema}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
