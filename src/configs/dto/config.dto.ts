@@ -32,7 +32,7 @@ export class ConfigDto {
       "The value for the key eg: ['Present', 'Absent', 'Late'] for the attendance_states key",
   })
   @Expose()
-  value: any;
+  value: string;
 
   @ApiProperty({
     type: String,
