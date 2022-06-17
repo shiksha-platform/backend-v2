@@ -13,6 +13,9 @@ export class LikeDto {
   @Expose()
   context: string;
 
+  @Expose()
+  userId: string;
+
   @ApiProperty({})
   @Expose()
   type: string;
@@ -32,6 +35,7 @@ export class LikeDto {
     this.likeId = obj?.osid ? `${obj.osid}` : "";
     this.contextId = obj?.contextId ? `${obj.contextId}` : "";
     this.context = obj?.context ? `${obj.context}` : "";
+    this.userId = obj?.userId ? `${obj.userId}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
