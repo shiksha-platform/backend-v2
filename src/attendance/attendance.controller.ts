@@ -186,4 +186,18 @@ export class AttendanceController {
       request
     );
   }
+
+  @Post("multipleAttendance")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Attendance has been created successfully.",
+  })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async multipleAttendance(
+    @Req() request: Request,
+    @Body() attendanceDto: [Object]
+  ) {
+    return this.service.multipleAttendance(request, attendanceDto);
+  }
 }
