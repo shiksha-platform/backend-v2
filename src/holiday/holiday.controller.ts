@@ -21,7 +21,7 @@ import {
   ApiBasicAuth,
   ApiQuery,
 } from "@nestjs/swagger";
-import { HolidayService } from "src/adapters/default/holiday.adapter";
+import { HolidayService } from "src/adapters/sunbirdrc/holiday.adapter";
 import { HolidayDto } from "./dto/holiday.dto";
 import { HolidaySearchDto } from "./dto/holiday-search.dto";
 import { Request } from "@nestjs/common";

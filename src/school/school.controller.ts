@@ -13,7 +13,7 @@ import {
   Request,
   CacheInterceptor,
 } from "@nestjs/common";
-import { SchoolService } from "../adapters/default/school.adapter";
+import { SchoolService } from "../adapters/sunbirdrc/school.adapter";
 import { SchoolDto } from "./dto/school.dto";
 import {
   ApiTags,

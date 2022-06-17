@@ -20,7 +20,7 @@ import {
   UseInterceptors,
   Request,
 } from "@nestjs/common";
-import { WorksheetService } from "src/adapters/default/worksheet.adapter";
+import { WorksheetService } from "src/adapters/sunbirdrc/worksheet.adapter";
 import { WorksheetDto } from "./dto/worksheet.dto";
 import { WorksheetSearchDto } from "./dto/worksheet-search.dto";
 

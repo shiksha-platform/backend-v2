@@ -22,7 +22,7 @@ import {
   Query,
 } from "@nestjs/common";
 
-import { NotificationService } from "src/adapters/default/notification.adapter";
+import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
 import { NotificationSearchDto } from "./dto/notification-search.dto";
 @ApiTags("Notification")
 @Controller("notification")
@@ -36,7 +36,8 @@ export class NotificationController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "title" })
+  @ApiQuery({ name: "module" })
+  @ApiQuery({ name: "eventTrigger" })
   @ApiQuery({ name: "templateId" })
   @ApiQuery({ name: "groupId" })
   @ApiQuery({ name: "channel" })
@@ -44,7 +45,8 @@ export class NotificationController {
   @ApiQuery({ name: "minutes", required: false })
   @ApiQuery({ name: "taskName", required: false })
   public async tamplate(
-    @Query("title") title: string,
+    @Query("module") module: string,
+    @Query("eventTrigger") eventTrigger: string,
     @Query("templateId") templateId: string,
     @Query("groupId") groupId: string,
     @Query("channel") channel: string,
@@ -54,7 +56,8 @@ export class NotificationController {
     @Req() request: Request
   ) {
     return this.service.sendNotification(
-      title,
+      module,
+      eventTrigger,
       templateId,
       groupId,
       channel,

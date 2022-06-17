@@ -19,7 +19,7 @@ import {
   UseInterceptors,
   Request,
 } from "@nestjs/common";
-import { TemplateService } from "src/adapters/default/template.adapter";
+import { TemplateService } from "src/adapters/sunbirdrc/template.adapter";
 import { TemplateProcessDto } from "./dto/template-process.dto";
 import { TemplateCreateDto } from "./dto/template-create.dto";
 

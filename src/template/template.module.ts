@@ -1,6 +1,6 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
-import { TemplateService } from "src/adapters/default/template.adapter";
+import { TemplateService } from "src/adapters/sunbirdrc/template.adapter";
 import { TemplateController } from "./template.controller";
 const ttl = process.env.TTL as never;
 @Module({

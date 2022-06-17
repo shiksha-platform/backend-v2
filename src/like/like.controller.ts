@@ -20,7 +20,7 @@ import {
   ApiBasicAuth,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
-import { LikeService } from "src/adapters/default/like.adapter";
+import { LikeService } from "src/adapters/sunbirdrc/like.adapter";
 import { LikeDto } from "./dto/like.dto";
 import { LikeSearchDto } from "./dto/like-search.dto";
 @ApiTags("Like")
