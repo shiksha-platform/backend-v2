@@ -10,6 +10,7 @@ import {
   SerializeOptions,
   Req,
   CacheInterceptor,
+  Query,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -18,6 +19,7 @@ import {
   ApiForbiddenResponse,
   ApiCreatedResponse,
   ApiBasicAuth,
+  ApiQuery,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
 import { LikeService } from "src/adapters/sunbirdrc/like.adapter";
@@ -81,4 +83,15 @@ export class LikeController {
   ) {
     return await this.service.searchLike(request, likeSearchDto);
   }
+
+  @Post("/getAllLikes")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "All Like." })
+  @ApiQuery({name:"contextId"})
+  @ApiQuery({name:"context"})
+ public async getCountLike( @Query("contextId") contextId:string, @Query("context") context:string,  @Req() request: Request) {
+    return this.service.getCountLike(contextId, context, request);
+  }
 }
+
