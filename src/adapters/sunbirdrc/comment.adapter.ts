@@ -7,7 +7,7 @@ import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { CommentDto } from "src/comment/dto/comment.dto";
 import { CommentSearchDto } from "src/comment/dto/comment-search.dto";
-
+import jwt_decode from "jwt-decode";
 @Injectable()
 export class CommentService {
   constructor(private httpService: HttpService) {}
@@ -41,6 +41,10 @@ export class CommentService {
       );
   }
   public async createComment(request: any, commentDto: CommentDto) {
+    const authToken = request.headers.authorization;
+    const decoded: any = jwt_decode(authToken);
+    let userId = decoded.sub;
+    commentDto.userId = userId;
     return this.httpService
       .post(`${this.url}`, commentDto, {
         headers: {
@@ -72,7 +76,10 @@ export class CommentService {
   ) {
     var axios = require("axios");
     var data = commentDto;
-
+    const authToken = request.headers.authorization;
+    const decoded: any = jwt_decode(authToken);
+    let userId = decoded.sub;
+    data.userId = userId;
     var config = {
       method: "put",
       url: `${this.url}/${commentId}`,
