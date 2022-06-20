@@ -89,7 +89,7 @@ export class LikeController {
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "All Like." })
   @ApiQuery({name:"contextId"})
-  @ApiQuery({name:"context"})
+  @ApiQuery({name:"context"}) 
  public async getCountLike( @Query("contextId") contextId:string, @Query("context") context:string,  @Req() request: Request) {
     return this.service.getCountLike(contextId, context, request);
   }

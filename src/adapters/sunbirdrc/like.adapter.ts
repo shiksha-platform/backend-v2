@@ -147,7 +147,7 @@ export class LikeService {
     return new SuccessResponse({
       statusCode: 200,
       message: " Ok.",
-      data:result,
+      data:result.length,
     });
     
   }
