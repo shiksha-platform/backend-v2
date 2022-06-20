@@ -83,7 +83,7 @@ export class LikeController {
   ) {
     return await this.service.searchLike(request, likeSearchDto);
   }
-
+  
   @Post("/getAllLikes")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
