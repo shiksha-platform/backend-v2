@@ -66,17 +66,17 @@ export class NotificationLogDto {
 
   constructor(obj: any) {
     this.notificationLogId = obj?.osid ? `${obj.osid}` : "";
-    this.content = obj?.data.content ? `${obj.data.content}` : "";
-    this.recepients = obj?.data.recepients ? obj.data.recepients : "";
-    this.module = obj?.data.module ? `${obj.data.module}` : "";
-    this.templateContentId = obj?.data.templateContentId
-      ? `${obj.data.templateContentId}`
+    this.content = obj?.content ? `${obj.content}` : "";
+    this.recepients = obj?.recepients ? obj.recepients : [];
+    this.module = obj?.module ? `${obj.module}` : "";
+    this.templateContentId = obj?.templateContentId
+      ? `${obj.templateContentId}`
       : "";
-    this.templateId = obj?.data.templateId ? `${obj.data.templateId}` : "";
-    this.medium = obj?.data.medium ? `${obj.data.medium}` : "";
-    this.sentDate = obj?.data.sentDate ? `${obj.data.sentDate}` : "";
-    this.sentBy = obj?.data.sentBy ? `${obj.data.sentBy}` : "";
-    this.options = obj?.data.options ? obj.data.options : "";
+    this.templateId = obj?.templateId ? `${obj.templateId}` : "";
+    this.medium = obj?.medium ? `${obj.medium}` : "";
+    this.sentDate = obj?.sentDate ? `${obj.sentDate}` : "";
+    this.sentBy = obj?.sentBy ? `${obj.sentBy}` : "";
+    this.options = obj?.options ? obj.options : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";

@@ -154,7 +154,7 @@ export class NotificationService {
       // Notification Log
 
       var notificationData = {
-        data: {
+        
           medium: conversationData.data.adapter,
           templateId: templateId,
           recepients: [params.todaySegment],
@@ -162,7 +162,7 @@ export class NotificationService {
           sentBy: sentBy,
           module: module,
           options: contentData.body,
-        },
+        
       };
       let log = this.saveNotificationLog(notificationData, request);
       return log;
@@ -289,12 +289,11 @@ export class NotificationService {
     let hrs = parseInt(hours);
     let mins = +minutes;
 
-    var gfg = Date.UTC(year, mon, d, hrs, mins,0,0)    
-    console.log(year,mon,d,hrs,mins);
-    console.log(gfg);
-    let ggg =new Date(gfg).toUTCString();
-    console.log(ggg);
-    return
+  //    var gfg = Date.UTC(year, mon, d, hrs, mins,0,0)    
+    //console.log(year,mon,d,hrs,mins);
+    //console.log(gfg);
+   // let ggg =new Date(`${mon}+${/}+${d}+${/}+${year} +${ }+${hrs}+${:}+${mins}+${}:`).toUTCString();
+    //console.log(ggg);
 
     const job = new CronJob(
       `0 ${minutes} ${hours} ${dd} ${mon} *`,
@@ -377,7 +376,7 @@ export class NotificationService {
           // Notification Log
 
           var notificationData = {
-            data: {
+            
               medium: channel,
               templateId: templateId,
               recepients: [params.todaySegment],
@@ -389,7 +388,7 @@ export class NotificationService {
               hours,
               minutes,
               month,
-            },
+            
           };
           var logConfig = {
             method: "post",
