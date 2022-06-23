@@ -40,11 +40,14 @@ export class NotificationLogDto {
   @Expose()
   sentDate: string;
 
+  @Expose()
+  sentBy: string;
+
   @ApiProperty({
     description: "options of notification",
   })
   @Expose()
-  options: [];
+  options: string;
 
   @Expose()
   createdAt: string;
@@ -72,6 +75,7 @@ export class NotificationLogDto {
     this.templateId = obj?.data.templateId ? `${obj.data.templateId}` : "";
     this.medium = obj?.data.medium ? `${obj.data.medium}` : "";
     this.sentDate = obj?.data.sentDate ? `${obj.data.sentDate}` : "";
+    this.sentBy = obj?.data.sentBy ? `${obj.data.sentBy}` : "";
     this.options = obj?.data.options ? obj.data.options : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
