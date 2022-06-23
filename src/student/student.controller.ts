@@ -30,11 +30,13 @@ import {
 } from "@nestjs/common";
 import { StudentDto } from "./dto/student.dto";
 import { StudentSearchDto } from "./dto/student-search.dto";
+import { EsamwadStudentService } from "src/adapters/esamwad/student.adapter";
 @ApiTags("Student")
 @Controller("student")
 export class StudentController {
   constructor(
     private service: StudentService,
+    private esamwadService: EsamwadStudentService,
     @Inject(CACHE_MANAGER) private cacheManager
   ) {}
 
@@ -90,5 +92,29 @@ export class StudentController {
     @Body() studentSearchDto: StudentSearchDto
   ) {
     return await this.service.searchStudent(request, studentSearchDto);
+  }
+
+  @Get("esamwad/getAll")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Student detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  getAllStudent() {
+    return this.esamwadService.getAllStudent();
+  }
+
+  @Get("esamwad/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  //@ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Student detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  public async getOneStudent(@Param("id") studentId: string) {
+    return this.esamwadService.getOneStudent(studentId);
   }
 }

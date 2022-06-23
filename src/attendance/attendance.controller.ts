@@ -34,10 +34,14 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
 import { AttendanceSearchDto } from "./dto/attendance-search.dto";
+import { AttendanceHasuraService } from "src/adapters/hasura/attendance.adapter";
 @ApiTags("Attendance")
 @Controller("attendance")
 export class AttendanceController {
-  constructor(private service: AttendanceService) {}
+  constructor(
+    private service: AttendanceService,
+    private hasuraService: AttendanceHasuraService
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -185,5 +189,73 @@ export class AttendanceController {
       topicId,
       request
     );
+  }
+
+  @Post("esamwad/:limit")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Attendance detail" })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async getHasuraAttendance(
+    @Param("limit") limit: string,
+    @Req() request: Request
+  ) {
+    return this.hasuraService.getHasuraAttendance(limit, request);
+  }
+
+  @Post("/esamwad")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  //@ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Attendance detail" })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "date", required: false })
+  @ApiQuery({ name: "isPresent", required: false })
+  @ApiQuery({ name: "studentId", required: false })
+  @ApiQuery({ name: "takenBySchoolId", required: false })
+  @ApiQuery({ name: "temperature", required: false })
+  public async createAttendance(
+    @Query("date") date: string,
+    @Query("isPresent") isPresent: string,
+    @Query("studentId") studentId: string,
+    @Query("takenBySchoolId") takenBySchoolId: string,
+    @Query("temperature") temperature: string
+    //@Req() request: Request
+  ) {
+    console.log(studentId);
+
+    return this.hasuraService.createAttendance(
+      date,
+      isPresent,
+      studentId,
+      takenBySchoolId,
+      temperature
+      //request
+    );
+  }
+
+  @Post("/:studentId")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Attendance detail" })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async getAttendanceByStudentId(
+    @Param("studentId") studentId: string,
+    @Req() request: Request
+  ) {
+    return this.hasuraService.getAttendanceByStudentId(studentId, request);
+  }
+
+  @Post("esamwad/multipleAttendance")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Attendance has been created successfully.",
+  })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async multipleAttendance(
+    @Req() request: Request,
+    @Body() attendanceCreate: [Object]
+  ) {
+    return this.hasuraService.multipleAttendance(request, attendanceCreate);
   }
 }

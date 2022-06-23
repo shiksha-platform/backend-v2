@@ -24,10 +24,14 @@ import {
   ApiBasicAuth,
 } from "@nestjs/swagger";
 import { SchoolSearchDto } from "./dto/school-search.dto";
+import { EsamwadSchoolService } from "src/adapters/esamwad/school.adapter";
 @ApiTags("School")
 @Controller("school")
 export class SchoolController {
-  constructor(private service: SchoolService) {}
+  constructor(
+    private service: SchoolService,
+    private esamwadService: EsamwadSchoolService
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -80,5 +84,17 @@ export class SchoolController {
     @Body() schoolSearchDto: SchoolSearchDto
   ) {
     return await this.service.searchSchool(request, schoolSearchDto);
+  }
+
+  @Get("esamwad/getAll")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "School detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  getAllSchool() {
+    return this.esamwadService.getAllSchool();
   }
 }

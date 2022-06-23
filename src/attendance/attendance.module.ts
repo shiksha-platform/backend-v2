@@ -3,6 +3,7 @@ import { AttendanceController } from "./attendance.controller";
 import { AttendanceService } from "../adapters/sunbirdrc/attendance.adapter";
 import { HttpModule } from "@nestjs/axios";
 import { ScheduleModule } from "@nestjs/schedule";
+import { AttendanceHasuraService } from "src/adapters/hasura/attendance.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -13,6 +14,6 @@ const ttl = process.env.TTL as never;
     ScheduleModule.forRoot(),
   ],
   controllers: [AttendanceController],
-  providers: [AttendanceService],
+  providers: [AttendanceService, AttendanceHasuraService],
 })
 export class AttendanceModule {}
