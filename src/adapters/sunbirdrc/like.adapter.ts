@@ -7,6 +7,7 @@ import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { LikeDto } from "src/like/dto/like.dto";
 import { LikeSearchDto } from "src/like/dto/like-search.dto";
+import jwt_decode from "jwt-decode";
 @Injectable()
 export class LikeService {
   constructor(private httpService: HttpService) {}
@@ -40,6 +41,10 @@ export class LikeService {
       );
   }
   public async createLike(request: any, likeDto: LikeDto) {
+    const authToken = request.headers.authorization;
+    const decoded: any = jwt_decode(authToken);
+    let userId = decoded.sub;
+    likeDto.userId = userId;
     return this.httpService
       .post(`${this.url}`, likeDto, {
         headers: {
@@ -67,6 +72,10 @@ export class LikeService {
   public async updateLike(likeId: string, request: any, likeDto: LikeDto) {
     var axios = require("axios");
     var data = likeDto;
+    const authToken = request.headers.authorization;
+    const decoded: any = jwt_decode(authToken);
+    let userId = decoded.sub;
+    data.userId = userId;
 
     var config = {
       method: "put",

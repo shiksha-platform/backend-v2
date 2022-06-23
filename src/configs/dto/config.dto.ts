@@ -32,7 +32,7 @@ export class ConfigDto {
       "The value for the key eg: ['Present', 'Absent', 'Late'] for the attendance_states key",
   })
   @Expose()
-  value: any;
+  value: string;
 
   @ApiProperty({
     type: String,
@@ -89,7 +89,7 @@ export class ConfigDto {
     this.configId = obj?.osid ? `${obj.osid}` : "";
     this.module = obj?.module ? `${obj.module}` : "";
     this.key = obj?.key ? `${obj.key}` : "";
-    this.value = obj?.value ? `${obj.value}` : "";
+    this.value = obj?.value;
     this.context = obj?.context ? `${obj.context}` : "";
     this.contextId = obj?.contextId ? `${obj.contextId}` : "";
     this.canOverride = obj?.canOverride;

@@ -66,7 +66,7 @@ export class ConfigService {
         },
         data: createData,
       };
-      console.log(createConfig);
+
       const response = await axios(createConfig);
 
       return new SuccessResponse({
