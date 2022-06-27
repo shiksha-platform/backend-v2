@@ -38,30 +38,6 @@ export class AttendanceService {
         })
       );
   }
-  public async createAttendance(request: any, attendanceDto: AttendanceDto) {
-    return this.httpService
-      .post(`${this.url}`, attendanceDto, {
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-      })
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "Ok.",
-            data: axiosResponse.data,
-          });
-        }),
-        catchError((e) => {
-          var error = new ErrorResponse({
-            errorCode: e.response?.status,
-            errorMessage: e.response?.data?.params?.errmsg,
-          });
-          throw new HttpException(error, e.response.status);
-        })
-      );
-  }
 
   public async updateAttendance(
     attendanceId: string,
@@ -292,6 +268,110 @@ export class AttendanceService {
       statusCode: 200,
       message: "ok",
       data: result,
+    });
+  }
+
+  public async createAttendance(request: any, attendanceDto: AttendanceDto) {
+    let axios = require("axios");
+    let data = {
+      filters: {
+        userId: {
+          eq: `${attendanceDto.userId}`,
+        },
+        attendanceDate: {
+          eq: `${attendanceDto.attendanceDate}`,
+        },
+      },
+    };
+
+    let attendanceCreate = {
+      method: "post",
+      url: `${this.url}/search`,
+
+      data: data,
+    };
+
+    const response = await axios(attendanceCreate);
+    let resData = response?.data;
+    let result = resData.map((item: any) => new AttendanceDto(item));
+
+    let attendanceId = result.map(function (AttendanceDto) {
+      return AttendanceDto.attendanceId;
+    });
+
+    if (resData.length > 0) {
+      var udateData = attendanceDto;
+      var updateAttendance = {
+        method: "put",
+        url: `${this.url}/${attendanceId}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: udateData,
+      };
+      const response = await axios(updateAttendance);
+      return new SuccessResponse({
+        statusCode: 200,
+        message: " Ok.",
+        data: response.data,
+      });
+    } else {
+      var createAttendance = attendanceDto;
+      var create = {
+        method: "post",
+        url: `${this.url}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: createAttendance,
+      };
+
+      const response = await axios(create);
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: " Ok.",
+        data: response.data,
+      });
+    }
+  }
+  public async multipleAttendance(request: any, attendanceData: [Object]) {
+    let attendeeData = attendanceData["attendanceData"];
+
+    attendeeData.forEach((data) => {
+      data["schoolId"] = attendanceData["schoolId"]
+        ? attendanceData["schoolId"]
+        : "";
+      data["userType"] = attendanceData["userType"]
+        ? attendanceData["userType"]
+        : "";
+      data["groupId"] = attendanceData["groupId"]
+        ? attendanceData["groupId"]
+        : "";
+      data["topicId"] = attendanceData["topicId"]
+        ? attendanceData["topicId"]
+        : "";
+      data["eventId"] = attendanceData["eventId"]
+        ? attendanceData["eventId"]
+        : "";
+      data["attendanceDate"] = attendanceData["attendanceDate"]
+        ? attendanceData["attendanceDate"]
+        : "";
+      data["latitude"] = attendanceData["latitude"]
+        ? attendanceData["latitude"]
+        : 0;
+      data["longitude"] = attendanceData["longitude"]
+        ? attendanceData["longitude"]
+        : 0;
+      data["image"] = attendanceData["image"] ? attendanceData["image"] : "";
+      data["metaData"] = attendanceData["metaData"]
+        ? attendanceData["metaData"]
+        : [];
+      data["syncTime"] = attendanceData["syncTime"]
+        ? attendanceData["syncTime"]
+        : "";
+
+      this.createAttendance(request, data);
     });
   }
 }

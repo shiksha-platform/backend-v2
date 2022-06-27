@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { GroupMembershipController } from "./groupMembership.controller";
-import { GroupMembershipService } from "../adapters/default/groupMembership.adapter";
+import { GroupMembershipService } from "../adapters/sunbirdrc/groupMembership.adapter";
 
 describe("GroupMembershipController", () => {
   let controller: GroupMembershipController;

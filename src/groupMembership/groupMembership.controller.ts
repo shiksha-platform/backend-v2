@@ -23,7 +23,7 @@ import {
   ApiBasicAuth,
   ApiQuery,
 } from "@nestjs/swagger";
-import { GroupMembershipService } from "../adapters/default/groupMembership.adapter";
+import { GroupMembershipService } from "../adapters/sunbirdrc/groupMembership.adapter";
 import { GroupMembershipDto } from "./dto/groupMembership.dto";
 import { GroupMembershipSearchDto } from "./dto/groupMembership-search.dto";
 @ApiTags("GroupMembership")

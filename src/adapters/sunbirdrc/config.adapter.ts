@@ -10,7 +10,7 @@ import { TeacherDto } from "../../teacher/dto/teacher.dto";
 @Injectable()
 export class ConfigService {
   constructor(private httpService: HttpService) {}
-  url = `${process.env.BASEAPIURL}Config`;
+  url = `${process.env.BASEAPIURL}config`;
 
   public async createConfig(request: any, configDto: ConfigDto) {
     let axios = require("axios");
@@ -66,7 +66,7 @@ export class ConfigService {
         },
         data: createData,
       };
-      console.log(createConfig);
+
       const response = await axios(createConfig);
 
       return new SuccessResponse({

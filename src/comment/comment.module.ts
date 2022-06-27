@@ -1,7 +1,7 @@
 import { HttpModule } from "@nestjs/axios";
 import { CacheModule, Module } from "@nestjs/common";
-import { HolidayService } from "src/adapters/sunbirdrc/holiday.adapter";
-import { HolidayController } from "./holiday.controller";
+import { CommentService } from "src/adapters/sunbirdrc/comment.adapter";
+import { CommentController } from "./comment.controller";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -10,7 +10,7 @@ const ttl = process.env.TTL as never;
       ttl: ttl,
     }),
   ],
-  controllers: [HolidayController],
-  providers: [HolidayService],
+  controllers: [CommentController],
+  providers: [CommentService],
 })
-export class HolidayModule {}
+export class CommentModule {}

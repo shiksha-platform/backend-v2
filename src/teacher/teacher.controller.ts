@@ -11,7 +11,7 @@ import {
   Req,
   CacheInterceptor,
 } from "@nestjs/common";
-import { TeacherService } from "../adapters/default/teacher.adapter";
+import { TeacherService } from "../adapters/sunbirdrc/teacher.adapter";
 import { Request } from "@nestjs/common";
 import {
   ApiTags,

@@ -39,6 +39,8 @@
     "moment": "^2.29.3",
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
+    "node-cron": "^3.0.1",
+    "node-schedule": "^2.1.0",
     "object-resolve-path": "^1.1.1",
     "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",

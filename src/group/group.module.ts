@@ -1,8 +1,8 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { GroupController } from "./group.controller";
-import { GroupService } from "../adapters/default/group.adapter";
+import { GroupService } from "../adapters/sunbirdrc/group.adapter";
 import { HttpModule } from "@nestjs/axios";
-import { GroupMembershipService } from "src/adapters/default/groupMembership.adapter";
+import { GroupMembershipService } from "src/adapters/sunbirdrc/groupMembership.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [

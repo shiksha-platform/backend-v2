@@ -1,5 +1,4 @@
-import { StudentInterface } from "./interfaces/student.interface";
-import { StudentService } from "../adapters/sunbirdrc/student.adapter";
+import { AdminFormService } from "../adapters/sunbirdrc/adminForm.adapter";
 
 import {
   CacheInterceptor,
@@ -28,67 +27,71 @@ import {
   SerializeOptions,
   Req,
 } from "@nestjs/common";
-import { StudentDto } from "./dto/student.dto";
-import { StudentSearchDto } from "./dto/student-search.dto";
-@ApiTags("Student")
-@Controller("student")
-export class StudentController {
+import { AdminFormDto } from "./dto/adminForm.dto";
+import { AdminFormSearchDto } from "./dto/adminForm-search.dto";
+@ApiTags("AdminForm")
+@Controller("adminForm")
+export class AdminFormController {
   constructor(
-    private service: StudentService,
+    private service: AdminFormService,
     @Inject(CACHE_MANAGER) private cacheManager
   ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Student detail." })
+  @ApiOkResponse({ description: "AdminForm detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getStudent(@Param("id") studentId: string, @Req() request: Request) {
-    return this.service.getStudent(studentId, request);
+  getAdminForm(@Param("id") adminFormId: string, @Req() request: Request) {
+    return this.service.getAdminForm(adminFormId, request);
   }
 
   @Post()
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Student has been created successfully." })
-  @ApiBody({ type: StudentDto })
+  @ApiCreatedResponse({
+    description: "AdminForm has been created successfully.",
+  })
+  @ApiBody({ type: AdminFormDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createStudent(
+  public async createAdminForm(
     @Req() request: Request,
-    @Body() studentDto: StudentDto
+    @Body() adminFormDto: AdminFormDto
   ) {
-    return this.service.createStudent(request, studentDto);
+    return this.service.createAdminForm(request, adminFormDto);
   }
 
   @Put("/:id")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Student has been updated successfully." })
+  @ApiCreatedResponse({
+    description: "AdminForm has been updated successfully.",
+  })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async updateStudent(
+  public async updateAdminForm(
     @Param("id") id: string,
     @Req() request: Request,
-    @Body() studentDto: StudentDto
+    @Body() adminFormDto: AdminFormDto
   ) {
-    return await this.service.updateStudent(id, request, studentDto);
+    return await this.service.updateAdminForm(id, request, adminFormDto);
   }
 
   @Post("/search")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Student list." })
-  @ApiBody({ type: StudentSearchDto })
+  @ApiCreatedResponse({ description: "AdminForm list." })
+  @ApiBody({ type: AdminFormSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async searchStudent(
+  public async searchAdminForm(
     @Req() request: Request,
-    @Body() studentSearchDto: StudentSearchDto
+    @Body() adminFormSearchDto: AdminFormSearchDto
   ) {
-    return await this.service.searchStudent(request, studentSearchDto);
+    return await this.service.searchAdminForm(request, adminFormSearchDto);
   }
 }
