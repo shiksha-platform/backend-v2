@@ -138,12 +138,15 @@ export class AttendanceController {
   // @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "groupId", required: false })
+  @ApiQuery({ name: "date" })
   public async userSegment(
+    @Query("groupId") groupId: string,
     @Param("attendance") attendance: string,
     @Query("date") date: string,
     @Req() request: Request
   ) {
-    return await this.service.userSegment(attendance, date, request);
+    return await this.service.userSegment(groupId, attendance, date, request);
   }
 
   @Get("")

@@ -94,13 +94,21 @@ export class AttendanceService {
       );
   }
 
-  public async userSegment(attendance: string, date: string, request: any) {
+  public async userSegment(
+    groupId: string,
+    attendance: string,
+    date: string,
+    request: any
+  ) {
     let axios = require("axios");
 
     let data: any = {
       filters: {
         attendance: {
           eq: `${attendance}`,
+        },
+        groupId: {
+          eq: `${groupId}`,
         },
       },
     };
@@ -119,6 +127,15 @@ export class AttendanceService {
           ...data.filters,
           attendanceDate: {
             eq: `${moment().add(-1, "days").format("Y-MM-DD")}`,
+          },
+        };
+        break;
+
+      case "lastthreedays":
+        data.filters = {
+          ...data.filters,
+          attendanceDate: {
+            eq: `${moment().add(-3, "days").format("Y-MM-DD")}`,
           },
         };
         break;

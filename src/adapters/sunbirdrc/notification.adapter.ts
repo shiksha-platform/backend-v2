@@ -25,7 +25,6 @@ export class NotificationService {
   UCIURL = `${process.env.UCIAPI}`;
   url = process.env.TEMPLATERURL;
   groupURL = `${process.env.BASEAPIURL}/Class`;
-  
 
   public async instantSendNotification(
     module: any,
@@ -39,134 +38,137 @@ export class NotificationService {
     const decoded: any = jwt_decode(authToken);
     let sentBy = decoded.sub;
     var axios = require("axios");
-      const result = Math.random().toString(27).substring(6, 8);
-      var confi = {
-        method: "get",
-        url: `${this.url}${templateId}`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-      };
+    const result = Math.random().toString(27).substring(6, 8);
+    var confi = {
+      method: "get",
+      url: `${this.url}${templateId}`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+    };
 
-      const getContent = await axios(confi);
-      const contentData = getContent.data;
+    const getContent = await axios(confi);
+    const contentData = getContent.data;
 
-      // Conversation Logic
-      var conversationData = {
-        data: {
-          name: `Shiksha ${channel} Broadcast ${result}`,
-          transformers: [
-            {
-              id: "774cd134-6657-4688-85f6-6338e2323dde",
-              meta: {
-                body: contentData.body,
-                type: contentData.type,
-                user: "25bbdbf7-5286-4b85-a03c-c53d1d990a23",
-              },
-              type: "broadcast",
+    // Conversation Logic
+    var conversationData = {
+      data: {
+        name: `Shiksha ${channel} Broadcast ${result}`,
+        transformers: [
+          {
+            id: "774cd134-6657-4688-85f6-6338e2323dde",
+            meta: {
+              body: contentData.body,
+              type: contentData.type,
+              user: "25bbdbf7-5286-4b85-a03c-c53d1d990a23",
             },
-          ],
-          adapter: contentData.user,
-        },
-      };
-
-      var config = {
-        method: "post",
-        url: `${this.UCIURL}/conversationLogic/create`,
-        headers: {
-          "admin-token": process.env.UCIADMINTOKEN,
-          "Content-Type": "application/json",
-        },
-        data: conversationData,
-      };
-
-      const response = await axios(config);
-      const resData = response.data;
-      const consversationLogicID = resData.result.data.id;
-
-      var axios = require("axios");
-
-      var data = {
-        filters: {
-          osid: {
-            eq: groupId,
+            type: "broadcast",
           },
+        ],
+        adapter: contentData.user,
+      },
+    };
+
+    var config = {
+      method: "post",
+      url: `${this.UCIURL}/conversationLogic/create`,
+      headers: {
+        "admin-token": process.env.UCIADMINTOKEN,
+        "Content-Type": "application/json",
+      },
+      data: conversationData,
+    };
+
+    const response = await axios(config);
+    const resData = response.data;
+    const consversationLogicID = resData.result.data.id;
+
+    var data = {
+      filters: {
+        osid: {
+          eq: groupId,
         },
-      };
+      },
+    };
 
-      var getSegment = {
-        method: "post",
-        url: `${this.groupURL}/search`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-        data: data,
-      };
+    var getSegment = {
+      method: "post",
+      url: `${this.groupURL}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
 
-      const responseData = await axios(getSegment);
+    const responseData = await axios(getSegment);
 
-      const dtoResponse = responseData.data.map(
-        (item: any) => new GroupDto(item)
-      );
+    const dtoResponse = responseData.data.map(
+      (item: any) => new GroupDto(item)
+    );
 
-      const filterObj = dtoResponse.filter((e: any) => e);
-      let option = filterObj[0].option;
-      let optionStr = JSON.stringify(option);
-      var jsonObj = JSON.parse(optionStr);
-      let params = JSON.parse(jsonObj);
-      params.todaySegment = params.module[module].eventTrigger[eventTrigger];
-      
-      var botData = {
-        data: {
-          startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
-          name: `Shiksha Notification Broadcast ${result}`,
-          users: [params.todaySegment],
-          logic: [consversationLogicID],
-          status: "enabled",
-          startDate: moment().format("Y-MM-DD"),
-          endDate: moment().format("Y-MM-DD"),
-        },
-      };
+    const filterObj = dtoResponse.filter((e: any) => e);
+    let option = filterObj[0].option;
+    let optionStr = JSON.stringify(option);
+    var jsonObj = JSON.parse(optionStr);
+    let params = JSON.parse(jsonObj);
+    var notificationModule = params.filter((obj: any) => obj.module === module);
+    const triggers = notificationModule[0].eventTriggers;
+    var notificationTrigger = triggers.filter(
+      (obj: any) => obj.date === eventTrigger
+    );
 
-      var botConfig = {
-        method: "post",
-        url: `${this.UCIURL}/bot/create`,
-        headers: {
-          "admin-token": process.env.UCIADMINTOKEN,
-          "Content-Type": "application/json",
-        },
-        data: botData,
-      };
+    var botData = {
+      data: {
+        startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+        name: `Shiksha Notification Broadcast ${result}`,
+        users: [notificationTrigger[0].userSegment],
+        logic: [consversationLogicID],
+        status: "enabled",
+        startDate: moment().format("Y-MM-DD"),
+        endDate: moment().format("Y-MM-DD"),
+      },
+    };
 
-      const botResponse = await axios(botConfig);
-      const botResData = botResponse.data;
-      const botCreateID = botResData.result.data.id;
+    var botConfig = {
+      method: "post",
+      url: `${this.UCIURL}/bot/create`,
+      headers: {
+        "admin-token": process.env.UCIADMINTOKEN,
+        "Content-Type": "application/json",
+      },
+      data: botData,
+    };
 
-      var configs = {
-        method: "get",
-        url: `${process.env.BOTCALL}${botCreateID}`,
-        headers: {},
-      };
+    const botResponse = await axios(botConfig);
+    const botResData = botResponse.data;
+    const botCreateID = botResData.result.data.id;
 
-      const botres = await axios(configs);
+    var configs = {
+      method: "get",
+      url: `${process.env.BOTCALL}${botCreateID}`,
+      headers: {},
+    };
 
-      const sendData = botres.data;
-      // Notification Log
+    const botres = await axios(configs);
 
-      var notificationData = {
-        
-          medium: conversationData.data.adapter,
-          templateId: templateId,
-          recepients: [params.todaySegment],
-          sentDate: new Date(),
-          sentBy: sentBy,
-          module: module,
-          options: contentData.body,
-        
-      };
-      let log = this.saveNotificationLog(notificationData, request);
-      return log;
-    
+    const sendData = botres.data;
+    // Notification Log
+
+    var notificationData = {
+      medium: channel,
+      templateId: templateId,
+      recepients: [notificationTrigger[0].userSegment],
+      sentDate: new Date(),
+      sentBy: sentBy,
+      module: notificationModule[0].module,
+      options: "",
+      content: contentData.body,
+    };
+
+    console.log(notificationData);
+
+    let log = this.saveNotificationLog(notificationData, request);
+    return log;
   }
 
   //Notificationschedule
@@ -176,8 +178,8 @@ export class NotificationService {
     templateId: string,
     groupId: string,
     channel: string,
-    month:string,
-    date:string,
+    month: string,
+    date: string,
     hours: string,
     minutes: String,
     jobName: string,
@@ -230,17 +232,22 @@ export class NotificationService {
     let optionStr = JSON.stringify(option);
     var jsonObj = JSON.parse(optionStr);
     let params = JSON.parse(jsonObj);
-    params.todaySegment = params.module[module].eventTrigger[eventTrigger];
+    var notificationModule = params.filter((obj: any) => obj.module === module);
+    const triggers = notificationModule[0].eventTriggers;
+    var notificationTrigger = triggers.filter(
+      (obj: any) => obj.date === eventTrigger
+    );
 
     //save notification
     let notificationScheduleData = {
       medium: channel,
       templateId: templateId,
-      recepients: [params.todaySegment],
+      recepients: [notificationTrigger[0].userSegment],
       sentDate: new Date(),
       sentBy: sentBy,
-      module: module,
-      options: contentData.body,
+      module: notificationModule[0].module,
+      options: "",
+      content: contentData.body,
       scheduleDate: date,
       hours,
       minutes,
@@ -263,37 +270,18 @@ export class NotificationService {
 
     let osid = logResponse.result.Notificationschedule.osid;
 
-    // var notificationschedule = {
-    //   method: "get",
-    //   url: `${this.baseURL}Notificationschedule/${osid}`,
-    //   headers: {
-    //     Authorization: request.headers.authorization,
-    //   },
-    // };
-
-    // const cronTime = await axios(notificationschedule);
-
-    // date = cronTime.data.scheduleDate;
-
-    //Thu Jun 23 16:56:47 UTC 2022
     var yy = date.slice(0, 4);
     let year = parseInt(yy);
 
     var dd = date.slice(-2);
-    let d = parseInt(dd)
+    let d = parseInt(dd);
 
     var mm = date.slice(5, 7);
     let mon = parseInt(mm);
-    mon = mon-1;
-   
+    mon = mon - 1;
+
     let hrs = parseInt(hours);
     let mins = +minutes;
-
-  //    var gfg = Date.UTC(year, mon, d, hrs, mins,0,0)    
-    //console.log(year,mon,d,hrs,mins);
-    //console.log(gfg);
-   // let ggg =new Date(`${mon}+${/}+${d}+${/}+${year} +${ }+${hrs}+${:}+${mins}+${}:`).toUTCString();
-    //console.log(ggg);
 
     const job = new CronJob(
       `0 ${minutes} ${hours} ${dd} ${mon} *`,
@@ -328,11 +316,10 @@ export class NotificationService {
           data: conversationData,
         };
 
-        
         const response = await axios(config);
-        
+
         const resData = response.data;
-        
+
         const consversationLogicID = resData.result.data.id;
 
         if (
@@ -344,7 +331,7 @@ export class NotificationService {
             data: {
               startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
               name: `Shiksha Notification Broadcast ${result}`,
-              users: [params.todaySegment],
+              users: [notificationTrigger[0].userSegment],
               logic: [consversationLogicID],
               status: "enabled",
               startDate: moment().format("Y-MM-DD"),
@@ -376,19 +363,18 @@ export class NotificationService {
           // Notification Log
 
           var notificationData = {
-            
-              medium: channel,
-              templateId: templateId,
-              recepients: [params.todaySegment],
-              sentDate: new Date(),
-              sentBy: sentBy,
-              module: module,
-              options: contentData.body,
-              scheduleDate: date,
-              hours,
-              minutes,
-              month,
-            
+            medium: channel,
+            templateId: templateId,
+            recepients: [notificationTrigger[0].userSegment],
+            sentDate: new Date(),
+            sentBy: sentBy,
+            module: module,
+            options: "",
+            content: contentData.body,
+            scheduleDate: date,
+            hours,
+            minutes,
+            month,
           };
           var logConfig = {
             method: "post",
@@ -400,18 +386,16 @@ export class NotificationService {
           };
           const logRes = await axios(logConfig);
 
-          
-          var deleteCron ={
-            method:"delete",
-            url:`${this.baseURL}Notificationschedule/${osid}`,
+          var deleteCron = {
+            method: "delete",
+            url: `${this.baseURL}Notificationschedule/${osid}`,
             headers: {
               Authorization: request.headers.authorization,
             },
           };
           const deletedNotification = await axios(deleteCron);
-
         } else {
-            return "module not found";
+          return "module not found";
         }
 
         job.stop();
@@ -421,10 +405,8 @@ export class NotificationService {
     this.schedulerRegistry.addCronJob(jobName, job);
     job.start();
 
-
     return `SMS set for EOD at `;
-  
-    }
+  }
 
   public async saveNotificationLog(notificationData: any, request: any) {
     var axios = require("axios");
