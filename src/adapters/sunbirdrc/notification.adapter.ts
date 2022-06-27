@@ -551,8 +551,8 @@ export class NotificationService {
       })
       .pipe(
         map((axiosResponse: AxiosResponse) => {
-          let notificationData = axiosResponse.data;
-          const templateDto = new NotificationLogDto(notificationData);
+          let scheduleNotificationData = axiosResponse.data;
+          const templateDto = new NotificationLogDto(scheduleNotificationData);
 
           return new SuccessResponse({
             statusCode: 200,

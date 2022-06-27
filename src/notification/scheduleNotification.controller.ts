@@ -26,8 +26,8 @@ import {
   import { NotificationSearchDto } from "./dto/notification-search.dto";
 
 @ApiTags("schedule Notification")
-@Controller("notification")
-export class notificationController {
+@Controller("scheduleNotification")
+export class scheduleNotificationController {
 constructor(private service: NotificationService) {}
   
   @Post("scheduledSend")

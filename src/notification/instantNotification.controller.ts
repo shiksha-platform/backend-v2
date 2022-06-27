@@ -25,8 +25,8 @@ import {
 import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
 import { NotificationSearchDto } from "./dto/notification-search.dto";
 @ApiTags("instant Notification")
-@Controller("notification")
-export class NotificationController {
+@Controller("instantNotification")
+export class instantNotificationController {
   constructor(private service: NotificationService) {}
 
   @Post("instantSend")
