@@ -144,7 +144,6 @@ export class LikeService {
     const response = await axios(config);
     let resData = response?.data;
     let result = resData.map((item: any) => new LikeDto(item));
-    console.log(result , data);
     return new SuccessResponse({
       statusCode: 200,
       message: " Ok.",
