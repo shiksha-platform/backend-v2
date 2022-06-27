@@ -289,14 +289,15 @@ export class NotificationService {
     let hrs = parseInt(hours);
     let mins = +minutes;
 
-  //    var gfg = Date.UTC(year, mon, d, hrs, mins,0,0)    
-    //console.log(year,mon,d,hrs,mins);
-    //console.log(gfg);
-   // let ggg =new Date(`${mon}+${/}+${d}+${/}+${year} +${ }+${hrs}+${:}+${mins}+${}:`).toUTCString();
-    //console.log(ggg);
+   let ist = new Date(year, mon, d, hrs, mins);
+   let utc = moment.utc(ist).format("YYYY-MM-DD HH:mm:ss ")
+   let utcMin = utc.slice(14,16)
+   let utcHrs = utc.slice(11,13)
+   let utcDay = utc.slice(8,11)
+   let utcMon = utc.slice(5,7)
 
     const job = new CronJob(
-      `0 ${minutes} ${hours} ${dd} ${mon} *`,
+      `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
       async () => {
         var axios = require("axios");
         const result = Math.random().toString(27).substring(6, 8);
@@ -505,4 +506,68 @@ export class NotificationService {
         })
       );
   }
+
+
+
+  //schedule
+  public async searchSchedulehNotification(
+    request: any,
+    notificationSearchDto: NotificationSearchDto
+  ) {
+    return this.httpService
+      .post(`${this.baseURL}/Notificationschedule/search`, notificationSearchDto, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
+      .pipe(
+        map((response) => {
+          const responsedata = response.data.map(
+            (item: any) => new NotificationLogDto(item)
+          );
+
+          return new SuccessResponse({
+            statusCode: response.status,
+            message: "Ok.",
+            data: responsedata,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response.status,
+            errorMessage: e.response.data.params.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
+  }
+
+  public async getScheduleNotification(ScheduleNotificationid: string, request: any) {
+    return this.httpService
+      .get(`${this.baseURL}/Notificationschedule/${ScheduleNotificationid}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          let notificationData = axiosResponse.data;
+          const templateDto = new NotificationLogDto(notificationData);
+
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "ok.",
+            data: templateDto,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
+  }
+
 }

@@ -1,64 +1,35 @@
 import {
-  ApiTags,
-  ApiBody,
-  ApiOkResponse,
-  ApiForbiddenResponse,
-  ApiCreatedResponse,
-  ApiBasicAuth,
-  ApiQuery,
-} from "@nestjs/swagger";
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-  SerializeOptions,
-  Req,
-  Request,
-  CacheInterceptor,
-  Query,
-} from "@nestjs/common";
+    ApiTags,
+    ApiBody,
+    ApiOkResponse,
+    ApiForbiddenResponse,
+    ApiCreatedResponse,
+    ApiBasicAuth,
+    ApiQuery,
+  } from "@nestjs/swagger";
+  import {
+    Controller,
+    Get,
+    Post,
+    Body,
+    Param,
+    UseInterceptors,
+    ClassSerializerInterceptor,
+    SerializeOptions,
+    Req,
+    Request,
+    CacheInterceptor,
+    Query,
+  } from "@nestjs/common";
+  
+  import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
+  import { NotificationSearchDto } from "./dto/notification-search.dto";
 
-import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
-import { NotificationSearchDto } from "./dto/notification-search.dto";
-@ApiTags("Notification")
+@ApiTags("schedule Notification")
 @Controller("notification")
-export class NotificationController {
-  constructor(private service: NotificationService) {}
-
-  @Post("instantSend")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Notification has been sent successfully.",
-  })
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "module" })
-  @ApiQuery({ name: "eventTrigger" })
-  @ApiQuery({ name: "templateId" })
-  @ApiQuery({ name: "groupId" })
-  @ApiQuery({ name: "channel" })
-  public async instantSendNotification(
-    @Query("module") module: string,
-    @Query("eventTrigger") eventTrigger: string,
-    @Query("templateId") templateId: string,
-    @Query("groupId") groupId: string,
-    @Query("channel") channel: string,
-    @Req() request: Request
-  ) {
-    return this.service.instantSendNotification(
-      module,
-      eventTrigger,
-      templateId,
-      groupId,
-      channel,
-      request
-    );
-  }
-
+export class notificationController {
+constructor(private service: NotificationService) {}
+  
   @Post("scheduledSend")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
@@ -105,7 +76,7 @@ export class NotificationController {
   }
 
 
-  @Get("log/:id")
+  @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Notification Log detail." })
@@ -117,10 +88,13 @@ export class NotificationController {
     @Param("id") id: string,
     @Req() request: Request
   ) {
-    return this.service.getNotification(id, request);
+    return this.service.getScheduleNotification(id, request);
   }
 
-  @Post("log/search")
+
+
+
+  @Post("/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Notification log list." })
   @ApiBody({ type: NotificationSearchDto })
@@ -133,9 +107,10 @@ export class NotificationController {
     @Req() request: Request,
     @Body() notificationSearchDto: NotificationSearchDto
   ) {
-    return await this.service.searchNotification(
+    return await this.service.searchSchedulehNotification(
       request,
       notificationSearchDto
     );
   }
+
 }
