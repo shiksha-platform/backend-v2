@@ -94,9 +94,9 @@ export class StudentController {
     return await this.service.searchStudent(request, studentSearchDto);
   }
 
-  @Get("esamwad/getAll")
+  @Get("/getAll")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
+  //@ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Student detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({

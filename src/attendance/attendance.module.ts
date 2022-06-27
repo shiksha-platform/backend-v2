@@ -1,9 +1,16 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { AttendanceController } from "./attendance.controller";
-import { AttendanceService } from "../adapters/sunbirdrc/attendance.adapter";
+import {
+  AttendanceService,
+  SunbirdAttendanceToken,
+} from "../adapters/sunbirdrc/attendance.adapter";
 import { HttpModule } from "@nestjs/axios";
 import { ScheduleModule } from "@nestjs/schedule";
-import { AttendanceHasuraService } from "src/adapters/hasura/attendance.adapter";
+import {
+  AttendanceEsamwadService,
+  EsamwadAttendanceToken,
+} from "src/adapters/esamwad/attendance.adapter";
+
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -14,6 +21,11 @@ const ttl = process.env.TTL as never;
     ScheduleModule.forRoot(),
   ],
   controllers: [AttendanceController],
-  providers: [AttendanceService, AttendanceHasuraService],
+  providers: [
+    AttendanceService,
+    AttendanceEsamwadService,
+    { provide: SunbirdAttendanceToken, useClass: AttendanceService },
+    { provide: EsamwadAttendanceToken, useClass: AttendanceEsamwadService },
+  ],
 })
 export class AttendanceModule {}
