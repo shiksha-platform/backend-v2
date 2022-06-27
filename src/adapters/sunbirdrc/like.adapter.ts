@@ -120,4 +120,35 @@ export class LikeService {
         })
       );
   }
+
+  public async getCountLike( contextId:string, context:string,  request: any) {
+    let axios = require("axios");
+    let data = {
+      filters: {
+        contextId: {
+          eq: `${contextId}`,
+        },
+        context: {
+          eq: `${context}`,
+        },
+      },
+    };
+
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+
+      data: data,
+    };
+
+    const response = await axios(config);
+    let resData = response?.data;
+    let result = resData.map((item: any) => new LikeDto(item));
+    return new SuccessResponse({
+      statusCode: 200,
+      message: " Ok.",
+      data:result.length,
+    });
+    
+  }
 }

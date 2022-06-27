@@ -47,7 +47,7 @@ export class NotificationLogDto {
     description: "options of notification",
   })
   @Expose()
-  options: [];
+  options: string;
 
   @Expose()
   createdAt: string;
