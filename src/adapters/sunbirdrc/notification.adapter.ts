@@ -283,8 +283,15 @@ export class NotificationService {
     let hrs = parseInt(hours);
     let mins = +minutes;
 
+    let ist = new Date(year, mon, d, hrs, mins);
+    let utc = moment.utc(ist).format("YYYY-MM-DD HH:mm:ss ");
+    let utcMin = utc.slice(14, 16);
+    let utcHrs = utc.slice(11, 13);
+    let utcDay = utc.slice(8, 11);
+    let utcMon = utc.slice(5, 7);
+
     const job = new CronJob(
-      `0 ${minutes} ${hours} ${dd} ${mon} *`,
+      `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
       async () => {
         var axios = require("axios");
         const result = Math.random().toString(27).substring(6, 8);
@@ -322,81 +329,74 @@ export class NotificationService {
 
         const consversationLogicID = resData.result.data.id;
 
-        if (
-          params.module[module] &&
-          params.module[module].eventTrigger[eventTrigger]
-        ) {
-          // Bot Logic
-          var botData = {
-            data: {
-              startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
-              name: `Shiksha Notification Broadcast ${result}`,
-              users: [notificationTrigger[0].userSegment],
-              logic: [consversationLogicID],
-              status: "enabled",
-              startDate: moment().format("Y-MM-DD"),
-              endDate: moment().format("Y-MM-DD"),
-            },
-          };
+        // Bot Logic
+        var botData = {
+          data: {
+            startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+            name: `Shiksha Notification Broadcast ${result}`,
+            users: [notificationTrigger[0].userSegment],
+            logic: [consversationLogicID],
+            status: "enabled",
+            startDate: moment().format("Y-MM-DD"),
+            endDate: moment().format("Y-MM-DD"),
+          },
+        };
 
-          var botConfig = {
-            method: "post",
-            url: `${process.env.UCIAPI}/bot/create`,
-            headers: {
-              "admin-token": process.env.UCIADMINTOKEN,
-              "Content-Type": "application/json",
-            },
-            data: botData,
-          };
-          const botResponse = await axios(botConfig);
-          const botResData = botResponse.data;
-          const botCreateID = botResData.result.data.id;
+        var botConfig = {
+          method: "post",
+          url: `${process.env.UCIAPI}/bot/create`,
+          headers: {
+            "admin-token": process.env.UCIADMINTOKEN,
+            "Content-Type": "application/json",
+          },
+          data: botData,
+        };
+        const botResponse = await axios(botConfig);
+        const botResData = botResponse.data;
+        const botCreateID = botResData.result.data.id;
 
-          var configs = {
-            method: "get",
-            url: `${process.env.BOTCALL}${botCreateID}`,
-            headers: {},
-          };
-          const botres = await axios(configs);
+        var configs = {
+          method: "get",
+          url: `${process.env.BOTCALL}${botCreateID}`,
+          headers: {},
+        };
+        const botres = await axios(configs);
 
-          const sendData = botres.data;
-          // Notification Log
+        const sendData = botres.data;
+        // Notification Log
 
-          var notificationData = {
-            medium: channel,
-            templateId: templateId,
-            recepients: [notificationTrigger[0].userSegment],
-            sentDate: new Date(),
-            sentBy: sentBy,
-            module: module,
-            options: "",
-            content: contentData.body,
-            scheduleDate: date,
-            hours,
-            minutes,
-            month,
-          };
-          var logConfig = {
-            method: "post",
-            url: `${process.env.BASEAPIURL}Notificationlog`,
-            headers: {
-              Authorization: request.headers.authorization,
-            },
-            data: notificationData,
-          };
-          const logRes = await axios(logConfig);
+        var notificationData = {
+          medium: channel,
+          templateId: templateId,
+          recepients: [notificationTrigger[0].userSegment],
+          sentDate: new Date(),
+          sentBy: sentBy,
+          module: module,
+          options: "",
+          content: contentData.body,
+          scheduleDate: date,
+          hours,
+          minutes,
+          month,
+        };
+        var logConfig = {
+          method: "post",
+          url: `${process.env.BASEAPIURL}Notificationlog`,
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+          data: notificationData,
+        };
+        const logRes = await axios(logConfig);
 
-          var deleteCron = {
-            method: "delete",
-            url: `${this.baseURL}Notificationschedule/${osid}`,
-            headers: {
-              Authorization: request.headers.authorization,
-            },
-          };
-          const deletedNotification = await axios(deleteCron);
-        } else {
-          return "module not found";
-        }
+        var deleteCron = {
+          method: "delete",
+          url: `${this.baseURL}Notificationschedule/${osid}`,
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+        };
+        const deletedNotification = await axios(deleteCron);
 
         job.stop();
       }
@@ -482,6 +482,74 @@ export class NotificationService {
           var error = new ErrorResponse({
             errorCode: e.response.status,
             errorMessage: e.response.data.params.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
+  }
+
+  //schedule
+  public async searchSchedulehNotification(
+    request: any,
+    notificationSearchDto: NotificationSearchDto
+  ) {
+    return this.httpService
+      .post(
+        `${this.baseURL}/Notificationschedule/search`,
+        notificationSearchDto,
+        {
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+        }
+      )
+      .pipe(
+        map((response) => {
+          const responsedata = response.data.map(
+            (item: any) => new NotificationLogDto(item)
+          );
+
+          return new SuccessResponse({
+            statusCode: response.status,
+            message: "Ok.",
+            data: responsedata,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response.status,
+            errorMessage: e.response.data.params.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
+  }
+
+  public async getScheduleNotification(
+    ScheduleNotificationid: string,
+    request: any
+  ) {
+    return this.httpService
+      .get(`${this.baseURL}/Notificationschedule/${ScheduleNotificationid}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          let scheduleNotificationData = axiosResponse.data;
+          const templateDto = new NotificationLogDto(scheduleNotificationData);
+
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "ok.",
+            data: templateDto,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
           });
           throw new HttpException(error, e.response.status);
         })
