@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 
-export class AdminFormDto {
+export class ConfigFormDto {
   @Expose()
-  adminFormId: string;
+  configFormId: string;
   @ApiProperty()
   @Expose()
   moduleId: string;
@@ -24,7 +24,7 @@ export class AdminFormDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.adminFormId = obj?.osid ? `${obj.osid}` : "";
+    this.configFormId = obj?.osid ? `${obj.osid}` : "";
     this.moduleId = obj?.moduleId ? `${obj.moduleId}` : "";
     this.formSchema = obj?.formSchema ? `${obj.formSchema}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";

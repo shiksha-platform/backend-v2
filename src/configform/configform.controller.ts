@@ -1,4 +1,4 @@
-import { AdminFormService } from "../adapters/sunbirdrc/configform.adapter";
+import { ConfigFormService } from "../adapters/sunbirdrc/configform.adapter";
 
 import {
   CacheInterceptor,
@@ -27,71 +27,71 @@ import {
   SerializeOptions,
   Req,
 } from "@nestjs/common";
-import { AdminFormDto } from "./dto/configform.dto";
-import { AdminFormSearchDto } from "./dto/configform-search.dto";
-@ApiTags("AdminForm")
-@Controller("adminForm")
-export class AdminFormController {
+import { ConfigFormDto } from "./dto/configform.dto";
+import { ConfigFormSearchDto } from "./dto/configform-search.dto";
+@ApiTags("ConfigForm")
+@Controller("configForm")
+export class ConfigFormController {
   constructor(
-    private service: AdminFormService,
+    private service: ConfigFormService,
     @Inject(CACHE_MANAGER) private cacheManager
   ) {}
 
   @Get("admin/configform/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "AdminForm detail." })
+  @ApiOkResponse({ description: "ConfigForm detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getAdminForm(@Param("id") adminFormId: string, @Req() request: Request) {
-    return this.service.getAdminForm(adminFormId, request);
+  getConfigForm(@Param("id") configFormId: string, @Req() request: Request) {
+    return this.service.getConfigForm(configFormId, request);
   }
 
   @Post("admin/configform")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "AdminForm has been created successfully.",
+    description: "ConfigForm has been created successfully.",
   })
-  @ApiBody({ type: AdminFormDto })
+  @ApiBody({ type: ConfigFormDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createAdminForm(
+  public async createConfigForm(
     @Req() request: Request,
-    @Body() adminFormDto: AdminFormDto
+    @Body() configFormDto: ConfigFormDto
   ) {
-    return this.service.createAdminForm(request, adminFormDto);
+    return this.service.createConfigForm(request, configFormDto);
   }
 
   @Put("admin/configform/:id")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "AdminForm has been updated successfully.",
+    description: "ConfigForm has been updated successfully.",
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async updateAdminForm(
+  public async updateConfigForm(
     @Param("id") id: string,
     @Req() request: Request,
-    @Body() adminFormDto: AdminFormDto
+    @Body() configFormDto: ConfigFormDto
   ) {
-    return await this.service.updateAdminForm(id, request, adminFormDto);
+    return await this.service.updateConfigForm(id, request, configFormDto);
   }
 
   @Post("admin/configform/search")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "AdminForm list." })
-  @ApiBody({ type: AdminFormSearchDto })
+  @ApiCreatedResponse({ description: "ConfigForm list." })
+  @ApiBody({ type: ConfigFormSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async searchAdminForm(
+  public async searchConfigForm(
     @Req() request: Request,
-    @Body() adminFormSearchDto: AdminFormSearchDto
+    @Body() configFormSearchDto: ConfigFormSearchDto
   ) {
-    return await this.service.searchAdminForm(request, adminFormSearchDto);
+    return await this.service.searchConfigForm(request, configFormSearchDto);
   }
 }
