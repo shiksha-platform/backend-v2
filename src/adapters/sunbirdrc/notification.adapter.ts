@@ -114,7 +114,7 @@ export class NotificationService {
     var notificationModule = params.filter((obj: any) => obj.module === module);
     const triggers = notificationModule[0].eventTriggers;
     var notificationTrigger = triggers.filter(
-      (obj: any) => obj.date === eventTrigger
+      (obj: any) => obj.name === eventTrigger
     );
 
     var botData = {
@@ -235,7 +235,7 @@ export class NotificationService {
     var notificationModule = params.filter((obj: any) => obj.module === module);
     const triggers = notificationModule[0].eventTriggers;
     var notificationTrigger = triggers.filter(
-      (obj: any) => obj.date === eventTrigger
+      (obj: any) => obj.name === eventTrigger
     );
 
     //save notification
