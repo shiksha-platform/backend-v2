@@ -3,6 +3,8 @@ import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 import { IServicelocator } from "../attendanceservicelocator";
 import { AttendanceDto } from "src/attendance/dto/attendance.dto";
+import { EsamwadAttendanceDto } from "src/attendance/dto/esamwad-attendance.dto";
+import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 export const EsamwadAttendanceToken = "EsamwadAttendance";
 @Injectable()
 export class AttendanceEsamwadService implements IServicelocator {
@@ -19,6 +21,7 @@ export class AttendanceEsamwadService implements IServicelocator {
           taken_by_school_id
           temperature
           updated
+          created
           date
           is_present
           id
@@ -41,16 +44,29 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responseData = await axios(config);
     const response = responseData.data.data.attendance;
 
-    const mapping = {
-      attendanceId: response[0].id,
-      schoolId: response[0].taken_by_school_id,
-      userId: response[0].student_id,
-      attendanceDate: response[0].date,
-      attendance: response[0].is_present,
-      metadata: response[0].temperature,
-    };
+    console.log("46", response);
 
-    const responsedata = response.map((item: any) => mapping);
+    let attendance = response.map((e: any) => {
+      return e.is_present;
+    });
+
+    let isPresent: any;
+    if (attendance[0] === "true") {
+      isPresent = "Present";
+    } else {
+      isPresent = "Absent";
+    }
+
+    console.log(isPresent);
+
+    console.log("52", attendance[0]);
+
+    const responsedata = response.map(
+      (item: any) => new EsamwadAttendanceDto(item)
+    );
+
+    console.log(responsedata);
+
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",
@@ -58,8 +74,12 @@ export class AttendanceEsamwadService implements IServicelocator {
     });
   }
 
-  public async getAttendanceByLimit(limit: string, request: any) {
+  public async searchAttendance(
+    request: any,
+    attendanceSearchDto: AttendanceSearchDto
+  ) {
     var axios = require("axios");
+    let limit = attendanceSearchDto.limit;
     var data = {
       query: `query getAttendance($limit:Int!) {
     attendance(limit:$limit) {
@@ -88,16 +108,9 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responseData = await axios(config);
     const response = responseData.data.data.attendance;
 
-    const mapping = {
-      attendanceId: response[0].id,
-      schoolId: response[0].taken_by_school_id,
-      userId: response[0].student_id,
-      attendanceDate: response[0].date,
-      attendance: response[0].is_present,
-      metadata: response[0].temperature,
-    };
-
-    const responsedata = response.map((item: any) => mapping);
+    const responsedata = response.map(
+      (item: any) => new EsamwadAttendanceDto(item)
+    );
     console.log(response);
 
     return new SuccessResponse({
@@ -110,8 +123,8 @@ export class AttendanceEsamwadService implements IServicelocator {
   public async createAttendance(request: any, attendanceDto: AttendanceDto) {
     var axios = require("axios");
     var checkAttendance = {
-      query: `query getAttendance($id:Int!) {
-        attendance(where: {id: {_eq: $id}}) {
+      query: `query getAttendance($student_id:Int!,$date:date) {
+        attendance(where: {student_id: {_eq: $student_id}, date:{_eq:$date}}) {
           student_id
           taken_by_school_id
           temperature
@@ -122,7 +135,8 @@ export class AttendanceEsamwadService implements IServicelocator {
         }
       }`,
       variables: {
-        id: attendanceDto.userId,
+        student_id: attendanceDto.userId,
+        date: attendanceDto.attendanceDate,
       },
     };
     var attendanceConfig = {
@@ -137,7 +151,18 @@ export class AttendanceEsamwadService implements IServicelocator {
 
     const responsedata = await axios(attendanceConfig);
     const attendanceResponse = responsedata.data.data.attendance;
-    console.log("139", attendanceResponse);
+    //console.log("139", attendanceResponse);
+
+    let result = attendanceResponse.map(
+      (item: any) => new EsamwadAttendanceDto(item)
+    );
+
+    console.log(result);
+
+    let attendanceId = result.map(function (EsamwadAttendanceDto) {
+      return EsamwadAttendanceDto.attendanceId;
+    });
+    console.log(attendanceId);
 
     let isPresent: any;
     if (attendanceDto.attendance === "Present") {
@@ -145,21 +170,149 @@ export class AttendanceEsamwadService implements IServicelocator {
     } else {
       isPresent = "false";
     }
+    if (attendanceResponse.length > 0) {
+      var updateData = {
+        query: `mutation UpdateAttendance($isPresent:Boolean,$id:Int) {
+          update_attendance(_set: {is_present: $isPresent}, where: {id: {_eq: $id}}) {
+            affected_rows
+          }
+        }`,
+        variables: { isPresent: isPresent, id: attendanceId[0] },
+      };
 
-    var data = {
-      query: `mutation CreateAttendance($date: date, $is_present: Boolean = true, $student_id: Int, $taken_by_school_id: Int, $temperature: float8) {
+      var updateConfig = {
+        method: "post",
+        url: this.baseURL,
+        headers: {
+          "x-hasura-admin-secret": this.adminSecret,
+          "Content-Type": "application/json",
+        },
+        data: updateData,
+      };
+
+      const responseData = await axios(updateConfig);
+      const response = responseData.data;
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok.",
+        data: response,
+      });
+    } else {
+      var data = {
+        query: `mutation CreateAttendance($date: date, $is_present: Boolean = true, $student_id: Int, $taken_by_school_id: Int, $temperature: float8) {
         insert_attendance_one(object: {date: $date, is_present: $is_present, student_id: $student_id, taken_by_school_id: $taken_by_school_id, temperature: $temperature}){
           id,
           updated
         }
       }`,
-      variables: {
-        date: attendanceDto.attendanceDate,
-        is_present: isPresent,
-        student_id: attendanceDto.userId,
-        taken_by_school_id: attendanceDto.schoolId,
-        temperature: attendanceDto.metaData,
+        variables: {
+          date: attendanceDto.attendanceDate,
+          is_present: isPresent,
+          student_id: attendanceDto.userId,
+          taken_by_school_id: attendanceDto.schoolId,
+          temperature: attendanceDto.metaData,
+        },
+      };
+
+      var config = {
+        method: "post",
+        url: this.baseURL,
+        headers: {
+          "x-hasura-admin-secret": this.adminSecret,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const responseData = await axios(config);
+      const response = responseData.data;
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok.",
+        data: response,
+      });
+    }
+  }
+
+  public async updateAttendance(
+    attendanceId: string,
+    request: any,
+    attendanceDto: AttendanceDto
+  ) {
+    var axios = require("axios");
+    let isPresent: any;
+    if (attendanceDto.attendance === "Present") {
+      isPresent = "true";
+    } else {
+      isPresent = "false";
+    }
+    var updateData = {
+      query: `mutation UpdateAttendance($isPresent:Boolean,$id:Int) {
+        update_attendance(_set: {is_present: $isPresent}, where: {id: {_eq: $id}}) {
+          affected_rows
+        }
+      }`,
+      variables: { isPresent: isPresent, id: attendanceId[0] },
+    };
+
+    var updateConfig = {
+      method: "post",
+      url: this.baseURL,
+      headers: {
+        "x-hasura-admin-secret": this.adminSecret,
+        "Content-Type": "application/json",
       },
+      data: updateData,
+    };
+
+    const responseData = await axios(updateConfig);
+    const response = responseData.data;
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok.",
+      data: response,
+    });
+  }
+  public async multipleAttendance(request: any, attendanceData: [Object]) {
+    let attendeeData = attendanceData["attendanceData"];
+
+    attendeeData.forEach((data: any) => {
+      data["attendanceDate"] = attendanceData["attendanceDate"]
+        ? attendanceData["attendanceDate"]
+        : "";
+
+      data["schoolId"] = attendanceData["schoolId"]
+        ? attendanceData["schoolId"]
+        : "";
+
+      this.createAttendance(request, data);
+    });
+  }
+  public async attendanceFilter(
+    date: string,
+    userId: string,
+    attendance: string,
+    groupId: string,
+    schoolId: string
+  ) {
+    var axios = require("axios");
+    var data = {
+      query: `query getClassAttendance($grade: Int!, $schoolId: Int!) {
+        attendance(where: {student: {grade_number: {_eq: $grade}, school_id: {_eq: $schoolId}}}) {
+          id
+          date
+          created
+          is_present
+          student_id
+          taken_by_school_id
+          temperature
+          updated
+        }
+      }`,
+      variables: { grade: groupId, schoolId: schoolId },
     };
 
     var config = {
@@ -172,41 +325,16 @@ export class AttendanceEsamwadService implements IServicelocator {
       data: data,
     };
 
-    const responseData = await axios(config);
-    const response = responseData.data;
+    const responseData = axios(config);
+    const response = responseData.data.data.attendance;
 
+    const responsedata = response.map(
+      (item: any) => new EsamwadAttendanceDto(item)
+    );
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",
-      data: response,
+      data: responsedata,
     });
   }
-
-  // public async multipleAttendance(request: any, attendanceData: [Object]) {
-  //   let attendeeData = attendanceData["attendanceData"];
-
-  //   attendeeData.forEach((data: any) => {
-  //     data["attendanceDate"] = attendanceData["attendanceDate"]
-  //       ? attendanceData["attendanceDate"]
-  //       : "";
-
-  //     data["schoolId"] = attendanceData["schoolId"]
-  //       ? attendanceData["schoolId"]
-  //       : "";
-
-  //     let attendanceDate = data.attendanceDate;
-  //     let attendance = data.attendance;
-  //     let userId = data.userId;
-  //     let schoolId = data.schoolId;
-  //     let temperature = data.temperature;
-
-  //     this.createAttendance(
-  //       attendanceDate,
-  //       attendance,
-  //       userId,
-  //       schoolId,
-  //       temperature
-  //     );
-  //   });
-  // }
 }

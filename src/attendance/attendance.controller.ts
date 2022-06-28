@@ -128,150 +128,133 @@ export class AttendanceController {
   public async updateAttendace(
     @Param("id") attendanceId: string,
     @Req() request: Request,
-    @Body() attendaceDto: AttendanceDto,
+    @Body() attendanceDto: AttendanceDto,
     @UploadedFile() image
   ) {
     const response = {
       image: image?.filename,
     };
 
-    Object.assign(attendaceDto, response);
-    return this.service.updateAttendance(attendanceId, request, attendaceDto);
+    Object.assign(attendanceDto, response);
+    if (process.env.ATTENDANCESOURCE === "sunbird") {
+      return this.sunbirdProvider.updateAttendance(
+        attendanceId,
+        request,
+        attendanceDto
+      );
+    } else {
+      return this.eSamwadProvider.updateAttendance(
+        attendanceId,
+        request,
+        attendanceDto
+      );
+    }
   }
 
-  // @Post("/search")
+  @Post("bulkAttendance")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Attendance has been created successfully.",
+  })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async multipleAttendance(
+    @Req() request: Request,
+    @Body() attendanceDto: [Object]
+  ) {
+    if (process.env.ATTENDANCESOURCE === "sunbird") {
+      return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
+    } else {
+      return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
+    }
+  }
+
+  @Post("/search")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Attendance list." })
+  @ApiBody({ type: AttendanceSearchDto })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  public async searchAttendance(
+    @Req() request: Request,
+    @Body() studentSearchDto: AttendanceSearchDto
+  ) {
+    if (process.env.ATTENDANCESOURCE === "sunbird") {
+      return this.sunbirdProvider.searchAttendance(request, studentSearchDto);
+    } else {
+      return this.eSamwadProvider.searchAttendance(request, studentSearchDto);
+    }
+  }
+
+  @Get("usersegment/:attendance")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   // @ApiBasicAuth("access-token")
-  // @ApiCreatedResponse({ description: "Attendance list." })
-  // @ApiBody({ type: AttendanceSearchDto })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // @SerializeOptions({
-  //   strategy: "excludeAll",
-  // })
-  // public async searchAttendance(
-  //   @Req() request: Request,
-  //   @Body() studentSearchDto: AttendanceSearchDto
-  // ) {
-  //   return await this.service.searchAttendance(request, studentSearchDto);
-  // }
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async userSegment(
+    @Param("attendance") attendance: string,
+    @Query("date") date: string,
+    @Req() request: Request
+  ) {
+    return await this.service.userSegment(attendance, date, request);
+  }
 
-  // @Get("usersegment/:attendance")
-  // @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // // @ApiBasicAuth("access-token")
-  // @ApiOkResponse({ description: " Ok." })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // public async userSegment(
-  //   @Param("attendance") attendance: string,
-  //   @Query("date") date: string,
-  //   @Req() request: Request
-  // ) {
-  //   return await this.service.userSegment(attendance, date, request);
-  // }
+  @Get("")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "fromDate", required: false })
+  @ApiQuery({ name: "toDate", required: false })
+  @ApiQuery({ name: "userId", required: false })
+  @ApiQuery({ name: "userType", required: false })
+  @ApiQuery({ name: "attendance", required: false })
+  @ApiQuery({ name: "groupId", required: false })
+  @ApiQuery({ name: "schoolId", required: false })
+  @ApiQuery({ name: "eventId", required: false })
+  @ApiQuery({ name: "topicId", required: false })
+  public async attendanceFilter(
+    @Query("fromDate") date: string,
+    @Query("toDate") toDate: string,
+    @Query("userId") userId: string,
+    @Query("userType") userType: string,
+    @Query("attendance") attendance: string,
+    @Query("groupId") groupId: string,
+    @Query("schoolId") schoolId: string,
+    @Query("eventId") eventId: string,
+    @Query("topicId") topicId: string,
 
-  // @Get("")
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // @ApiBasicAuth("access-token")
-  // @ApiOkResponse({ description: " Ok." })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // @ApiQuery({ name: "fromDate", required: false })
-  // @ApiQuery({ name: "toDate", required: false })
-  // @ApiQuery({ name: "userId", required: false })
-  // @ApiQuery({ name: "userType", required: false })
-  // @ApiQuery({ name: "attendance", required: false })
-  // @ApiQuery({ name: "groupId", required: false })
-  // @ApiQuery({ name: "schoolId", required: false })
-  // @ApiQuery({ name: "eventId", required: false })
-  // @ApiQuery({ name: "topicId", required: false })
-  // public async attendanceFilter(
-  //   @Query("fromDate") date: string,
-  //   @Query("toDate") toDate: string,
-  //   @Query("userId") userId: string,
-  //   @Query("userType") userType: string,
-  //   @Query("attendance") attendance: string,
-  //   @Query("groupId") groupId: string,
-  //   @Query("schoolId") schoolId: string,
-  //   @Query("eventId") eventId: string,
-  //   @Query("topicId") topicId: string,
-
-  //   @Req() request: Request
-  // ) {
-  //   return await this.service.attendanceFilter(
-  //     date,
-  //     toDate,
-  //     userId,
-  //     userType,
-  //     attendance,
-  //     groupId,
-  //     schoolId,
-  //     eventId,
-  //     topicId,
-  //     request
-  //   );
-  // }
-
-  // @Post("/limit")
-  // @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // //@ApiBasicAuth("access-token")
-  // @ApiCreatedResponse({ description: "Attendance detail" })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // public async getHasuraAttendance(
-  //   @Param("limit") limit: string,
-  //   @Req() request: Request
-  // ) {
-  //   return this.hasuraService.getHasuraAttendance(limit, request);
-  // }
-
-  // @Post("/create")
-  // @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // //@ApiBasicAuth("access-token")
-  // @ApiCreatedResponse({ description: "Attendance detail" })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // @ApiQuery({ name: "attendanceDate", required: false })
-  // @ApiQuery({ name: "attendance", required: false })
-  // @ApiQuery({ name: "userId", required: false })
-  // @ApiQuery({ name: "schoolId", required: false })
-  // @ApiQuery({ name: "temperature", required: false })
-  // public async createAttendance(
-  //   @Query("attendanceDate") attendanceDate: string,
-  //   @Query("attendance") attendance: string,
-  //   @Query("userId") userId: string,
-  //   @Query("schoolId") schoolId: string,
-  //   @Query("temperature") temperature: string
-  //   //@Req() request: Request
-  // ) {
-  //   return this.hasuraService.createAttendance(
-  //     attendanceDate,
-  //     attendance,
-  //     userId,
-  //     schoolId,
-  //     temperature
-  //     //request
-  //   );
-  // }
-
-  // @Post("/:studentId")
-  // @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // //@ApiBasicAuth("access-token")
-  // @ApiCreatedResponse({ description: "Attendance detail" })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // public async getAttendanceByStudentId(
-  //   @Param("studentId") studentId: string,
-  //   @Req() request: Request
-  // ) {
-  //   return this.hasuraService.getAttendanceByStudentId(studentId, request);
-  // }
-
-  // @Post("esamwad/bulkAttendance")
-  // //@ApiBasicAuth("access-token")
-  // @ApiCreatedResponse({
-  //   description: "Attendance has been created successfully.",
-  // })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // public async multipleAttendance(
-  //   @Req() request: Request,
-  //   @Body() attendanceCreate: [Object]
-  // ) {
-  //   return this.hasuraService.multipleAttendance(request, attendanceCreate);
-  // }
+    @Req() request: Request
+  ) {
+    if (process.env.ATTENDANCESOURCE === "sunbird") {
+      return this.sunbirdProvider.attendanceFilter(
+        date,
+        toDate,
+        userId,
+        userType,
+        attendance,
+        groupId,
+        schoolId,
+        eventId,
+        topicId,
+        request
+      );
+    } else {
+      return this.eSamwadProvider.attendanceFilter(
+        date,
+        toDate,
+        userId,
+        userType,
+        attendance,
+        groupId,
+        schoolId,
+        eventId,
+        topicId,
+        request
+      );
+    }
+  }
 }

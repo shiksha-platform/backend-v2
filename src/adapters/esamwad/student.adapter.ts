@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
-import { EsamwadStudentDto } from "src/common-dto/diksha-student.dto";
+import { EsamwadStudentDto } from "src/student/dto/esamwad-student.dto";
 import { AxiosResponse } from "axios";
 import { map, catchError } from "rxjs";
 import { ErrorResponse } from "src/error-response";

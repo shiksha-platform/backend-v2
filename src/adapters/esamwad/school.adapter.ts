@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
-import { EsamwadSchoolDto } from "src/common-dto/diksha-school.dto";
+import { EsamwadSchoolDto } from "src/school/dto/esamwad-school.dto";
+
 @Injectable()
 export class EsamwadSchoolService {
   constructor(private httpService: HttpService) {}
