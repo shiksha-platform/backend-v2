@@ -56,11 +56,11 @@ export class NotificationService {
         name: `Shiksha ${channel} Broadcast ${result}`,
         transformers: [
           {
-            id: "774cd134-6657-4688-85f6-6338e2323dde",
+            id: process.env.TRANSFORMERSID,
             meta: {
               body: contentData.body,
               type: contentData.type,
-              user: "25bbdbf7-5286-4b85-a03c-c53d1d990a23",
+              user: process.env.TRANSFORMERSUSER,
             },
             type: "broadcast",
           },
@@ -164,8 +164,6 @@ export class NotificationService {
       options: "",
       content: contentData.body,
     };
-
-    console.log(notificationData);
 
     let log = this.saveNotificationLog(notificationData, request);
     return log;
@@ -300,11 +298,11 @@ export class NotificationService {
             name: `Shiksha ${channel} Broadcast ${result}`,
             transformers: [
               {
-                id: "774cd134-6657-4688-85f6-6338e2323dde",
+                id: process.env.TRANSFORMERSID,
                 meta: {
                   body: contentData.body,
                   type: contentData.type,
-                  user: "25bbdbf7-5286-4b85-a03c-c53d1d990a23",
+                  user: process.env.TRANSFORMERSUSER,
                 },
                 type: "broadcast",
               },
