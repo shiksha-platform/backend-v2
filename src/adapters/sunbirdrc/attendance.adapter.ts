@@ -41,29 +41,29 @@ export class AttendanceService implements IServicelocator {
       );
   }
 
-  // public async updateAttendance(
-  //   attendanceId: string,
-  //   request: any,
-  //   attendanceDto: AttendanceDto
-  // ) {
-  //   var axios = require("axios");
-  //   var data = attendanceDto;
+  public async updateAttendance(
+    attendanceId: string,
+    request: any,
+    attendanceDto: AttendanceDto
+  ) {
+    var axios = require("axios");
+    var data = attendanceDto;
 
-  //   var config = {
-  //     method: "put",
-  //     url: `${this.url}/${attendanceId}`,
-  //     headers: {
-  //       Authorization: request.headers.authorization,
-  //     },
-  //     data: data,
-  //   };
-  //   const response = await axios(config);
-  //   return new SuccessResponse({
-  //     statusCode: 200,
-  //     message: " Ok.",
-  //     data: response.data,
-  //   });
-  // }
+    var config = {
+      method: "put",
+      url: `${this.url}/${attendanceId}`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+    const response = await axios(config);
+    return new SuccessResponse({
+      statusCode: 200,
+      message: " Ok.",
+      data: response.data,
+    });
+  }
 
   // public async searchAttendance(
   //   request: any,
@@ -273,70 +273,73 @@ export class AttendanceService implements IServicelocator {
   //   });
   // }
 
-  // public async createAttendance(request: any, attendanceDto: AttendanceDto) {
-  //   let axios = require("axios");
-  //   let data = {
-  //     filters: {
-  //       userId: {
-  //         eq: `${attendanceDto.userId}`,
-  //       },
-  //       attendanceDate: {
-  //         eq: `${attendanceDto.attendanceDate}`,
-  //       },
-  //     },
-  //   };
+  public async createAttendance(request: any, attendanceDto: AttendanceDto) {
+    let axios = require("axios");
+    let data = {
+      filters: {
+        userId: {
+          eq: `${attendanceDto.userId}`,
+        },
+        attendanceDate: {
+          eq: `${attendanceDto.attendanceDate}`,
+        },
+      },
+    };
 
-  //   let attendanceCreate = {
-  //     method: "post",
-  //     url: `${this.url}/search`,
+    let attendanceCreate = {
+      method: "post",
+      url: `${this.url}/search`,
 
-  //     data: data,
-  //   };
+      data: data,
+    };
 
-  //   const response = await axios(attendanceCreate);
-  //   let resData = response?.data;
-  //   let result = resData.map((item: any) => new AttendanceDto(item));
+    const response = await axios(attendanceCreate);
+    let resData = response?.data;
+    let result = resData.map((item: any) => new AttendanceDto(item));
 
-  //   let attendanceId = result.map(function (AttendanceDto) {
-  //     return AttendanceDto.attendanceId;
-  //   });
+    let attendanceId = result.map(function (AttendanceDto) {
+      return AttendanceDto.attendanceId;
+    });
 
-  //   if (resData.length > 0) {
-  //     var udateData = attendanceDto;
-  //     var updateAttendance = {
-  //       method: "put",
-  //       url: `${this.url}/${attendanceId}`,
-  //       headers: {
-  //         Authorization: request.headers.authorization,
-  //       },
-  //       data: udateData,
-  //     };
-  //     const response = await axios(updateAttendance);
-  //     return new SuccessResponse({
-  //       statusCode: 200,
-  //       message: " Ok.",
-  //       data: response.data,
-  //     });
-  //   } else {
-  //     var createAttendance = attendanceDto;
-  //     var create = {
-  //       method: "post",
-  //       url: `${this.url}`,
-  //       headers: {
-  //         Authorization: request.headers.authorization,
-  //       },
-  //       data: createAttendance,
-  //     };
+    if (resData.length > 0) {
+      var udateData = attendanceDto;
+      var updateAttendance = {
+        method: "put",
+        url: `${this.url}/${attendanceId}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: udateData,
+      };
 
-  //     const response = await axios(create);
+      const response = await axios(updateAttendance);
+      return new SuccessResponse({
+        statusCode: 200,
+        message: " Ok.",
+        data: response.data,
+      });
+    } else {
+      var createAttendance = attendanceDto;
+      var create = {
+        method: "post",
+        url: `${this.url}`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: createAttendance,
+      };
 
-  //     return new SuccessResponse({
-  //       statusCode: 200,
-  //       message: " Ok.",
-  //       data: response.data,
-  //     });
-  //   }
-  // }
+      console.log(create);
+
+      const response = await axios(create);
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: " Ok.",
+        data: response.data,
+      });
+    }
+  }
   // public async multipleAttendance(request: any, attendanceData: [Object]) {
   //   let attendeeData = attendanceData["attendanceData"];
 
