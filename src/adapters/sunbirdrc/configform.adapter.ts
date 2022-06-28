@@ -2,12 +2,12 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, HttpException } from "@nestjs/common";
 const resolvePath = require("object-resolve-path");
 import { AxiosResponse } from "axios";
-import { AdminFormDto } from "src/adminForm/dto/adminForm.dto";
+import { AdminFormDto } from "src/configform/dto/configform.dto";
 import { first, map, Observable } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
-import { AdminFormSearchDto } from "src/adminForm/dto/adminForm-search.dto";
+import { AdminFormSearchDto } from "src/configform/dto/configform-search.dto";
 @Injectable()
 export class AdminFormService {
   constructor(private httpService: HttpService) {}

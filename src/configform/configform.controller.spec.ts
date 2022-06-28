@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AdminFormController } from "./adminForm.controller";
+import { AdminFormController } from "./configform.controller";
 
 describe("AdminFormController", () => {
   let controller: AdminFormController;

@@ -1,4 +1,4 @@
-import { AdminFormService } from "../adapters/sunbirdrc/adminForm.adapter";
+import { AdminFormService } from "../adapters/sunbirdrc/configform.adapter";
 
 import {
   CacheInterceptor,
@@ -27,8 +27,8 @@ import {
   SerializeOptions,
   Req,
 } from "@nestjs/common";
-import { AdminFormDto } from "./dto/adminForm.dto";
-import { AdminFormSearchDto } from "./dto/adminForm-search.dto";
+import { AdminFormDto } from "./dto/configform.dto";
+import { AdminFormSearchDto } from "./dto/configform-search.dto";
 @ApiTags("AdminForm")
 @Controller("adminForm")
 export class AdminFormController {
@@ -37,7 +37,7 @@ export class AdminFormController {
     @Inject(CACHE_MANAGER) private cacheManager
   ) {}
 
-  @Get("/:id")
+  @Get("admin/configform/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "AdminForm detail." })
@@ -49,7 +49,7 @@ export class AdminFormController {
     return this.service.getAdminForm(adminFormId, request);
   }
 
-  @Post()
+  @Post("admin/configform")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
     description: "AdminForm has been created successfully.",
@@ -64,7 +64,7 @@ export class AdminFormController {
     return this.service.createAdminForm(request, adminFormDto);
   }
 
-  @Put("/:id")
+  @Put("admin/configform/:id")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
     description: "AdminForm has been updated successfully.",
@@ -79,7 +79,7 @@ export class AdminFormController {
     return await this.service.updateAdminForm(id, request, adminFormDto);
   }
 
-  @Post("/search")
+  @Post("admin/configform/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "AdminForm list." })
   @ApiBody({ type: AdminFormSearchDto })

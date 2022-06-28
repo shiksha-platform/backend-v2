@@ -1,6 +1,6 @@
 import { CacheModule, Module } from "@nestjs/common";
-import { AdminFormController } from "./adminForm.controller";
-import { AdminFormService } from "../adapters/sunbirdrc/adminForm.adapter";
+import { AdminFormController } from "./configform.controller";
+import { AdminFormService } from "../adapters/sunbirdrc/configform.adapter";
 import { HttpModule } from "@nestjs/axios";
 const ttl = process.env.TTL as never;
 @Module({
