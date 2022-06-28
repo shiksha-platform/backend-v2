@@ -121,7 +121,7 @@ export class LikeService {
       );
   }
 
-  public async getCountLike( contextId:string, context:string,  request: any) {
+  public async getCountLike(contextId: string, context: string, request: any) {
     let axios = require("axios");
     let data = {
       filters: {
@@ -147,8 +147,34 @@ export class LikeService {
     return new SuccessResponse({
       statusCode: 200,
       message: " Ok.",
-      data:result.length,
+      data: result.length,
     });
-    
+  }
+
+  public async deleteLike(likeId: string, request: any) {
+    return this.httpService
+      .delete(`${this.url}/${likeId}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          let data = axiosResponse.data;
+
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "ok.",
+            data: data,
+          });
+        }),
+        catchError((e) => {
+          var error = new ErrorResponse({
+            errorCode: e.response?.status,
+            errorMessage: e.response?.data?.params?.errmsg,
+          });
+          throw new HttpException(error, e.response.status);
+        })
+      );
   }
 }
