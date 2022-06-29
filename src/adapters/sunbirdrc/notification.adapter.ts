@@ -39,7 +39,7 @@ export class NotificationService {
     const decoded: any = jwt_decode(authToken);
     let sentBy = decoded.sub;
     var axios = require("axios");
-      const result = Math.random().toString(27).substring(6, 8);
+    const result = Math.random().toString(27).substring(6, 8);
       var confi = {
         method: "get",
         url: `${this.url}${templateId}`,

@@ -19,6 +19,7 @@ import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
 import { ConfigFormModule } from "./configform/configform.module";
 import { LikeModule } from "./like/like.module";
 import { CommentModule } from "./comment/comment.module";
+import { MenuModule } from "./menu/menu.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -41,6 +42,7 @@ import { CommentModule } from "./comment/comment.module";
     ConfigFormModule,
     LikeModule,
     CommentModule,
+    MenuModule
   ],
   controllers: [AppController],
   providers: [AppService],
