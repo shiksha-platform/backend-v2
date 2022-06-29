@@ -11,6 +11,7 @@ import {
   Req,
   CacheInterceptor,
   Query,
+  Delete,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -83,20 +84,29 @@ export class LikeController {
   ) {
     return await this.service.searchLike(request, likeSearchDto);
   }
-  
+
   @Post("/getAllLikes")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "All Like." })
-  @ApiQuery({name:"contextId"})
-  @ApiQuery({name:"context"}) 
- public async getCountLike( @Query("contextId") contextId:string, @Query("context") context:string,  @Req() request: Request) {
+  @ApiQuery({ name: "contextId" })
+  @ApiQuery({ name: "context" })
+  public async getCountLike(
+    @Query("contextId") contextId: string,
+    @Query("context") context: string,
+    @Req() request: Request
+  ) {
     return this.service.getCountLike(contextId, context, request);
   }
+
+  @Delete("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Delete like. " })
+  public async deleteLikes(
+    @Param("id") likeId: string,
+    @Req() request: Request
+  ) {
+    return this.service.deleteLike(likeId, request);
+  }
 }
-
-
-
-
-
-
