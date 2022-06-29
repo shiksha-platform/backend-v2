@@ -64,7 +64,7 @@ export class AttendanceController {
     @Param("id") attendanceId: string,
     @Req() request: Request
   ) {
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.getAttendance(attendanceId, request);
     } else {
       return this.eSamwadProvider.getAttendance(attendanceId, request);
@@ -100,7 +100,7 @@ export class AttendanceController {
 
     Object.assign(attendaceDto, response);
 
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.createAttendance(request, attendaceDto);
     } else {
       return this.eSamwadProvider.createAttendance(request, attendaceDto);
@@ -136,7 +136,7 @@ export class AttendanceController {
     };
 
     Object.assign(attendanceDto, response);
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.updateAttendance(
         attendanceId,
         request,
@@ -151,7 +151,7 @@ export class AttendanceController {
     }
   }
 
-  @Post("bulkAttendance")
+  @Post("multipleAttendance")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
     description: "Attendance has been created successfully.",
@@ -162,7 +162,7 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() attendanceDto: [Object]
   ) {
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
     } else {
       return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
@@ -182,7 +182,7 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() studentSearchDto: AttendanceSearchDto
   ) {
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.searchAttendance(request, studentSearchDto);
     } else {
       return this.eSamwadProvider.searchAttendance(request, studentSearchDto);
@@ -194,12 +194,15 @@ export class AttendanceController {
   // @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "groupId", required: false })
+  @ApiQuery({ name: "date" })
   public async userSegment(
+    @Query("groupId") groupId: string,
     @Param("attendance") attendance: string,
     @Query("date") date: string,
     @Req() request: Request
   ) {
-    return await this.service.userSegment(attendance, date, request);
+    return await this.service.userSegment(groupId, attendance, date, request);
   }
 
   @Get("")
@@ -229,7 +232,7 @@ export class AttendanceController {
 
     @Req() request: Request
   ) {
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.attendanceFilter(
         date,
         toDate,

@@ -93,7 +93,7 @@ export class SchoolController {
     @Req() request: Request,
     @Body() schoolSearchDto: SchoolSearchDto
   ) {
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.searchSchool(request, schoolSearchDto);
     } else {
       return this.eSamwadProvider.searchSchool(request, schoolSearchDto);

@@ -23,7 +23,7 @@ export class EsamwadAttendanceDto {
     this.schoolId = obj?.taken_by_school_id ? obj.taken_by_school_id : "";
     this.userId = obj?.student_id ? `${obj.student_id}` : "";
     this.attendanceDate = obj?.date ? `${obj.date}` : "";
-    this.attendance = obj.attendance;
+    this.attendance = obj.is_present;
     this.metaData = obj?.temperature;
     this.createdAt = obj?.created ? `${obj.created}` : "";
     this.updatedAt = obj?.updated ? `${obj.updated}` : "";

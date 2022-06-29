@@ -24,18 +24,5 @@ export class EsamwadSchoolDto {
     this.classes = obj?.classes;
     this.meta = obj?.session;
     this.location = obj?.location;
-    // this.status = obj?.is_enabled;
-    // this.fatherFirstName = obj?.fatherName;
-    // this.fatherPhoneNumber = obj?.fatherName;
-    // this.motherFirstName = obj?.motherName;
-    // this.meta = obj.subject;
-    //   obj.previous_gra,
-    //   obj.previous_gra,
-    //   obj.previous_acad_yea,
-    //   obj.subject,
-    //   obj.section,
-    //   obj.grade_number,
-    //   obj.streamTag,
-    //   obj.grade_year_mapping;
   }
 }

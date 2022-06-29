@@ -42,13 +42,5 @@ export class EsamwadStudentDto {
     this.fatherPhoneNumber = obj?.fatherName;
     this.motherFirstName = obj?.motherName;
     this.meta = obj.subject;
-    //   obj.previous_gra,
-    //   obj.previous_gra,
-    //   obj.previous_acad_yea,
-    //   obj.subject,
-    //   obj.section,
-    //   obj.grade_number,
-    //   obj.streamTag,
-    //   obj.grade_year_mapping;
   }
 }

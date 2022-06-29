@@ -24,9 +24,9 @@ import {
 
 import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
 import { NotificationSearchDto } from "./dto/notification-search.dto";
-@ApiTags("Notification")
-@Controller("notification")
-export class NotificationController {
+@ApiTags("instant Notification")
+@Controller("instantNotification")
+export class instantNotificationController {
   constructor(private service: NotificationService) {}
 
   @Post("instantSend")
@@ -58,52 +58,6 @@ export class NotificationController {
       request
     );
   }
-
-  @Post("scheduledSend")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Notification has been sent successfully.",
-  })
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "module" })
-  @ApiQuery({ name: "eventTrigger" })
-  @ApiQuery({ name: "templateId" })
-  @ApiQuery({ name: "groupId" })
-  @ApiQuery({ name: "channel" })
-  @ApiQuery({ name: "month",required:false })
-  @ApiQuery({ name: "date" ,required:false})
-  @ApiQuery({ name: "hours", required: false })
-  @ApiQuery({ name: "minutes", required: false })
-  @ApiQuery({ name: "taskName", required: false })
-  public async scheduledSendNotification(
-    @Query("module") module: string,
-    @Query("eventTrigger") eventTrigger: string,
-    @Query("templateId") templateId: string,
-    @Query("groupId") groupId: string,
-    @Query("channel") channel: string,
-    @Query("month") month: string,
-    @Query("date") date: string,
-    @Query("hours") hours: string,
-    @Query("minutes") minutes: string,
-    @Query("taskName") taskName: string,
-    @Req() request: Request
-  ) {
-    return this.service.scheduleSendNotification(
-      module,
-      eventTrigger,
-      templateId,
-      groupId,
-      channel,
-      month,
-      date,
-      hours,
-      minutes,
-      taskName,
-      request
-    );
-  }
-
 
   @Get("log/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)

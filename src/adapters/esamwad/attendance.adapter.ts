@@ -44,18 +44,17 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responseData = await axios(config);
     const response = responseData.data.data.attendance;
 
-    let attendance = response.map((e: any) => {
-      return e.is_present;
+    const attendanceData = response.map((item: any) => {
+      if (item.is_present === true) {
+        item.is_present = "Present";
+      }
+      if (item.is_present === false) {
+        item.is_present = "Absent";
+      }
+      return item;
     });
 
-    let isPresent: any;
-    if (attendance[0] === "true") {
-      isPresent = "Present";
-    } else {
-      isPresent = "Absent";
-    }
-
-    const responsedata = response.map(
+    const responsedata = attendanceData.map(
       (item: any) => new EsamwadAttendanceDto(item)
     );
 
@@ -100,7 +99,17 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responseData = await axios(config);
     const response = responseData.data.data.attendance;
 
-    const responsedata = response.map(
+    const attendanceData = response.map((item: any) => {
+      if (item.is_present === true) {
+        item.is_present = "Present";
+      }
+      if (item.is_present === false) {
+        item.is_present = "Absent";
+      }
+      return item;
+    });
+
+    const responsedata = attendanceData.map(
       (item: any) => new EsamwadAttendanceDto(item)
     );
 
@@ -320,9 +329,19 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responseData = await axios(config);
     const response = responseData.data.data.attendance;
 
-    const responsedata = response.map(
+    const attendanceData = response.map((item: any) => {
+      if (item.is_present === true) {
+        item.is_present = "Present";
+      }
+      if (item.is_present === false) {
+        item.is_present = "Absent";
+      }
+      return item;
+    });
+    const responsedata = attendanceData.map(
       (item: any) => new EsamwadAttendanceDto(item)
     );
+
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",

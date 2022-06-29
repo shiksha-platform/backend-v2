@@ -58,7 +58,7 @@ export class StudentController {
     strategy: "excludeAll",
   })
   getStudent(@Param("id") studentId: string, @Req() request: Request) {
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.getStudent(studentId, request);
     } else {
       return this.eSamwadProvider.getStudent(studentId, request);
@@ -104,7 +104,7 @@ export class StudentController {
     @Req() request: Request,
     @Body() studentSearchDto: StudentSearchDto
   ) {
-    if (process.env.ATTENDANCESOURCE === "sunbird") {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvider.searchStudent(request, studentSearchDto);
     } else {
       return this.eSamwadProvider.searchStudent(request, studentSearchDto);
