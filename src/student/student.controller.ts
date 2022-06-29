@@ -1,5 +1,8 @@
 import { StudentInterface } from "./interfaces/student.interface";
-import { StudentService } from "../adapters/sunbirdrc/student.adapter";
+import {
+  StudentService,
+  SunbirdStudentToken,
+} from "../adapters/sunbirdrc/student.adapter";
 
 import {
   CacheInterceptor,
@@ -30,14 +33,20 @@ import {
 } from "@nestjs/common";
 import { StudentDto } from "./dto/student.dto";
 import { StudentSearchDto } from "./dto/student-search.dto";
-import { EsamwadStudentService } from "src/adapters/esamwad/student.adapter";
+import {
+  EsamwadStudentService,
+  EsamwadStudentToken,
+} from "src/adapters/esamwad/student.adapter";
+import { IServicelocator } from "src/adapters/studentservicelocator";
 @ApiTags("Student")
 @Controller("student")
 export class StudentController {
   constructor(
     private service: StudentService,
     private esamwadService: EsamwadStudentService,
-    @Inject(CACHE_MANAGER) private cacheManager
+    @Inject(CACHE_MANAGER) private cacheManager,
+    @Inject(EsamwadStudentToken) private eSamwadProvider: IServicelocator,
+    @Inject(SunbirdStudentToken) private sunbirdProvider: IServicelocator
   ) {}
 
   @Get("/:id")
@@ -49,7 +58,11 @@ export class StudentController {
     strategy: "excludeAll",
   })
   getStudent(@Param("id") studentId: string, @Req() request: Request) {
-    return this.service.getStudent(studentId, request);
+    if (process.env.ATTENDANCESOURCE === "sunbird") {
+      return this.sunbirdProvider.getStudent(studentId, request);
+    } else {
+      return this.eSamwadProvider.getStudent(studentId, request);
+    }
   }
 
   @Post()
@@ -91,30 +104,10 @@ export class StudentController {
     @Req() request: Request,
     @Body() studentSearchDto: StudentSearchDto
   ) {
-    return await this.service.searchStudent(request, studentSearchDto);
-  }
-
-  @Get("/getAll")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  //@ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Student detail." })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @SerializeOptions({
-    strategy: "excludeAll",
-  })
-  getAllStudent() {
-    return this.esamwadService.getAllStudent();
-  }
-
-  @Get("esamwad/:id")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  //@ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Student detail." })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @SerializeOptions({
-    strategy: "excludeAll",
-  })
-  public async getOneStudent(@Param("id") studentId: string) {
-    return this.esamwadService.getOneStudent(studentId);
+    if (process.env.ATTENDANCESOURCE === "sunbird") {
+      return this.sunbirdProvider.searchStudent(request, studentSearchDto);
+    } else {
+      return this.eSamwadProvider.searchStudent(request, studentSearchDto);
+    }
   }
 }

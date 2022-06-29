@@ -44,8 +44,6 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responseData = await axios(config);
     const response = responseData.data.data.attendance;
 
-    console.log("46", response);
-
     let attendance = response.map((e: any) => {
       return e.is_present;
     });
@@ -57,15 +55,9 @@ export class AttendanceEsamwadService implements IServicelocator {
       isPresent = "Absent";
     }
 
-    console.log(isPresent);
-
-    console.log("52", attendance[0]);
-
     const responsedata = response.map(
       (item: any) => new EsamwadAttendanceDto(item)
     );
-
-    console.log(responsedata);
 
     return new SuccessResponse({
       statusCode: 200,
@@ -111,7 +103,6 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responsedata = response.map(
       (item: any) => new EsamwadAttendanceDto(item)
     );
-    console.log(response);
 
     return new SuccessResponse({
       statusCode: 200,
@@ -151,18 +142,14 @@ export class AttendanceEsamwadService implements IServicelocator {
 
     const responsedata = await axios(attendanceConfig);
     const attendanceResponse = responsedata.data.data.attendance;
-    //console.log("139", attendanceResponse);
 
     let result = attendanceResponse.map(
       (item: any) => new EsamwadAttendanceDto(item)
     );
 
-    console.log(result);
-
     let attendanceId = result.map(function (EsamwadAttendanceDto) {
       return EsamwadAttendanceDto.attendanceId;
     });
-    console.log(attendanceId);
 
     let isPresent: any;
     if (attendanceDto.attendance === "Present") {
@@ -292,16 +279,21 @@ export class AttendanceEsamwadService implements IServicelocator {
     });
   }
   public async attendanceFilter(
-    date: string,
+    fromDate: string,
+    toDate: string,
     userId: string,
+    userType: string,
     attendance: string,
     groupId: string,
-    schoolId: string
+    schoolId: string,
+    eventId: string,
+    topicId: string,
+    request: any
   ) {
     var axios = require("axios");
     var data = {
-      query: `query getClassAttendance($grade: Int!, $schoolId: Int!) {
-        attendance(where: {student: {grade_number: {_eq: $grade}, school_id: {_eq: $schoolId}}}) {
+      query: `query getClassAttendance($grade: Int!, $schoolId: Int!,$date:date) {
+        attendance(where: {student: {grade_number: {_eq: $grade}, school_id: {_eq: $schoolId}} date: {_eq: $date}}) {
           id
           date
           created
@@ -312,7 +304,7 @@ export class AttendanceEsamwadService implements IServicelocator {
           updated
         }
       }`,
-      variables: { grade: groupId, schoolId: schoolId },
+      variables: { grade: groupId, schoolId: schoolId, date: fromDate },
     };
 
     var config = {
@@ -325,7 +317,7 @@ export class AttendanceEsamwadService implements IServicelocator {
       data: data,
     };
 
-    const responseData = axios(config);
+    const responseData = await axios(config);
     const response = responseData.data.data.attendance;
 
     const responsedata = response.map(

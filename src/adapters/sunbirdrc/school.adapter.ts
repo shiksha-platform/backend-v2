@@ -6,9 +6,10 @@ import { SchoolDto } from "src/school/dto/school.dto";
 import { SchoolSearchDto } from "src/school/dto/school-search.dto";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-
+import { IServicelocator } from "../schoolservicelocator";
+export const SunbirdSchoolToken = "SunbirdSchool";
 @Injectable()
-export class SchoolService {
+export class SchoolService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/School`;
 
