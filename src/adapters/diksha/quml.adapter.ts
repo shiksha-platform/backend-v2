@@ -11,6 +11,7 @@ export class QumlQuestionService {
     url: string,
     questionType: string,
     subject: string,
+    limit: string,
     language: string,
     medium: string,
     request: any
@@ -26,6 +27,7 @@ export class QumlQuestionService {
           language: language,
           medium: medium,
         },
+        limit: limit,
       },
     };
 
@@ -40,7 +42,6 @@ export class QumlQuestionService {
 
     const response = await axios(config);
     const responseData = response.data.result.Question;
-    console.log(responseData);
 
     let arrayIds = responseData.map((e: any) => {
       return e.identifier;
@@ -65,7 +66,7 @@ export class QumlQuestionService {
 
         hints: final.hints,
 
-        solutions: final.editorState.options,
+        options: final.editorState.options,
 
         media: final.media,
 
