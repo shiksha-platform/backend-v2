@@ -190,7 +190,7 @@ export class AttendanceController {
     );
   }
 
-  @Post("multipleAttendance")
+  @Post("bulkAttendance")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
     description: "Attendance has been created successfully.",
