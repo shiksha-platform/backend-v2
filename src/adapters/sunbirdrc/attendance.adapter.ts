@@ -10,6 +10,7 @@ import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 import { SegmentDto } from "src/common-dto/userSegment.dto";
 import { Cron, SchedulerRegistry } from "@nestjs/schedule";
 import moment from "moment";
+import { STATUS_CODES } from "http";
 @Injectable()
 export class AttendanceService {
   constructor(
@@ -317,15 +318,16 @@ export class AttendanceService {
     });
 
     if (resData.length > 0) {
-      var udateData = attendanceDto;
+      var updateData = attendanceDto;
       var updateAttendance = {
         method: "put",
         url: `${this.url}/${attendanceId}`,
         headers: {
           Authorization: request.headers.authorization,
         },
-        data: udateData,
+        data: updateData,
       };
+
       const response = await axios(updateAttendance);
       return new SuccessResponse({
         statusCode: 200,
@@ -354,41 +356,102 @@ export class AttendanceService {
   }
   public async multipleAttendance(request: any, attendanceData: [Object]) {
     let attendeeData = attendanceData["attendanceData"];
+    const result = Promise.all(
+      attendeeData.map(async (data: any) => {
+        data["schoolId"] = attendanceData["schoolId"]
+          ? attendanceData["schoolId"]
+          : "";
+        data["userType"] = attendanceData["userType"]
+          ? attendanceData["userType"]
+          : "";
+        data["groupId"] = attendanceData["groupId"]
+          ? attendanceData["groupId"]
+          : "";
+        data["topicId"] = attendanceData["topicId"]
+          ? attendanceData["topicId"]
+          : "";
+        data["eventId"] = attendanceData["eventId"]
+          ? attendanceData["eventId"]
+          : "";
+        data["attendanceDate"] = attendanceData["attendanceDate"]
+          ? attendanceData["attendanceDate"]
+          : "";
+        data["latitude"] = attendanceData["latitude"]
+          ? attendanceData["latitude"]
+          : 0;
+        data["longitude"] = attendanceData["longitude"]
+          ? attendanceData["longitude"]
+          : 0;
+        data["image"] = attendanceData["image"] ? attendanceData["image"] : "";
+        data["metaData"] = attendanceData["metaData"]
+          ? attendanceData["metaData"]
+          : [];
+        data["syncTime"] = attendanceData["syncTime"]
+          ? attendanceData["syncTime"]
+          : "";
 
-    attendeeData.forEach((data) => {
-      data["schoolId"] = attendanceData["schoolId"]
-        ? attendanceData["schoolId"]
-        : "";
-      data["userType"] = attendanceData["userType"]
-        ? attendanceData["userType"]
-        : "";
-      data["groupId"] = attendanceData["groupId"]
-        ? attendanceData["groupId"]
-        : "";
-      data["topicId"] = attendanceData["topicId"]
-        ? attendanceData["topicId"]
-        : "";
-      data["eventId"] = attendanceData["eventId"]
-        ? attendanceData["eventId"]
-        : "";
-      data["attendanceDate"] = attendanceData["attendanceDate"]
-        ? attendanceData["attendanceDate"]
-        : "";
-      data["latitude"] = attendanceData["latitude"]
-        ? attendanceData["latitude"]
-        : 0;
-      data["longitude"] = attendanceData["longitude"]
-        ? attendanceData["longitude"]
-        : 0;
-      data["image"] = attendanceData["image"] ? attendanceData["image"] : "";
-      data["metaData"] = attendanceData["metaData"]
-        ? attendanceData["metaData"]
-        : [];
-      data["syncTime"] = attendanceData["syncTime"]
-        ? attendanceData["syncTime"]
-        : "";
+        let attendanceDto = data;
+        let axios = require("axios");
+        let dataSearch = {
+          filters: {
+            userId: {
+              eq: `${attendanceDto.userId}`,
+            },
+            attendanceDate: {
+              eq: `${attendanceDto.attendanceDate}`,
+            },
+          },
+        };
 
-      this.createAttendance(request, data);
+        let attendanceCreate = {
+          method: "post",
+          url: `${this.url}/search`,
+
+          data: dataSearch,
+        };
+
+        const response = await axios(attendanceCreate);
+        let resData = response?.data;
+        let result = resData.map((item: any) => new AttendanceDto(item));
+
+        let attendanceId = result.map(function (AttendanceDto) {
+          return AttendanceDto.attendanceId;
+        });
+
+        if (resData.length > 0) {
+          var updateData = attendanceDto;
+          var updateAttendance = {
+            method: "put",
+            url: `${this.url}/${attendanceId}`,
+            headers: {
+              Authorization: request.headers.authorization,
+            },
+            data: updateData,
+          };
+
+          const response = await axios(updateAttendance);
+          return await response.data;
+        } else {
+          var createAttendance = attendanceDto;
+          var create = {
+            method: "post",
+            url: `${this.url}`,
+            headers: {
+              Authorization: request.headers.authorization,
+            },
+            data: createAttendance,
+          };
+
+          const response = await axios(create);
+          return await response.data;
+        }
+      })
+    );
+    const responseArray = await result;
+    return new SuccessResponse({
+      statusCode: 200,
+      message: " Ok.",
+      data: responseArray,
     });
   }
 }

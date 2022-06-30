@@ -12,8 +12,6 @@ import { GroupDto } from "src/group/dto/group.dto";
 import { CronJob } from "cron";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import jwt_decode from "jwt-decode";
-import { min } from "class-validator";
-import { time } from "console";
 
 @Injectable()
 export class NotificationService {
@@ -30,13 +28,11 @@ export class NotificationService {
     module: any,
     eventTrigger: string,
     templateId: string,
+    senderId: string,
     groupId: string,
     channel: string,
     request: any
   ) {
-    const authToken = request.headers.authorization;
-    const decoded: any = jwt_decode(authToken);
-    let sentBy = decoded.sub;
     var axios = require("axios");
     const result = Math.random().toString(27).substring(6, 8);
     var confi = {
@@ -69,18 +65,18 @@ export class NotificationService {
       },
     };
 
-    var config = {
-      method: "post",
-      url: `${this.UCIURL}/conversationLogic/create`,
-      headers: {
-        "admin-token": process.env.UCIADMINTOKEN,
-        "Content-Type": "application/json",
-      },
-      data: conversationData,
-    };
+    const conversation = await axios.post(
+      `${this.UCIURL}/conversationLogic/create`,
+      conversationData,
+      {
+        headers: {
+          "admin-token": process.env.UCIADMINTOKEN,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    const response = await axios(config);
-    const resData = response.data;
+    const resData = conversation.data;
     const consversationLogicID = resData.result.data.id;
 
     var data = {
@@ -91,16 +87,11 @@ export class NotificationService {
       },
     };
 
-    var getSegment = {
-      method: "post",
-      url: `${this.groupURL}/search`,
+    const responseData = await axios.post(`${this.groupURL}/search`, data, {
       headers: {
         Authorization: request.headers.authorization,
       },
-      data: data,
-    };
-
-    const responseData = await axios(getSegment);
+    });
 
     const dtoResponse = responseData.data.map(
       (item: any) => new GroupDto(item)
@@ -129,17 +120,13 @@ export class NotificationService {
       },
     };
 
-    var botConfig = {
-      method: "post",
-      url: `${this.UCIURL}/bot/create`,
+    const botResponse = await axios.post(`${this.UCIURL}/bot/create`, botData, {
       headers: {
         "admin-token": process.env.UCIADMINTOKEN,
         "Content-Type": "application/json",
       },
-      data: botData,
-    };
+    });
 
-    const botResponse = await axios(botConfig);
     const botResData = botResponse.data;
     const botCreateID = botResData.result.data.id;
 
@@ -159,14 +146,27 @@ export class NotificationService {
       templateId: templateId,
       recepients: [notificationTrigger[0].userSegment],
       sentDate: new Date(),
-      sentBy: sentBy,
+      sentBy: senderId,
       module: notificationModule[0].module,
       options: "",
       content: contentData.body,
     };
 
-    let log = this.saveNotificationLog(notificationData, request);
-    return log;
+    const logRes = await axios.post(
+      `${this.baseURL}Notificationlog`,
+      notificationData,
+      {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      }
+    );
+    const logResponse = logRes.data;
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok.",
+      data: logResponse,
+    });
   }
 
   //Notificationschedule
@@ -174,6 +174,7 @@ export class NotificationService {
     module: any,
     eventTrigger: string,
     templateId: string,
+    senderId: string,
     groupId: string,
     channel: string,
     month: string,
@@ -183,9 +184,6 @@ export class NotificationService {
     jobName: string,
     request: any
   ) {
-    const authToken = request.headers.authorization;
-    const decoded: any = jwt_decode(authToken);
-    let sentBy = decoded.sub;
     var axios = require("axios");
 
     //content data api
@@ -242,7 +240,7 @@ export class NotificationService {
       templateId: templateId,
       recepients: [notificationTrigger[0].userSegment],
       sentDate: new Date(),
-      sentBy: sentBy,
+      sentBy: senderId,
       module: notificationModule[0].module,
       options: "",
       content: contentData.body,
@@ -311,19 +309,18 @@ export class NotificationService {
           },
         };
 
-        var config = {
-          method: "post",
-          url: `${process.env.UCIAPI}/conversationLogic/create`,
-          headers: {
-            "admin-token": process.env.UCIADMINTOKEN,
-            "Content-Type": "application/json",
-          },
-          data: conversationData,
-        };
+        const conversation = await axios.post(
+          `${this.UCIURL}/conversationLogic/create`,
+          conversationData,
+          {
+            headers: {
+              "admin-token": process.env.UCIADMINTOKEN,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-        const response = await axios(config);
-
-        const resData = response.data;
+        const resData = conversation.data;
 
         const consversationLogicID = resData.result.data.id;
 
@@ -340,16 +337,16 @@ export class NotificationService {
           },
         };
 
-        var botConfig = {
-          method: "post",
-          url: `${process.env.UCIAPI}/bot/create`,
-          headers: {
-            "admin-token": process.env.UCIADMINTOKEN,
-            "Content-Type": "application/json",
-          },
-          data: botData,
-        };
-        const botResponse = await axios(botConfig);
+        const botResponse = await axios.post(
+          `${this.UCIURL}/bot/create`,
+          botData,
+          {
+            headers: {
+              "admin-token": process.env.UCIADMINTOKEN,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const botResData = botResponse.data;
         const botCreateID = botResData.result.data.id;
 
@@ -368,7 +365,7 @@ export class NotificationService {
           templateId: templateId,
           recepients: [notificationTrigger[0].userSegment],
           sentDate: new Date(),
-          sentBy: sentBy,
+          sentBy: senderId,
           module: module,
           options: "",
           content: contentData.body,
@@ -377,15 +374,16 @@ export class NotificationService {
           minutes,
           month,
         };
-        var logConfig = {
-          method: "post",
-          url: `${process.env.BASEAPIURL}Notificationlog`,
-          headers: {
-            Authorization: request.headers.authorization,
-          },
-          data: notificationData,
-        };
-        const logRes = await axios(logConfig);
+        const logRes = await axios.post(
+          `${this.baseURL}Notificationlog`,
+          notificationData,
+          {
+            headers: {
+              Authorization: request.headers.authorization,
+            },
+          }
+        );
+        const logResponse = logRes.data;
 
         var deleteCron = {
           method: "delete",
@@ -404,26 +402,6 @@ export class NotificationService {
     job.start();
 
     return `SMS set for EOD at `;
-  }
-
-  public async saveNotificationLog(notificationData: any, request: any) {
-    var axios = require("axios");
-    var logConfig = {
-      method: "post",
-      url: `${this.baseURL}Notificationlog`,
-      headers: {
-        Authorization: request.headers.authorization,
-      },
-      data: notificationData,
-    };
-
-    const logRes = await axios(logConfig);
-    const logResponse = logRes.data;
-    return new SuccessResponse({
-      statusCode: 200,
-      message: "ok.",
-      data: logResponse,
-    });
   }
 
   public async getNotification(notificationId: string, request: any) {

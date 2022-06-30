@@ -24,7 +24,7 @@ import {
 
 import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
 import { NotificationSearchDto } from "./dto/notification-search.dto";
-@ApiTags("instant Notification")
+@ApiTags("Instant Notification")
 @Controller("instantNotification")
 export class instantNotificationController {
   constructor(private service: NotificationService) {}
@@ -39,12 +39,14 @@ export class instantNotificationController {
   @ApiQuery({ name: "module" })
   @ApiQuery({ name: "eventTrigger" })
   @ApiQuery({ name: "templateId" })
+  @ApiQuery({ name: "senderId" })
   @ApiQuery({ name: "groupId" })
   @ApiQuery({ name: "channel" })
   public async instantSendNotification(
     @Query("module") module: string,
     @Query("eventTrigger") eventTrigger: string,
     @Query("templateId") templateId: string,
+    @Query("senderId") senderId: string,
     @Query("groupId") groupId: string,
     @Query("channel") channel: string,
     @Req() request: Request
@@ -53,6 +55,7 @@ export class instantNotificationController {
       module,
       eventTrigger,
       templateId,
+      senderId,
       groupId,
       channel,
       request
