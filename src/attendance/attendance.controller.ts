@@ -151,24 +151,6 @@ export class AttendanceController {
     }
   }
 
-  @Post("multipleAttendance")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Attendance has been created successfully.",
-  })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @UseInterceptors(ClassSerializerInterceptor)
-  public async multipleAttendance(
-    @Req() request: Request,
-    @Body() attendanceDto: [Object]
-  ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
-    } else {
-      return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
-    }
-  }
-
   @Post("/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Attendance list." })
@@ -258,6 +240,24 @@ export class AttendanceController {
         topicId,
         request
       );
+    }
+  }
+
+  @Post("bulkAttendance")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Attendance has been created successfully.",
+  })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async multipleAttendance(
+    @Req() request: Request,
+    @Body() attendanceDto: [Object]
+  ) {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
+    } else {
+      return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
     }
   }
 }

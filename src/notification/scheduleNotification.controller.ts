@@ -1,35 +1,35 @@
 import {
-    ApiTags,
-    ApiBody,
-    ApiOkResponse,
-    ApiForbiddenResponse,
-    ApiCreatedResponse,
-    ApiBasicAuth,
-    ApiQuery,
-  } from "@nestjs/swagger";
-  import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Param,
-    UseInterceptors,
-    ClassSerializerInterceptor,
-    SerializeOptions,
-    Req,
-    Request,
-    CacheInterceptor,
-    Query,
-  } from "@nestjs/common";
-  
-  import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
-  import { NotificationSearchDto } from "./dto/notification-search.dto";
+  ApiTags,
+  ApiBody,
+  ApiOkResponse,
+  ApiForbiddenResponse,
+  ApiCreatedResponse,
+  ApiBasicAuth,
+  ApiQuery,
+} from "@nestjs/swagger";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  SerializeOptions,
+  Req,
+  Request,
+  CacheInterceptor,
+  Query,
+} from "@nestjs/common";
 
-@ApiTags("schedule Notification")
+import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
+import { NotificationSearchDto } from "./dto/notification-search.dto";
+
+@ApiTags("Schedule Notification")
 @Controller("scheduleNotification")
 export class scheduleNotificationController {
-constructor(private service: NotificationService) {}
-  
+  constructor(private service: NotificationService) {}
+
   @Post("scheduledSend")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
@@ -40,10 +40,11 @@ constructor(private service: NotificationService) {}
   @ApiQuery({ name: "module" })
   @ApiQuery({ name: "eventTrigger" })
   @ApiQuery({ name: "templateId" })
+  @ApiQuery({ name: "senderId" })
   @ApiQuery({ name: "groupId" })
   @ApiQuery({ name: "channel" })
-  @ApiQuery({ name: "month",required:false })
-  @ApiQuery({ name: "date" ,required:false})
+  @ApiQuery({ name: "month", required: false })
+  @ApiQuery({ name: "date", required: false })
   @ApiQuery({ name: "hours", required: false })
   @ApiQuery({ name: "minutes", required: false })
   @ApiQuery({ name: "taskName", required: false })
@@ -51,6 +52,7 @@ constructor(private service: NotificationService) {}
     @Query("module") module: string,
     @Query("eventTrigger") eventTrigger: string,
     @Query("templateId") templateId: string,
+    @Query("senderId") senderId: string,
     @Query("groupId") groupId: string,
     @Query("channel") channel: string,
     @Query("month") month: string,
@@ -64,6 +66,7 @@ constructor(private service: NotificationService) {}
       module,
       eventTrigger,
       templateId,
+      senderId,
       groupId,
       channel,
       month,
@@ -74,7 +77,6 @@ constructor(private service: NotificationService) {}
       request
     );
   }
-
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -90,9 +92,6 @@ constructor(private service: NotificationService) {}
   ) {
     return this.service.getScheduleNotification(id, request);
   }
-
-
-
 
   @Post("/search")
   @ApiBasicAuth("access-token")
@@ -112,5 +111,4 @@ constructor(private service: NotificationService) {}
       notificationSearchDto
     );
   }
-
 }
