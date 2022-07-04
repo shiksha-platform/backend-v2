@@ -24,40 +24,11 @@ import {
 
 import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
 import { NotificationSearchDto } from "./dto/notification-search.dto";
-@ApiTags("Notification")
-@Controller("notification")
-export class NotificationController {
-  constructor(private service: NotificationService) {}
 
-  @Post("instantSend")
-  @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Notification has been sent successfully.",
-  })
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "module" })
-  @ApiQuery({ name: "eventTrigger" })
-  @ApiQuery({ name: "templateId" })
-  @ApiQuery({ name: "groupId" })
-  @ApiQuery({ name: "channel" })
-  public async instantSendNotification(
-    @Query("module") module: string,
-    @Query("eventTrigger") eventTrigger: string,
-    @Query("templateId") templateId: string,
-    @Query("groupId") groupId: string,
-    @Query("channel") channel: string,
-    @Req() request: Request
-  ) {
-    return this.service.instantSendNotification(
-      module,
-      eventTrigger,
-      templateId,
-      groupId,
-      channel,
-      request
-    );
-  }
+@ApiTags("Schedule Notification")
+@Controller("scheduleNotification")
+export class scheduleNotificationController {
+  constructor(private service: NotificationService) {}
 
   @Post("scheduledSend")
   @ApiBasicAuth("access-token")
@@ -69,10 +40,11 @@ export class NotificationController {
   @ApiQuery({ name: "module" })
   @ApiQuery({ name: "eventTrigger" })
   @ApiQuery({ name: "templateId" })
+  @ApiQuery({ name: "senderId" })
   @ApiQuery({ name: "groupId" })
   @ApiQuery({ name: "channel" })
-  @ApiQuery({ name: "month",required:false })
-  @ApiQuery({ name: "date" ,required:false})
+  @ApiQuery({ name: "month", required: false })
+  @ApiQuery({ name: "date", required: false })
   @ApiQuery({ name: "hours", required: false })
   @ApiQuery({ name: "minutes", required: false })
   @ApiQuery({ name: "taskName", required: false })
@@ -80,6 +52,7 @@ export class NotificationController {
     @Query("module") module: string,
     @Query("eventTrigger") eventTrigger: string,
     @Query("templateId") templateId: string,
+    @Query("senderId") senderId: string,
     @Query("groupId") groupId: string,
     @Query("channel") channel: string,
     @Query("month") month: string,
@@ -93,6 +66,7 @@ export class NotificationController {
       module,
       eventTrigger,
       templateId,
+      senderId,
       groupId,
       channel,
       month,
@@ -104,8 +78,7 @@ export class NotificationController {
     );
   }
 
-
-  @Get("log/:id")
+  @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Notification Log detail." })
@@ -117,10 +90,10 @@ export class NotificationController {
     @Param("id") id: string,
     @Req() request: Request
   ) {
-    return this.service.getNotification(id, request);
+    return this.service.getScheduleNotification(id, request);
   }
 
-  @Post("log/search")
+  @Post("/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Notification log list." })
   @ApiBody({ type: NotificationSearchDto })
@@ -133,7 +106,7 @@ export class NotificationController {
     @Req() request: Request,
     @Body() notificationSearchDto: NotificationSearchDto
   ) {
-    return await this.service.searchNotification(
+    return await this.service.searchSchedulehNotification(
       request,
       notificationSearchDto
     );
