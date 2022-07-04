@@ -16,9 +16,10 @@ import { WorksheetModule } from "./worksheet/worksheet.module";
 import { MulterModule } from "@nestjs/platform-express/multer";
 import { QuestionModule } from "./Question/question.module";
 import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
-import { AdminFormModule } from "./adminForm/adminForm.module";
+import { ConfigFormModule } from "./configform/configform.module";
 import { LikeModule } from "./like/like.module";
 import { CommentModule } from "./comment/comment.module";
+import { MenuModule } from "./menu/menu.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -38,9 +39,10 @@ import { CommentModule } from "./comment/comment.module";
     WorksheetModule,
     QuestionModule,
     LessonPlanModule,
-    AdminFormModule,
+    ConfigFormModule,
     LikeModule,
     CommentModule,
+    MenuModule
   ],
   controllers: [AppController],
   providers: [AppService],

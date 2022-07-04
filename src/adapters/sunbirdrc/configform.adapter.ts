@@ -2,20 +2,20 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable, HttpException } from "@nestjs/common";
 const resolvePath = require("object-resolve-path");
 import { AxiosResponse } from "axios";
-import { AdminFormDto } from "src/adminForm/dto/adminForm.dto";
+import { ConfigFormDto } from "src/configform/dto/configform.dto";
 import { first, map, Observable } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
-import { AdminFormSearchDto } from "src/adminForm/dto/adminForm-search.dto";
+import { ConfigFormSearchDto } from "src/configform/dto/configform-search.dto";
 @Injectable()
-export class AdminFormService {
+export class ConfigFormService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/AdminForm`;
 
-  public async getAdminForm(adminFormId: string, request: any) {
+  public async getConfigForm(configFormId: string, request: any) {
     return this.httpService
-      .get(`${this.url}/${adminFormId}`, {
+      .get(`${this.url}/${configFormId}`, {
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -24,11 +24,11 @@ export class AdminFormService {
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
 
-          const adminFormDto = new AdminFormDto(data);
+          const configFormDto = new ConfigFormDto(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: adminFormDto,
+            data: configFormDto,
           });
         }),
         catchError((e) => {
@@ -40,9 +40,9 @@ export class AdminFormService {
         })
       );
   }
-  public async createAdminForm(request: any, adminFormDto: AdminFormDto) {
+  public async createConfigForm(request: any, configFormDto: ConfigFormDto) {
     return this.httpService
-      .post(`${this.url}`, adminFormDto, {
+      .post(`${this.url}`, configFormDto, {
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -65,17 +65,17 @@ export class AdminFormService {
       );
   }
 
-  public async updateAdminForm(
-    adminFormId: string,
+  public async updateConfigForm(
+    configFormId: string,
     request: any,
-    adminFormDto: AdminFormDto
+    configFormDto: ConfigFormDto
   ) {
     var axios = require("axios");
-    var data = adminFormDto;
+    var data = configFormDto;
 
     var config = {
       method: "put",
-      url: `${this.url}/${adminFormId}`,
+      url: `${this.url}/${configFormId}`,
       headers: {
         Authorization: request.headers.authorization,
       },
@@ -89,12 +89,12 @@ export class AdminFormService {
     });
   }
 
-  public async searchAdminForm(
+  public async searchConfigForm(
     request: any,
-    adminFormSearchDto: AdminFormSearchDto
+    configFormSearchDto: ConfigFormSearchDto
   ) {
     return this.httpService
-      .post(`${this.url}/search`, adminFormSearchDto, {
+      .post(`${this.url}/search`, configFormSearchDto, {
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -102,7 +102,7 @@ export class AdminFormService {
       .pipe(
         map((response) => {
           const responsedata = response.data.map(
-            (item: any) => new AdminFormDto(item)
+            (item: any) => new ConfigFormDto(item)
           );
           return new SuccessResponse({
             statusCode: response.status,
@@ -120,7 +120,7 @@ export class AdminFormService {
       );
   }
 
-  public async adminFormFilter(fromDate: string, toDate: string, request: any) {
+  public async configFormFilter(fromDate: string, toDate: string, request: any) {
     let axios = require("axios");
     let filters = {
       fromDate,
@@ -149,7 +149,7 @@ export class AdminFormService {
 
     let result =
       response?.data &&
-      response.data.map((item: any) => new AdminFormDto(item));
+      response.data.map((item: any) => new ConfigFormDto(item));
 
     return new SuccessResponse({
       statusCode: 200,
