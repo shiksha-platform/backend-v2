@@ -1,8 +1,8 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { NotificationService } from "src/adapters/sunbirdrc/notification.adapter";
-import { instantNotificationController} from "./instantNotification.controller";
-import {scheduleNotificationController} from "./scheduleNotification.controller"
+import { instantNotificationController } from "./instantNotification.controller";
+import { scheduleNotificationController } from "./scheduleNotification.controller";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -11,7 +11,7 @@ const ttl = process.env.TTL as never;
       ttl: ttl,
     }),
   ],
-  controllers: [instantNotificationController,scheduleNotificationController],
+  controllers: [instantNotificationController, scheduleNotificationController],
   providers: [NotificationService],
 })
 export class NotificationModule {}

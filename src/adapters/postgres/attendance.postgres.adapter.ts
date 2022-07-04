@@ -4,14 +4,13 @@ import { AttendanceDto } from "src/attendance/dto/attendance.dto";
 import { SuccessResponse } from "src/success-response";
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 import { Client } from "pg";
-import { AnyAaaaRecord } from "dns";
 @Injectable()
 export class AttendanceService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   studentAPIUrl = `${process.env.BASEAPIURL}/Student`;
 
-  public async getAttendance(attendanceId: AnyAaaaRecord) {
+  public async getAttendance(attendanceId: string) {
     const client = new Client();
     client.connect();
     client.query(
@@ -77,7 +76,7 @@ export class AttendanceService {
     const client = new Client();
     client.connect();
     client.query(
-      `SELECT * FROM attendance WHERE attendanceRecordId = '${attendanceSearchDto.attendanceRecordId}'`,
+      `SELECT * FROM attendance WHERE attendanceDate >= '${attendanceSearchDto.attendanceFromDate}' AND attendanceDate <= '${attendanceSearchDto.attendanceToDate} AND studentId = '${attendanceSearchDto.studentId}'`,
       (err, res) => {
         if (err) {
           console.log(err);
