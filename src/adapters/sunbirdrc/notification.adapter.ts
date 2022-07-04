@@ -287,7 +287,8 @@ export class NotificationService {
     let utcMon = utc.slice(5, 7);
 
     const job = new CronJob(
-      `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
+      // `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
+      `0 ${mins} ${hrs} ${d} ${mon} *`,
       async () => {
         var axios = require("axios");
         const result = Math.random().toString(27).substring(6, 8);
@@ -401,7 +402,7 @@ export class NotificationService {
     this.schedulerRegistry.addCronJob(jobName, job);
     job.start();
 
-    return `SMS set for EOD at `;
+    return `SMS set for EOD at ${hours}:${minutes} `;
   }
 
   public async getNotification(notificationId: string, request: any) {
