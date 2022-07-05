@@ -12,6 +12,7 @@ import jwt_decode from "jwt-decode";
 export class LikeService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Like`;
+  teacherUrl = `${process.env.BASEAPIURL}/Teacher`;
 
   public async getLike(likeId: string, request: any) {
     return this.httpService
@@ -43,8 +44,27 @@ export class LikeService {
   public async createLike(request: any, likeDto: LikeDto) {
     const authToken = request.headers.authorization;
     const decoded: any = jwt_decode(authToken);
-    let userId = decoded.sub;
-    likeDto.userId = userId;
+    let email = decoded.email;
+    let axios = require("axios");
+    let data = {
+      filters: {
+        email: {
+          eq: `${email}`,
+        },
+      },
+    };
+    let config = {
+      method: "post",
+      url: `${this.teacherUrl}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+    const response = await axios(config);
+    const result = response.data[0];
+    likeDto.userId = result.osid;
+
     return this.httpService
       .post(`${this.url}`, likeDto, {
         headers: {
@@ -74,8 +94,25 @@ export class LikeService {
     var data = likeDto;
     const authToken = request.headers.authorization;
     const decoded: any = jwt_decode(authToken);
-    let userId = decoded.sub;
-    data.userId = userId;
+    let email = decoded.email;
+    let updateData = {
+      filters: {
+        email: {
+          eq: `${email}`,
+        },
+      },
+    };
+    let configData = {
+      method: "post",
+      url: `${this.teacherUrl}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: updateData,
+    };
+    const teacherResponse = await axios(configData);
+    const result = teacherResponse.data[0];
+    data.userId = result.osid;
 
     var config = {
       method: "put",
