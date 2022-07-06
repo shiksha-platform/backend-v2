@@ -1,4 +1,7 @@
-import { AttendanceService } from "../adapters/sunbirdrc/attendance.adapter";
+import {
+  AttendanceService,
+  SunbirdAttendanceToken,
+} from "../adapters/sunbirdrc/attendance.adapter";
 import {
   ApiTags,
   ApiBody,
@@ -34,10 +37,20 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
 import { AttendanceSearchDto } from "./dto/attendance-search.dto";
+import {
+  AttendanceEsamwadService,
+  EsamwadAttendanceToken,
+} from "src/adapters/esamwad/attendance.adapter";
+import { IServicelocator } from "src/adapters/attendanceservicelocator";
 @ApiTags("Attendance")
 @Controller("attendance")
 export class AttendanceController {
-  constructor(private service: AttendanceService) {}
+  constructor(
+    private service: AttendanceService,
+    private hasuraService: AttendanceEsamwadService,
+    @Inject(EsamwadAttendanceToken) private eSamwadProvider: IServicelocator,
+    @Inject(SunbirdAttendanceToken) private sunbirdProvider: IServicelocator
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -51,7 +64,11 @@ export class AttendanceController {
     @Param("id") attendanceId: string,
     @Req() request: Request
   ) {
-    return this.service.getAttendance(attendanceId, request);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.getAttendance(attendanceId, request);
+    } else {
+      return this.eSamwadProvider.getAttendance(attendanceId, request);
+    }
   }
 
   @Post()
@@ -82,7 +99,12 @@ export class AttendanceController {
     };
 
     Object.assign(attendaceDto, response);
-    return this.service.createAttendance(request, attendaceDto);
+
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.createAttendance(request, attendaceDto);
+    } else {
+      return this.eSamwadProvider.createAttendance(request, attendaceDto);
+    }
   }
 
   @Put("/:id")
@@ -106,15 +128,27 @@ export class AttendanceController {
   public async updateAttendace(
     @Param("id") attendanceId: string,
     @Req() request: Request,
-    @Body() attendaceDto: AttendanceDto,
+    @Body() attendanceDto: AttendanceDto,
     @UploadedFile() image
   ) {
     const response = {
       image: image?.filename,
     };
 
-    Object.assign(attendaceDto, response);
-    return this.service.updateAttendance(attendanceId, request, attendaceDto);
+    Object.assign(attendanceDto, response);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.updateAttendance(
+        attendanceId,
+        request,
+        attendanceDto
+      );
+    } else {
+      return this.eSamwadProvider.updateAttendance(
+        attendanceId,
+        request,
+        attendanceDto
+      );
+    }
   }
 
   @Post("/search")
@@ -130,7 +164,11 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() studentSearchDto: AttendanceSearchDto
   ) {
-    return await this.service.searchAttendance(request, studentSearchDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.searchAttendance(request, studentSearchDto);
+    } else {
+      return this.eSamwadProvider.searchAttendance(request, studentSearchDto);
+    }
   }
 
   @Get("usersegment/:attendance")
@@ -176,18 +214,33 @@ export class AttendanceController {
 
     @Req() request: Request
   ) {
-    return await this.service.attendanceFilter(
-      date,
-      toDate,
-      userId,
-      userType,
-      attendance,
-      groupId,
-      schoolId,
-      eventId,
-      topicId,
-      request
-    );
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.attendanceFilter(
+        date,
+        toDate,
+        userId,
+        userType,
+        attendance,
+        groupId,
+        schoolId,
+        eventId,
+        topicId,
+        request
+      );
+    } else {
+      return this.eSamwadProvider.attendanceFilter(
+        date,
+        toDate,
+        userId,
+        userType,
+        attendance,
+        groupId,
+        schoolId,
+        eventId,
+        topicId,
+        request
+      );
+    }
   }
 
   @Post("bulkAttendance")
@@ -201,6 +254,10 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() attendanceDto: [Object]
   ) {
-    return this.service.multipleAttendance(request, attendanceDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
+    } else {
+      return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
+    }
   }
 }

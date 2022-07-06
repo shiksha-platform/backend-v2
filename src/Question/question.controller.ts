@@ -33,6 +33,7 @@ export class QuestionController {
   @ApiQuery({ name: "questionType", required: false })
   @ApiQuery({ name: "server", required: false })
   @ApiQuery({ name: "subject", required: false })
+  @ApiQuery({ name: "limit", required: false })
   @ApiQuery({ name: "language", required: false })
   @ApiQuery({ name: "medium", required: false })
   public async getAllQuestions(
@@ -40,6 +41,7 @@ export class QuestionController {
     @Query("server") url: string,
     @Query("questionType") questionType: string,
     @Query("subject") subject: string,
+    @Query("limit") limit: string,
     @Query("language") language: string,
     @Query("medium") medium: string,
     @Req() request: Request
@@ -55,6 +57,7 @@ export class QuestionController {
         url,
         questionType,
         subject,
+        limit,
         language,
         medium,
         request

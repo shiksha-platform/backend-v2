@@ -31,10 +31,10 @@ export class QuestionDto {
   hints: [string];
 
   @ApiProperty({
-    description: "Solutions to the question.",
+    description: "options of question.",
   })
   @Expose()
-  solutions: [string];
+  options: [string];
 
   @ApiProperty({
     description: "List of media used in the question",
