@@ -63,7 +63,7 @@ export class LikeService {
     };
     const response = await axios(config);
     const result = response.data[0];
-    likeDto.userId = result.osid;
+    likeDto.userId = "Teacher-" + result.osid;
 
     return this.httpService
       .post(`${this.url}`, likeDto, {
@@ -112,7 +112,7 @@ export class LikeService {
     };
     const teacherResponse = await axios(configData);
     const result = teacherResponse.data[0];
-    data.userId = result.osid;
+    data.userId = "Teacher-" + result.osid;
 
     var config = {
       method: "put",

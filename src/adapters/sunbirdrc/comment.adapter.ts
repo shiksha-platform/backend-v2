@@ -63,7 +63,7 @@ export class CommentService {
     };
     const response = await axios(config);
     const result = response.data[0];
-    commentDto.userId = result.osid;
+    commentDto.userId = "Teacher-" + result.osid;
 
     return this.httpService
       .post(`${this.url}`, commentDto, {
@@ -116,7 +116,7 @@ export class CommentService {
     };
     const teacherResponse = await axios(configData);
     const result = teacherResponse.data[0];
-    commentDto.userId = result.osid;
+    commentDto.userId = "Teacher-" + result.osid;
 
     var config = {
       method: "put",
