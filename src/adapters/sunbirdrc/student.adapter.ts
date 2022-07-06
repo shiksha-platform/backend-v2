@@ -7,8 +7,10 @@ import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { StudentSearchDto } from "src/student/dto/student-search.dto";
+import { IServicelocator } from "../studentservicelocator";
+export const SunbirdStudentToken = "SunbirdStudent";
 @Injectable()
-export class StudentService {
+export class StudentService implements IServicelocator {
   private student: StudentDto;
 
   constructor(private httpService: HttpService) {}

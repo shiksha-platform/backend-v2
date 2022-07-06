@@ -12,8 +12,12 @@ import {
   Req,
   Request,
   CacheInterceptor,
+  Inject,
 } from "@nestjs/common";
-import { SchoolService } from "../adapters/sunbirdrc/school.adapter";
+import {
+  SchoolService,
+  SunbirdSchoolToken,
+} from "../adapters/sunbirdrc/school.adapter";
 import { SchoolDto } from "./dto/school.dto";
 import {
   ApiTags,
@@ -24,10 +28,20 @@ import {
   ApiBasicAuth,
 } from "@nestjs/swagger";
 import { SchoolSearchDto } from "./dto/school-search.dto";
+import {
+  EsamwadSchoolService,
+  EsamwadSchoolToken,
+} from "src/adapters/esamwad/school.adapter";
+import { IServicelocator } from "src/adapters/schoolservicelocator";
 @ApiTags("School")
 @Controller("school")
 export class SchoolController {
-  constructor(private service: SchoolService) {}
+  constructor(
+    private service: SchoolService,
+    private esamwadService: EsamwadSchoolService,
+    @Inject(EsamwadSchoolToken) private eSamwadProvider: IServicelocator,
+    @Inject(SunbirdSchoolToken) private sunbirdProvider: IServicelocator
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -79,6 +93,10 @@ export class SchoolController {
     @Req() request: Request,
     @Body() schoolSearchDto: SchoolSearchDto
   ) {
-    return await this.service.searchSchool(request, schoolSearchDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.searchSchool(request, schoolSearchDto);
+    } else {
+      return this.eSamwadProvider.searchSchool(request, schoolSearchDto);
+    }
   }
 }

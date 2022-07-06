@@ -14,7 +14,7 @@ export class AttendanceDto {
   @ApiPropertyOptional()
   schoolId: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The userType of the attendance",
     default: "",
@@ -30,7 +30,7 @@ export class AttendanceDto {
   @Expose()
   userId: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
     description: "The groupid of the attendance",
     default: "",

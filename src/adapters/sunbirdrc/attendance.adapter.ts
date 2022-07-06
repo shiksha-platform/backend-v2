@@ -10,9 +10,11 @@ import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 import { SegmentDto } from "src/common-dto/userSegment.dto";
 import { Cron, SchedulerRegistry } from "@nestjs/schedule";
 import moment from "moment";
+import { IServicelocator } from "../attendanceservicelocator";
+export const SunbirdAttendanceToken = "SunbirdAttendance";
 import { STATUS_CODES } from "http";
 @Injectable()
-export class AttendanceService {
+export class AttendanceService implements IServicelocator {
   constructor(
     private httpService: HttpService,
     private schedulerRegistry: SchedulerRegistry
@@ -344,6 +346,8 @@ export class AttendanceService {
         },
         data: createAttendance,
       };
+
+      console.log(create);
 
       const response = await axios(create);
 

@@ -19,6 +19,15 @@ import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
 import { AdminFormModule } from "./adminForm/adminForm.module";
 import { LikeModule } from "./like/like.module";
 import { CommentModule } from "./comment/comment.module";
+import {
+  AttendanceEsamwadService,
+  EsamwadAttendanceToken,
+} from "./adapters/esamwad/attendance.adapter";
+import {
+  SunbirdAttendanceToken,
+  AttendanceService,
+} from "./adapters/sunbirdrc/attendance.adapter";
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
