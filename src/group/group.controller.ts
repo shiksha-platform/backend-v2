@@ -1,7 +1,4 @@
-import {
-  GroupService,
-  SunbirdGroupToken,
-} from "../adapters/sunbirdrc/group.adapter";
+import { GroupService } from "../adapters/sunbirdrc/group.adapter";
 import {
   GroupMembershipService,
   SunbirdGroupMembershipToken,
@@ -39,8 +36,6 @@ import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
 import { diskStorage } from "multer";
 import { IServicelocator } from "src/adapters/groupmembershipservicelocator";
 import { EsamwadGroupMembershipToken } from "src/adapters/esamwad/groupMembership.adapter";
-import { EsamwadGroupToken } from "src/adapters/esamwad/group.adapter";
-import { IServicelocatorgroup } from "src/adapters/groupservicelocator";
 
 @ApiTags("Group")
 @Controller("group")
@@ -51,12 +46,7 @@ export class GroupController {
     @Inject(EsamwadGroupMembershipToken)
     private eSamwadProvider: IServicelocator,
     @Inject(SunbirdGroupMembershipToken)
-    private sunbirdProvider: IServicelocator,
-
-    @Inject(EsamwadGroupToken)
-    private eSamwadProvidergroup: IServicelocatorgroup,
-    @Inject(SunbirdGroupToken)
-    private sunbirdProvidergroup: IServicelocatorgroup
+    private sunbirdProvider: IServicelocator
   ) {}
 
   @Get("/:id")
@@ -68,11 +58,7 @@ export class GroupController {
     strategy: "excludeAll",
   })
   public async getGroup(@Param("id") groupId: string, @Req() request: Request) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvidergroup.getGroup(groupId, request);
-    } else {
-      return this.eSamwadProvidergroup.getGroup(groupId, request);
-    }
+    return this.service.getGroup(groupId, request);
   }
 
   @Post()

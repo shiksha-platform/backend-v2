@@ -23,26 +23,16 @@ export class GroupMembershipEsamwadService implements IServicelocator {
           student(where: {grade_number: {_eq: $grade_number}}, limit:$limit) {
             id
             name
-            father_name,
-            mother_name
-            phone
-            roll
-            school_id
-            section
-            medium
             is_bpl
-            is_cwsn
-            is_migrant
-            admission_number
-            image
-            updated
-            stream_tag
-            religion
             grade_number
-            gender
-            enrollment_type
-            created
-            dob
+            mother_name
+            image
+            is_cwsn
+            school_id
+            phone
+            section
+            ref_student_id
+            admission_number
           }
         }`,
         variables: { grade_number: id, limit: 10 },
@@ -131,14 +121,14 @@ export class GroupMembershipEsamwadService implements IServicelocator {
             school_id
           }
         }`,
-        variables: { schoolId: id },
+        variables: { schoolId: 15547 },
       };
 
       var config = {
         method: "post",
-        url: this.baseURL,
+        url: "http://143.110.183.73:15003/v1/graphql",
         headers: {
-          "x-hasura-admin-secret": this.adminSecret,
+          "x-hasura-admin-secret": "4GeEB2JCU5rBdLvQ4AbeqqrPGu7kk9SZDhJUZm7A",
           "Content-Type": "application/json",
         },
         data: data,
