@@ -119,7 +119,7 @@ export class EsamwadStudentService implements IServicelocator {
     return new SuccessResponse({
       statusCode: 200,
       message: "student found Successfully",
-      data: responsedata,
+      data: responsedata[0],
     });
   }
 }

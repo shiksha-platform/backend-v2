@@ -224,10 +224,17 @@ export class AttendanceEsamwadService implements IServicelocator {
       const responseData = await axios(config);
       const response = responseData.data;
 
+      let final = {
+        ...response,
+        result: {
+          Attendance: { osid: response.data.insert_attendance_one.id },
+        },
+      };
+
       return new SuccessResponse({
         statusCode: 200,
         message: "ok.",
-        data: response,
+        data: final,
       });
     }
   }
@@ -300,21 +307,40 @@ export class AttendanceEsamwadService implements IServicelocator {
     request: any
   ) {
     var axios = require("axios");
-    var data = {
-      query: `query getClassAttendance($grade: Int!, $schoolId: Int!,$date:date) {
-        attendance(where: {student: {grade_number: {_eq: $grade}, school_id: {_eq: $schoolId}} date: {_eq: $date}}) {
-          id
-          date
-          created
-          is_present
-          student_id
-          taken_by_school_id
-          temperature
-          updated
+    var data: any;
+    if (userId) {
+      data = {
+        query: `query AttendanceFilter($fromDate:date,$toDate:date,$userId:Int!) {
+        attendance(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}, student_id: {_eq: $userId}}}) {
+                id
+                date
+                created
+                is_present
+                student_id
+                taken_by_school_id
+                temperature
+                updated
         }
       }`,
-      variables: { grade: groupId, schoolId: schoolId, date: fromDate },
-    };
+        variables: { fromDate: fromDate, toDate: toDate, userId: userId },
+      };
+    } else {
+      data = {
+        query: `query AttendanceFilter($fromDate:date,$toDate:date) {
+      attendance(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}}}) {
+              id
+              date
+              created
+              is_present
+              student_id
+              taken_by_school_id
+              temperature
+              updated
+      }
+    }`,
+        variables: { fromDate: fromDate, toDate: toDate },
+      };
+    }
 
     var config = {
       method: "post",
@@ -327,6 +353,7 @@ export class AttendanceEsamwadService implements IServicelocator {
     };
 
     const responseData = await axios(config);
+
     const response = responseData.data.data.attendance;
 
     const attendanceData = response.map((item: any) => {
