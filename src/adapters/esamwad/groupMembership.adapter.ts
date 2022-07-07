@@ -131,7 +131,7 @@ export class GroupMembershipEsamwadService implements IServicelocator {
             school_id
           }
         }`,
-        variables: { schoolId: id },
+        variables: { schoolId: 15547 },
       };
 
       var config = {
