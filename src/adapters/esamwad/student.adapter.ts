@@ -26,13 +26,11 @@ export class EsamwadStudentService implements IServicelocator {
 
     const response = await axios(config);
     const responseData = response.data.data;
-    console.log(responseData);
 
     const responsedata = responseData.map(
       (item: any) => new EsamwadStudentDto(item)
     );
 
-    console.log(responsedata);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",
@@ -50,8 +48,6 @@ export class EsamwadStudentService implements IServicelocator {
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data.data;
-
-          console.log(data);
 
           const responsedata = data.map(
             (item: any) => new EsamwadStudentDto(item)

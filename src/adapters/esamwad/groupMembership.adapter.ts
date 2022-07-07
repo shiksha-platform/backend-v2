@@ -1,50 +1,58 @@
-import { Injectable, HttpException } from "@nestjs/common";
-import { catchError } from "rxjs/operators";
-import { ErrorResponse } from "src/error-response";
+import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { AxiosResponse } from "axios";
-import { first, map, Observable } from "rxjs";
-import { response } from "express";
 import { SuccessResponse } from "src/success-response";
-import { GroupMembershipDto } from "src/groupMembership/dto/groupMembership.dto";
-import { GroupMembershipSearchDto } from "src/groupMembership/dto/groupMembership-search.dto";
 const resolvePath = require("object-resolve-path");
 import { StudentDto } from "src/student/dto/student.dto";
-import axios from "axios";
 import { TeacherDto } from "src/teacher/dto/teacher.dto";
 import { GroupDto } from "src/group/dto/group.dto";
-import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
 import { IServicelocator } from "../groupmembershipservicelocator";
-export const SunbirdGroupMembershipToken = "SunbirdGroupMembership";
+import { EsamwadStudentDto } from "src/student/dto/esamwad-student.dto";
+import { StudentGroupMembershipDto } from "src/group/dto/studentGroupMembership.dto";
+import { EsamwadGroupDto } from "src/group/dto/esamwad.dto";
+export const EsamwadGroupMembershipToken = "EsamwadGroupMembership";
 @Injectable()
-export class GroupMembershipService implements IServicelocator {
+export class GroupMembershipEsamwadService implements IServicelocator {
   constructor(private httpService: HttpService) {}
-  url = `${process.env.BASEAPIURL}`;
-
+  baseURL = process.env.HASURAURL;
+  adminSecret = process.env.ADMINSECRET;
   public async findMembersOfGroup(id: string, role: string, request: any) {
     if (role == "Student") {
-      let axios = require("axios");
-      let data = {
-        filters: {
-          currentClassId: {
-            eq: `${id}`,
-          },
-        },
+      var axios = require("axios");
+      var data = {
+        query: `query getgroupStudents($grade_number: Int!,$limit:Int!) {
+          student(where: {grade_number: {_eq: $grade_number}}, limit:$limit) {
+            id
+            name
+            is_bpl
+            grade_number
+            mother_name
+            image
+            is_cwsn
+            school_id
+            phone
+            section
+            ref_student_id
+            admission_number
+          }
+        }`,
+        variables: { grade_number: id, limit: 10 },
       };
 
-      let config = {
+      var config = {
         method: "post",
-        url: `${this.url}/Student/search`,
+        url: this.baseURL,
         headers: {
-          Authorization: request.headers.authorization,
+          "x-hasura-admin-secret": this.adminSecret,
+          "Content-Type": "application/json",
         },
         data: data,
       };
 
       const response = await axios(config);
-      let result =
-        response?.data &&
-        response.data.map((item: any) => new StudentDto(item));
+
+      let result = response.data.data.student.map(
+        (item: any) => new StudentGroupMembershipDto(item)
+      );
 
       return new SuccessResponse({
         statusCode: 200,
@@ -56,7 +64,7 @@ export class GroupMembershipService implements IServicelocator {
 
       let final = {
         method: "get",
-        url: `${this.url}/Class/${id}`,
+        url: `${this.baseURL}/Class/${id}`,
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -68,7 +76,7 @@ export class GroupMembershipService implements IServicelocator {
       if (classObj?.teacherId) {
         let classFinal = {
           method: "get",
-          url: `${this.url}/Teacher/${classObj.teacherId}`,
+          url: `${this.baseURL}/Teacher/${classObj.teacherId}`,
           headers: {
             Authorization: request.headers.authorization,
           },
@@ -98,31 +106,41 @@ export class GroupMembershipService implements IServicelocator {
     let responseData = [];
 
     if (role === "Teacher") {
-      let axios = require("axios");
-      let data = {
-        filters: {
-          teacherId: {
-            eq: `${id}`,
-          },
-        },
+      var axios = require("axios");
+      var data = {
+        query: `query classList($schoolId:Int!) {
+          school_grade(where: {school_id: {_eq: $schoolId}}) {
+            id
+            grade_id
+            grade {
+              id
+              number
+              section
+              stream_id
+            }
+            school_id
+          }
+        }`,
+        variables: { schoolId: 15547 },
       };
 
-      let final = {
+      var config = {
         method: "post",
-        url: `${this.url}/Class/search`,
+        url: "http://143.110.183.73:15003/v1/graphql",
         headers: {
-          Authorization: request.headers.authorization,
+          "x-hasura-admin-secret": "4GeEB2JCU5rBdLvQ4AbeqqrPGu7kk9SZDhJUZm7A",
+          "Content-Type": "application/json",
         },
         data: data,
       };
 
-      const response = await axios(final);
-      responseData = response.data;
+      const response = await axios(config);
+      responseData = response.data.data.school_grade;
     } else if (role === "Student") {
       let axios = require("axios");
       const config = {
         method: "get",
-        url: `${this.url}/Student/${id}`,
+        url: `${this.baseURL}/Student/${id}`,
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -134,7 +152,7 @@ export class GroupMembershipService implements IServicelocator {
       if (studentObj?.currentClassId) {
         let studentFinal = {
           method: "get",
-          url: `${this.url}/Class/${studentObj.currentClassId}`,
+          url: `${this.baseURL}/Class/${studentObj.currentClassId}`,
           headers: {
             Authorization: request.headers.authorization,
           },
@@ -144,7 +162,8 @@ export class GroupMembershipService implements IServicelocator {
         responseData = resData?.data ? [resData.data] : [];
       }
     }
-    let result = responseData.map((item: any) => new GroupDto(item));
+
+    let result = responseData.map((item: any) => new EsamwadGroupDto(item));
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",

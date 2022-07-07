@@ -8,9 +8,10 @@ import { ErrorResponse } from "src/error-response";
 import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
 import jwt_decode from "jwt-decode";
-
+import { IServicelocator } from "../teacherservicelocator";
+export const SunbirdTeacherToken = "SunbirdTeacher";
 @Injectable()
-export class TeacherService {
+export class TeacherService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Teacher`;
 

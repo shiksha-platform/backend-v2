@@ -1,5 +1,8 @@
 import { GroupService } from "../adapters/sunbirdrc/group.adapter";
-import { GroupMembershipService } from "src/adapters/sunbirdrc/groupMembership.adapter";
+import {
+  GroupMembershipService,
+  SunbirdGroupMembershipToken,
+} from "src/adapters/sunbirdrc/groupMembership.adapter";
 import {
   ApiTags,
   ApiBody,
@@ -23,6 +26,7 @@ import {
   Query,
   CacheInterceptor,
   UploadedFile,
+  Inject,
 } from "@nestjs/common";
 import { GroupSearchDto } from "./dto/group-search.dto";
 import { Request } from "@nestjs/common";
@@ -30,13 +34,19 @@ import { GroupDto } from "./dto/group.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
 import { diskStorage } from "multer";
+import { IServicelocator } from "src/adapters/groupmembershipservicelocator";
+import { EsamwadGroupMembershipToken } from "src/adapters/esamwad/groupMembership.adapter";
 
 @ApiTags("Group")
 @Controller("group")
 export class GroupController {
   constructor(
     private service: GroupService,
-    private membershipService: GroupMembershipService
+    private membershipService: GroupMembershipService,
+    @Inject(EsamwadGroupMembershipToken)
+    private eSamwadProvider: IServicelocator,
+    @Inject(SunbirdGroupMembershipToken)
+    private sunbirdProvider: IServicelocator
   ) {}
 
   @Get("/:id")
@@ -134,7 +144,11 @@ export class GroupController {
     @Query("role") role: string,
     @Req() request: Request
   ) {
-    return await this.membershipService.findMembersOfGroup(id, role, request);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.findMembersOfGroup(id, role, request);
+    } else {
+      return this.eSamwadProvider.findMembersOfGroup(id, role, request);
+    }
   }
 
   @Get("participant/:userId")
@@ -147,6 +161,10 @@ export class GroupController {
     @Query("role") role: string,
     @Req() request: Request
   ) {
-    return await this.membershipService.findGroupsByUserId(id, role, request);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.findGroupsByUserId(id, role, request);
+    } else {
+      return this.eSamwadProvider.findGroupsByUserId(id, role, request);
+    }
   }
 }
