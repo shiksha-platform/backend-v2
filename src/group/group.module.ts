@@ -1,6 +1,9 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { GroupController } from "./group.controller";
-import { GroupService } from "../adapters/sunbirdrc/group.adapter";
+import {
+  GroupService,
+  SunbirdGroupToken,
+} from "../adapters/sunbirdrc/group.adapter";
 import { HttpModule } from "@nestjs/axios";
 import {
   GroupMembershipService,
@@ -10,6 +13,10 @@ import {
   EsamwadGroupMembershipToken,
   GroupMembershipEsamwadService,
 } from "src/adapters/esamwad/groupMembership.adapter";
+import {
+  EsamwadGroupService,
+  EsamwadGroupToken,
+} from "src/adapters/esamwad/group.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -23,11 +30,17 @@ const ttl = process.env.TTL as never;
     GroupService,
     GroupMembershipService,
     GroupMembershipEsamwadService,
+    EsamwadGroupService,
 
     { provide: SunbirdGroupMembershipToken, useClass: GroupMembershipService },
     {
       provide: EsamwadGroupMembershipToken,
       useClass: GroupMembershipEsamwadService,
+    },
+    { provide: SunbirdGroupToken, useClass: GroupService },
+    {
+      provide: EsamwadGroupToken,
+      useClass: EsamwadGroupService,
     },
   ],
 })
