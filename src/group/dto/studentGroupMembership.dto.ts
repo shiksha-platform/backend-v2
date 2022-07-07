@@ -232,10 +232,10 @@ export class StudentGroupMembershipDto {
     this.weight = obj?.weight ? `${obj.weight}` : "";
     this.height = obj?.height ? `${obj.height}` : "";
     this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
-    this.birthDate = obj?.birthDate ? `${obj.birthDate}` : "";
+    this.birthDate = obj?.dob ? `${obj.dob}` : "";
     this.homeless = obj?.homeless ? obj.homeless : "";
     this.bpl = obj?.is_bpl ? obj.is_bpl : "";
-    this.migrant = obj?.migrant ? obj.migrant : "";
+    this.migrant = obj?.is_migrant ? obj.is_migrant : "";
     this.status = obj?.status ? `${obj.status}` : "";
 
     this.fatherFirstName = obj?.fatherFirstName ? `${obj.fatherFirstName}` : "";
@@ -244,7 +244,7 @@ export class StudentGroupMembershipDto {
       ? `${obj.fatherMiddleName}`
       : "";
 
-    this.fatherLastName = obj?.fatherLastName ? `${obj.fatherLastName}` : "";
+    this.fatherLastName = obj?.father_name ? `${obj.father_name}` : "";
     this.fatherPhoneNumber = obj?.fatherPhoneNumber
       ? obj.fatherPhoneNumber
       : "";
@@ -285,8 +285,8 @@ export class StudentGroupMembershipDto {
     this.pincode = obj?.pincode ? obj.pincode : "";
     this.locationId = obj?.locationId ? `${obj.locationId}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
+    this.createdAt = obj?.created ? `${obj.created}` : "";
+    this.updatedAt = obj?.updated ? `${obj.updated}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
     this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
   }
