@@ -347,8 +347,6 @@ export class AttendanceService implements IServicelocator {
         data: createAttendance,
       };
 
-      console.log(create);
-
       const response = await axios(create);
 
       return new SuccessResponse({
