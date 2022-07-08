@@ -285,10 +285,13 @@ export class NotificationService {
     let utcHrs = utc.slice(11, 13);
     let utcDay = utc.slice(8, 11);
     let utcMon = utc.slice(5, 7);
-
+    console.log(utcMin);
+    console.log(utcHrs);
+    console.log(utcDay);
+    console.log(utcMon);
     const job = new CronJob(
-      // `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
-      `0 ${mins} ${hrs} ${d} ${mon} *`,
+      `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
+      // `0 ${mins} ${hrs} ${d} ${mon} *`,
       async () => {
         var axios = require("axios");
         const result = Math.random().toString(27).substring(6, 8);
