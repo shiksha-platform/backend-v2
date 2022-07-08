@@ -257,7 +257,7 @@ export class AttendanceEsamwadService implements IServicelocator {
           affected_rows
         }
       }`,
-      variables: { isPresent: isPresent, id: attendanceId[0] },
+      variables: { isPresent: isPresent, id: attendanceId },
     };
 
     var updateConfig = {
