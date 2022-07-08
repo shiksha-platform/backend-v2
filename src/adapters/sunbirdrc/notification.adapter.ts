@@ -302,14 +302,14 @@ export class NotificationService {
               {
                 id: process.env.TRANSFORMERSID,
                 meta: {
-                  body: contentData.body,
-                  type: contentData.type,
+                  body: "Kindly note your OTP @__123__@. Submission of the OTP will be taken as authentication that you have personally verified and overseen the distribution of smartphone to the mentioned student ID of your school. Thank you! - Samagra Shiksha, Himachal Pradesh",
+                  type: "JS_TEMPLATE_LITERALS",
                   user: process.env.TRANSFORMERSUSER,
                 },
                 type: "broadcast",
               },
             ],
-            adapter: contentData.user,
+            adapter: "582980ae-95c6-404e-a1a2-5a25104218a8",
           },
         };
 
