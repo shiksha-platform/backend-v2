@@ -285,13 +285,10 @@ export class NotificationService {
     let utcHrs = utc.slice(11, 13);
     let utcDay = utc.slice(8, 11);
     let utcMon = utc.slice(5, 7);
-    console.log(utcMin);
-    console.log(utcHrs);
-    console.log(utcDay);
-    console.log(utcMon);
+
     const job = new CronJob(
-      `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
-      // `0 ${mins} ${hrs} ${d} ${mon} *`,
+      // `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
+      `0 ${mins} ${hrs} ${d} ${mon} *`,
       async () => {
         var axios = require("axios");
         const result = Math.random().toString(27).substring(6, 8);
@@ -302,14 +299,14 @@ export class NotificationService {
               {
                 id: process.env.TRANSFORMERSID,
                 meta: {
-                  body: "Kindly note your OTP @__123__@. Submission of the OTP will be taken as authentication that you have personally verified and overseen the distribution of smartphone to the mentioned student ID of your school. Thank you! - Samagra Shiksha, Himachal Pradesh",
-                  type: "JS_TEMPLATE_LITERALS",
+                  body: contentData.body,
+                  type: contentData.type,
                   user: process.env.TRANSFORMERSUSER,
                 },
                 type: "broadcast",
               },
             ],
-            adapter: "582980ae-95c6-404e-a1a2-5a25104218a8",
+            adapter: contentData.user,
           },
         };
 
