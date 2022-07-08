@@ -114,8 +114,32 @@ export class GroupMembershipEsamwadService implements IServicelocator {
 
   public async findGroupsByUserId(id: string, role: string, request: any) {
     let responseData = [];
-
+    var axios = require("axios");
     if (role === "Teacher") {
+      var schoolData = {
+        query: `query getSchoolId($id:Int!) {
+  teacher(where: {id: {_eq: $id}}) {
+    school_id,
+    designation
+    joining_date
+    role
+    
+  }
+}`,
+        variables: { id: id },
+      };
+
+      var configData = {
+        method: "post",
+        url: this.baseURL,
+        headers: {
+          "x-hasura-admin-secret": this.adminSecret,
+          "Content-Type": "application/json",
+        },
+        data: schoolData,
+      };
+      const res = await axios(configData);
+      const schoolId = res.data.data.teacher[0].school_id;
       var axios = require("axios");
       var data = {
         query: `query classList($schoolId:Int!) {
@@ -131,7 +155,7 @@ export class GroupMembershipEsamwadService implements IServicelocator {
             school_id
           }
         }`,
-        variables: { schoolId: 15547 },
+        variables: { schoolId: schoolId },
       };
 
       var config = {
