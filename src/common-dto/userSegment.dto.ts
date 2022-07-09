@@ -10,9 +10,28 @@ export class SegmentDto {
   @Expose()
   name: string;
 
-  constructor(obj: any) {
-    this.id = obj?.osid ? `${obj.osid}` : "";
-    this.phoneNo = obj?.guardianPhoneNumber ? obj.guardianPhoneNumber : "";
-    this.name = obj?.firstName ? `${obj.firstName}` : "";
+  @Expose()
+  parentName: string;
+
+  @Expose()
+  attendanceDate: string;
+
+  @Expose()
+  month: string;
+
+  @Expose()
+  teacherName: string;
+
+  @Expose()
+  schoolName: string;
+
+  @Expose()
+  startDate: string;
+
+  @Expose()
+  endDate: string;
+
+  constructor(obj: SegmentDto) {
+    Object.assign(this, obj);
   }
 }

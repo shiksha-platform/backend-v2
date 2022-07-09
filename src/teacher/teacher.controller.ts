@@ -10,8 +10,12 @@ import {
   SerializeOptions,
   Req,
   CacheInterceptor,
+  Inject,
 } from "@nestjs/common";
-import { TeacherService } from "../adapters/sunbirdrc/teacher.adapter";
+import {
+  SunbirdTeacherToken,
+  TeacherService,
+} from "../adapters/sunbirdrc/teacher.adapter";
 import { Request } from "@nestjs/common";
 import {
   ApiTags,
@@ -24,10 +28,16 @@ import {
 
 import { TeacherDto } from "./dto/teacher.dto";
 import { TeacherSearchDto } from "./dto/teacher-search.dto";
+import { EsamwadTeacherToken } from "src/adapters/esamwad/teacher.adapter";
+import { IServicelocator } from "src/adapters/teacherservicelocator";
 @ApiTags("Teacher")
 @Controller("teacher")
 export class TeacherController {
-  constructor(private readonly service: TeacherService) {}
+  constructor(
+    private readonly service: TeacherService,
+    @Inject(EsamwadTeacherToken) private eSamwadProvider: IServicelocator,
+    @Inject(SunbirdTeacherToken) private sunbirdProvider: IServicelocator
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -50,7 +60,11 @@ export class TeacherController {
     strategy: "excludeAll",
   })
   public async getTeacherByAuth(@Req() request: Request) {
-    return this.service.getTeacherByAuth(request);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.getTeacherByAuth(request);
+    } else {
+      return this.eSamwadProvider.getTeacherByAuth(request);
+    }
   }
 
   @Post()

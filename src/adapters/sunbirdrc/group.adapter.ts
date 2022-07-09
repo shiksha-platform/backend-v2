@@ -10,15 +10,17 @@ import { GroupDto } from "src/group/dto/group.dto";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { GroupSearchDto } from "src/group/dto/group-search.dto";
+import { IServicelocatorgroup } from "../groupservicelocator";
+export const SunbirdGroupToken = "SunbirdGroup";
 @Injectable()
-export class GroupService {
+export class GroupService implements IServicelocatorgroup {
   private group: GroupInterface;
 
   constructor(private httpService: HttpService) {}
 
   url = `${process.env.BASEAPIURL}/Class`;
 
-  public async getGroup(groupId: string, request: any) {
+  public async getGroup(groupId: any, request: any) {
     return this.httpService
       .get(`${this.url}/${groupId}`, {
         headers: {

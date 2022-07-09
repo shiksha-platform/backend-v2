@@ -67,7 +67,7 @@ export class TemplateService {
     templateProcessDto: TemplateProcessDto
   ) {
     var axios = require("axios");
-    console.log(templateProcessDto);
+
     var config = {
       method: "post",
       url: `${this.url}process`,
@@ -76,7 +76,6 @@ export class TemplateService {
       },
       data: templateProcessDto,
     };
-    console.log(config);
 
     const response = await axios(config);
     const responseData = response.data;
