@@ -29,6 +29,10 @@ import {
   EsamwadAttendanceToken,
 } from "./adapters/esamwad/attendance.adapter";
 import {
+  AnnouncementsEsamwadService,
+  ESamwadAnnouncementsToken,
+} from "./adapters/esamwad/announcements.adapter";
+import {
   SunbirdAttendanceToken,
   AttendanceService,
 } from "./adapters/sunbirdrc/attendance.adapter";
