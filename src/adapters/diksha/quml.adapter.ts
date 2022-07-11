@@ -49,8 +49,7 @@ export class QumlQuestionService implements IServicelocator {
     let questionArray = [];
     for (let value of arrayIds) {
       let questionData = this.getQuestion(value);
-      let res = new QuestionDto(await questionData);
-      questionArray.push(res);
+      questionArray.push(await questionData);
     }
 
     return new SuccessResponse({
@@ -145,7 +144,8 @@ export class QumlQuestionService implements IServicelocator {
       totalRatings: final.totalRatings,
     };
 
-    return mappedResponse;
+    let res = new QuestionDto(mappedResponse);
+    return res;
   }
 
   public async getAllQuestionsByQuestionIds(
