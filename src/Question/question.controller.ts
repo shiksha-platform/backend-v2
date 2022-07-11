@@ -101,7 +101,7 @@ export class QuestionController {
   @Get(":adapter/subjectlist")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Get all Questions detail." })
+  @ApiOkResponse({ description: "Get all subject list" })
   @ApiForbiddenResponse({ description: "Forbidden" })
   public async getSubjectList(
     @Param("adapter") adapter: string,
@@ -111,6 +111,24 @@ export class QuestionController {
       return this.dikshaProvider.getSubjectList();
     } else if (adapter === "khanacademy") {
       return this.khanacademyProvider.getSubjectList();
+    }
+  }
+
+  @Get(":adapter/questionid")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Get Questions detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "questionId", required: false })
+  public async getOneQuestion(
+    @Param("adapter") adapter: string,
+    @Query("questionId") questionId: string,
+    @Req() request: Request
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.getOneQuestion(questionId, request);
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.getOneQuestion(questionId, request);
     }
   }
 
