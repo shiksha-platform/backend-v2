@@ -8,4 +8,5 @@ export interface IServicelocator {
     request:any,
     announcementData:AnnouncementsDto
   )
+  createAnnouncement(request:any, announcementData:any)
 }

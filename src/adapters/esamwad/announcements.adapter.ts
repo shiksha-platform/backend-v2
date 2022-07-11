@@ -49,7 +49,7 @@ export class AnnouncementsEsamwadService implements IServicelocator {
       (item: any) => new AnnouncementsDto(item)
     );
     console.log(responsedata);
-    let x= new SuccessResponse({
+    let x = new SuccessResponse({
       statusCode: 200,
       message: "ok.",
       data: responsedata,
@@ -107,6 +107,7 @@ export class AnnouncementsEsamwadService implements IServicelocator {
     });
   }
 
+  
   //to update a given announcement
   public async updateAnnouncement(
     announcementId: string,
@@ -153,4 +154,54 @@ export class AnnouncementsEsamwadService implements IServicelocator {
       data: response,
     });
   }
+
+  //to create an announcement
+  public async createAnnouncement(request: any, announcementsData: any) {
+    var axios = require("axios");
+    console.log(announcementsData);
+    var data = {
+      query: `mutation createAnnouncement($additional_tags: _text, $data: String = "", $is_dismissable: Boolean = false, $is_pinned: Boolean = false, $status: String = "", $title: String = "", $type: String = "") {
+          insert_announcements_one(object: {additional_tags: $additional_tags, data: $data, is_dismissable: $is_dismissable, is_pinned: $is_pinned, status: $status, title: $title, type: $type}) {
+            id
+          }
+        }
+        `,
+      variables: {
+        additional_tags: announcementsData.additionalTags,
+        data: announcementsData.data,
+        is_dismissable: announcementsData.pinnedAnnouncementProperties?.is_dismissable,
+        is_pinned: announcementsData.isPinned,
+        status: announcementsData.status,
+        title: announcementsData.title,
+        type: announcementsData.announcementType,
+      },
+    };
+
+    var config = {
+      method: "post",
+      url: this.baseURL,
+      headers: {
+        "x-hasura-admin-secret": this.adminSecret,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const responseData = await axios(config);
+    const response = responseData.data;
+    console.log(response);
+    let final = {
+      ...response,
+      result: {
+        Announcements: { osid: response.data.insert_announcements_one.id },
+      },
+    };
+    
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok.",
+      data: final,
+    });
+  }
 }
+

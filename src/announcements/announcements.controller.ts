@@ -1,4 +1,5 @@
-import { Body, CacheInterceptor, ClassSerializerInterceptor, Controller, Get, Inject, Param, Put, Query, Req, Request, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import { Body, CacheInterceptor, ClassSerializerInterceptor, Controller, Get, Inject, Param, Post, Put, Query, Req, Request, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBasicAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
 import { IServicelocator } from 'src/adapters/announcementsservicelocator';
 import { AnnouncementsEsamwadService, ESamwadAnnouncementsToken } from 'src/adapters/esamwad/announcements.adapter';
@@ -51,11 +52,29 @@ export class AnnouncementsController {
         @Req() request: Request,
         @Body() announcementData: AnnouncementsDto,
     ) {
-            announcementData.pinnedAnnouncementProperties=JSON.parse(announcementData.pinnedAnnouncementProperties);
-            return this.eSamwadProvider.updateAnnouncement(
-                announcementId,
-                request,
-                announcementData
-            );
+        announcementData.pinnedAnnouncementProperties = JSON.parse(announcementData.pinnedAnnouncementProperties);
+        return this.eSamwadProvider.updateAnnouncement(
+            announcementId,
+            request,
+            announcementData
+        );
+    }
+
+    @Post()
+    @ApiConsumes("multipart/form-data")
+    @ApiBasicAuth("access-token")
+    @ApiCreatedResponse({
+        description: "Announcement has been created successfully.",
+    })
+    @ApiBody({ type: AnnouncementsDto })
+    @ApiForbiddenResponse({ description: "Forbidden" })
+    public async createAnnouncement(
+        @Req() request: Request,
+        @Body() announcementData: any,
+    ) {
+        if(announcementData?.pinnedAnnouncementProperties)
+            announcementData.pinnedAnnouncementProperties=JSON.parse(announcementData?.pinnedAnnouncementProperties);
+        return this.eSamwadProvider.createAnnouncement(request, announcementData);
     }
 }
+
