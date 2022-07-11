@@ -8,7 +8,7 @@ import {
 import {
   KhanAcademyQuestionService,
   KhanAcademyQuestionToken,
-} from "src/adapters/Khan Academy/khanAcademy.adapter";
+} from "src/adapters/khanAcademy/khanAcademy.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [

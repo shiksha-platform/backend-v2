@@ -22,7 +22,7 @@ import {
   QumlQuestionService,
 } from "src/adapters/diksha/quml.adapter";
 import { IServicelocator } from "src/adapters/questionservicelocator";
-import { KhanAcademyQuestionToken } from "src/adapters/Khan Academy/khanAcademy.adapter";
+import { KhanAcademyQuestionToken } from "src/adapters/khanAcademy/khanAcademy.adapter";
 
 @ApiTags("Question")
 @Controller("question")
