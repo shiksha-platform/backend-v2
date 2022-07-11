@@ -77,4 +77,115 @@ export class QuestionController {
     //   );
     // }
   }
+
+  @Get(":adapter/questionIds")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Get all Questions detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "server", required: false })
+  @ApiQuery({ name: "questionIds", required: false })
+  public async getAllQuestionsByQuestionIds(
+    @Param("adapter") adapter: string,
+    @Query("server") url: string,
+    @Query("questionIds") questionIds: [string],
+    @Req() request: Request
+  ) {
+    if (adapter === "diksha") {
+      if (url === "dev") {
+        url = process.env.DIKSHADEVBASEAPIURL;
+      } else if (url === "staging") {
+        url = process.env.DIKSHASTAGINGAPIURL;
+      }
+
+      return this.service.getAllQuestionsByQuestionIds(
+        url,
+        questionIds,
+        request
+      );
+    }
+    // } else if (adapter === "khanAcademy") {
+    // if (url === "dev") {
+    //   url = process.env.khanAcademyBASEURL;
+    // } else if (url === "staging") {
+    //   url = process.env.khanAcademySTAGINGURL;
+    // }
+    //   return this.khanAcademyService.getAllQuestionsByQuestionIds(
+    //     questionType,
+    //     subject,
+    //     language,
+    //     medium
+    //   );
+    // }
+  }
+
+  @Get(":adapter/subjectlist")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Get all Questions detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "server", required: false })
+  public async getSubjectList(
+    @Param("adapter") adapter: string,
+    @Query("server") url: string,
+    @Req() request: Request
+  ) {
+    if (adapter === "diksha") {
+      if (url === "dev") {
+        url = process.env.DIKSHADEVBASEAPIURL;
+      } else if (url === "staging") {
+        url = process.env.DIKSHASTAGINGAPIURL;
+      }
+
+      return this.service.getSubjectList();
+    }
+    // } else if (adapter === "khanAcademy") {
+    // if (url === "dev") {
+    //   url = process.env.khanAcademyBASEURL;
+    // } else if (url === "staging") {
+    //   url = process.env.khanAcademySTAGINGURL;
+    // }
+    //   return this.khanAcademyService.getSubjectList(
+    //     questionType,
+    //     subject,
+    //     language,
+    //     medium
+    //   );
+    // }
+  }
+
+  @Get(":adapter/competencieslist")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Get all competencies list." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "server", required: false })
+  public async getcompetenciesList(
+    @Param("adapter") adapter: string,
+    @Query("server") url: string,
+    @Req() request: Request
+  ) {
+    if (adapter === "diksha") {
+      if (url === "dev") {
+        url = process.env.DIKSHADEVBASEAPIURL;
+      } else if (url === "staging") {
+        url = process.env.DIKSHASTAGINGAPIURL;
+      }
+
+      return this.service.getcompetenciesList();
+    }
+    // } else if (adapter === "khanAcademy") {
+    // if (url === "dev") {
+    //   url = process.env.khanAcademyBASEURL;
+    // } else if (url === "staging") {
+    //   url = process.env.khanAcademySTAGINGURL;
+    // }
+    //   return this.khanAcademyService.getcompetenciesList(
+    //     questionType,
+    //     subject,
+    //     language,
+    //     medium
+    //   );
+    // }
+  }
 }

@@ -204,6 +204,18 @@ export class QuestionDto {
   @Expose()
   totalRatings: number;
 
+  @Expose()
+  topic: string;
+
+  @Expose()
+  subject: string;
+
+  @Expose()
+  class: string;
+
+  @Expose()
+  questionId: string;
+
   constructor(obj: QuestionDto) {
     Object.assign(this, obj);
   }
