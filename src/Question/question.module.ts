@@ -1,7 +1,14 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { QuestionController } from "./question.controller";
-import { QumlQuestionService } from "src/adapters/diksha/quml.adapter";
+import {
+  DikshaQuestionToken,
+  QumlQuestionService,
+} from "src/adapters/diksha/quml.adapter";
+import {
+  KhanAcademyQuestionService,
+  KhanAcademyQuestionToken,
+} from "src/adapters/khanAcademy/khanAcademy.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -11,6 +18,11 @@ const ttl = process.env.TTL as never;
     }),
   ],
   controllers: [QuestionController],
-  providers: [QumlQuestionService],
+  providers: [
+    QumlQuestionService,
+    KhanAcademyQuestionService,
+    { provide: DikshaQuestionToken, useClass: QumlQuestionService },
+    { provide: KhanAcademyQuestionToken, useClass: KhanAcademyQuestionService },
+  ],
 })
 export class QuestionModule {}
