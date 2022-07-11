@@ -1,6 +1,6 @@
-import { Body, CacheInterceptor, ClassSerializerInterceptor, Controller, Get, Inject, Param, Post, Put, Query, Req, Request, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import { Body, CacheInterceptor, ClassSerializerInterceptor, Controller, Delete, Get, Inject, Param, Post, Put, Query, Req, Request, SerializeOptions, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBasicAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse } from '@nestjs/swagger';
 import { IServicelocator } from 'src/adapters/announcementsservicelocator';
 import { AnnouncementsEsamwadService, ESamwadAnnouncementsToken } from 'src/adapters/esamwad/announcements.adapter';
 import { AnnouncementsDto } from './dto/announcements.dto';
@@ -72,9 +72,20 @@ export class AnnouncementsController {
         @Req() request: Request,
         @Body() announcementData: any,
     ) {
-        if(announcementData?.pinnedAnnouncementProperties)
-            announcementData.pinnedAnnouncementProperties=JSON.parse(announcementData?.pinnedAnnouncementProperties);
+        if (announcementData?.pinnedAnnouncementProperties)
+            announcementData.pinnedAnnouncementProperties = JSON.parse(announcementData?.pinnedAnnouncementProperties);
         return this.eSamwadProvider.createAnnouncement(request, announcementData);
+    }
+
+    @Delete("/:id")
+    @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+    @ApiBasicAuth("access-token")
+    @ApiOkResponse({ description: "Deleted the announcement " })
+    public async deleteAnnouncement(
+        @Param("id") announcementId: string,
+        @Req() request: Request
+    ) {
+        return this.eSamwadProvider.deleteAnnouncement(announcementId, request);
     }
 }
 

@@ -203,5 +203,39 @@ export class AnnouncementsEsamwadService implements IServicelocator {
       data: final,
     });
   }
+
+  //to delete an announcement
+  public async deleteAnnouncement(announcementId: string, request: any) {
+    var axios = require("axios");
+    var data = {
+      query: `mutation delete_announcement($id: Int!) {
+        delete_announcements_by_pk(id: $id){
+          id
+        }
+      }
+      `,
+      variables: {
+        id: announcementId,
+      },
+    };
+    var config = {
+      method: "post",
+      url: this.baseURL,
+      headers: {
+        "x-hasura-admin-secret": this.adminSecret,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const responseData = await axios(config);
+    const response = responseData.data.data;
+    let x = new SuccessResponse({
+      statusCode: 200,
+      message: "Deleted announcement successfully",
+      data: response,
+    });
+    return x;
+  }
 }
 

@@ -9,4 +9,5 @@ export interface IServicelocator {
     announcementData:AnnouncementsDto
   )
   createAnnouncement(request:any, announcementData:any)
+  deleteAnnouncement(announcementId:string, request:any)
 }
