@@ -12,22 +12,16 @@ export class AssessmentsetDto {
   title: string;
 
   @ApiPropertyOptional({
-    description: "Array of question Id's against the assessment set",
+    description: "Assessment set Type",
   })
   @Expose()
-  questions: [string];
-
-  @ApiPropertyOptional({
-    description: "Worksheet Id against assesment set",
-  })
-  @Expose()
-  worksheetId: number;
+  type: string;
 
   @ApiProperty({
-    description: "Number of times assesment is allowed to attempt",
+    description: "Assessmentset type, Ex - marks, boolean, grade",
   })
   @Expose()
-  attempts: number;
+  typeDetails: string;
 
   @ApiProperty({
     description: "Assessmentset type, Ex - marks, boolean, grade",
@@ -56,9 +50,8 @@ export class AssessmentsetDto {
   constructor(obj: any) {
     this.assessmentsetId = obj?.osid ? `${obj.osid}` : "";
     this.title = obj?.title ? `${obj.title}` : "";
-    this.questions = obj?.questions ? obj.questions : "";
-    this.worksheetId = obj?.worksheetId ? obj.worksheetId : "";
-    this.attempts = obj?.attempts ? obj.attempts : "";
+    this.type = obj?.type ? obj.type : "";
+    this.typeDetails = obj?.typeDetails ? obj.typeDetails : "";
     this.gradetype = obj?.gradetype ? `${obj.gradetype}` : "";
     this.options = obj?.options ? `${obj.options}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
