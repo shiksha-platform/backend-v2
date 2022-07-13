@@ -14,8 +14,10 @@ import axios from "axios";
 import { TeacherDto } from "src/teacher/dto/teacher.dto";
 import { GroupDto } from "src/group/dto/group.dto";
 import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
+import { IServicelocator } from "../groupmembershipservicelocator";
+export const SunbirdGroupMembershipToken = "SunbirdGroupMembership";
 @Injectable()
-export class GroupMembershipService {
+export class GroupMembershipService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}`;
 

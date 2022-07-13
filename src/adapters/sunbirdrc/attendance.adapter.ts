@@ -10,16 +10,19 @@ import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 import { SegmentDto } from "src/common-dto/userSegment.dto";
 import { Cron, SchedulerRegistry } from "@nestjs/schedule";
 import moment from "moment";
-import { STATUS_CODES } from "http";
+
+import { IServicelocator } from "../attendanceservicelocator";
+export const SunbirdAttendanceToken = "SunbirdAttendance";
+
 @Injectable()
-export class AttendanceService {
+export class AttendanceService implements IServicelocator {
   constructor(
     private httpService: HttpService,
     private schedulerRegistry: SchedulerRegistry
   ) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   studentAPIUrl = `${process.env.BASEAPIURL}/Student`;
-
+  baseUrl = process.env.BASEAPIURL;
   public async getAttendance(attendanceId: any, request: any) {
     return this.httpService
       .get(`${this.url}/${attendanceId}`, {
@@ -208,12 +211,42 @@ export class AttendanceService {
       data: data,
     };
 
+    let startDates: any;
+    let endDates: any;
+
+    if (data.filters.attendanceDate.between === undefined) {
+      startDates = "";
+      endDates = "";
+    } else {
+      startDates = data.filters.attendanceDate?.between[0]
+        ? data.filters.attendanceDate.between[0]
+        : "";
+      endDates = data.filters.attendanceDate?.between[1]
+        ? data.filters.attendanceDate.between[1]
+        : "";
+    }
+
     const response = await axios(config);
     let resData = response?.data;
+
+    let dateData = resData.map((e: any) => {
+      return e.attendanceDate;
+    });
+
+    const groupData = await axios.get(`${this.baseUrl}/Class/${groupId}`);
+
+    const teacherData = await axios.get(
+      `${this.baseUrl}/Teacher/${groupData.data.teacherId}`
+    );
+
+    const schoolData = await axios.get(
+      `${this.baseUrl}/School/${groupData.data.schoolId}`
+    );
 
     let arrayIds = resData.map((e: any) => {
       return e.userId;
     });
+
     let studentArray = [];
     for (let value of arrayIds) {
       let config = {
@@ -222,10 +255,27 @@ export class AttendanceService {
       };
       const response = await axios(config);
       const data = response?.data;
-      let studentDto = new SegmentDto(data);
 
-      studentArray.push(studentDto);
+      const date = new Date(dateData[0]);
+      const month = date.toLocaleString("default", { month: "long" });
+
+      const studentDto = {
+        id: data.osid,
+        name: data?.firstName + " " + data?.lastName,
+        phoneNo: data.guardianPhoneNumber,
+        parentName: data?.guardianFirstName + " " + data?.guardianLastName,
+        attendanceDate: dateData[0],
+        month: month,
+        teacherName:
+          teacherData.data.firstName + " " + teacherData.data.lastName,
+        schoolName: schoolData.data.schoolName,
+        startDate: startDates,
+        endDate: endDates,
+      };
+      let studentDtoData = new SegmentDto(studentDto);
+      studentArray.push(studentDtoData);
     }
+
     return new SuccessResponse({
       data: studentArray,
     });

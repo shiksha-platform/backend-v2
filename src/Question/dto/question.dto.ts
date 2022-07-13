@@ -31,10 +31,10 @@ export class QuestionDto {
   hints: [string];
 
   @ApiProperty({
-    description: "Solutions to the question.",
+    description: "options of question.",
   })
   @Expose()
-  solutions: [string];
+  options: [string];
 
   @ApiProperty({
     description: "List of media used in the question",
@@ -203,6 +203,18 @@ export class QuestionDto {
   })
   @Expose()
   totalRatings: number;
+
+  @Expose()
+  topic: string;
+
+  @Expose()
+  subject: string;
+
+  @Expose()
+  class: string;
+
+  @Expose()
+  questionId: string;
 
   constructor(obj: QuestionDto) {
     Object.assign(this, obj);
