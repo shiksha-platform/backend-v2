@@ -132,19 +132,19 @@ export class QuestionController {
     }
   }
 
-  // @Get(":adapter/competencieslist")
-  // @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // @ApiBasicAuth("access-token")
-  // @ApiOkResponse({ description: "Get all competencies list." })
-  // @ApiForbiddenResponse({ description: "Forbidden" })
-  // public async getcompetenciesList(
-  //   @Param("adapter") adapter: string,
-  //   @Req() request: Request
-  // ) {
-  //   if (adapter === "diksha") {
-  //     return this.dikshaProvider.getcompetenciesList();
-  //   } else if (adapter === "khanacademy") {
-  //     return this.khanacademyProvider.getcompetenciesList();
-  //   }
-  // }
+  @Get(":adapter/competencieslist")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Get all competencies list." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async getcompetenciesList(
+    @Param("adapter") adapter: string,
+    @Req() request: Request
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.getcompetenciesList();
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.getcompetenciesList();
+    }
+  }
 }

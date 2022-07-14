@@ -28,7 +28,7 @@ export class AssessmentDto {
     description: "Assesment set id",
   })
   @Expose()
-  assessmetsetId: string;
+  assessmentsetId: string;
 
   @Expose()
   questions: [string];
@@ -62,7 +62,7 @@ export class AssessmentDto {
     this.filter = obj?.filter ? `${obj.filter}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.questions = obj?.questions ? obj.questions : "";
-    this.assessmetsetId = obj?.assessmetsetId ? `${obj.assessmetsetId}` : "";
+    this.assessmentsetId = obj?.assessmentsetId ? `${obj.assessmetsentId}` : "";
     this.answersheet = obj?.answersheet ? `${obj.answersheet}` : "";
     this.score = obj?.score ? `${obj.score}` : "";
     this.result = obj?.result ? `${obj.result}` : "";
