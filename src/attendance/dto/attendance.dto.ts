@@ -7,7 +7,7 @@ export class AttendanceDto {
 
   @ApiProperty({
     type: String,
-    description: "The id of the attendance ",
+    description: "The schoolId of the attendance ",
     default: "",
   })
   @Expose()

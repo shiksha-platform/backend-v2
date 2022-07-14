@@ -19,15 +19,7 @@ import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
 import { AdminFormModule } from "./adminForm/adminForm.module";
 import { LikeModule } from "./like/like.module";
 import { CommentModule } from "./comment/comment.module";
-import {
-  AttendanceEsamwadService,
-  EsamwadAttendanceToken,
-} from "./adapters/esamwad/attendance.adapter";
-import {
-  SunbirdAttendanceToken,
-  AttendanceService,
-} from "./adapters/sunbirdrc/attendance.adapter";
-
+import { AssessmentModule } from "./assessment/assessment.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -50,6 +42,7 @@ import {
     AdminFormModule,
     LikeModule,
     CommentModule,
+    AssessmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
