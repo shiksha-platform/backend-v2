@@ -4,6 +4,7 @@ import { ScheduleModule } from "@nestjs/schedule";
 import { AssessmentService } from "src/adapters/sunbirdrc/assessment.adapter";
 import { AssessmentController } from "./assessment.controller";
 import { AssessmentsetController } from "./assessmentset.controller";
+import { AssessmentsetService } from "src/adapters/sunbirdrc/assessmentset.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -14,6 +15,6 @@ const ttl = process.env.TTL as never;
     ScheduleModule.forRoot(),
   ],
   controllers: [AssessmentController, AssessmentsetController],
-  providers: [AssessmentService],
+  providers: [AssessmentService, AssessmentsetService],
 })
 export class AssessmentModule {}
