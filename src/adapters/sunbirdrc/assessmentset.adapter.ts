@@ -2,60 +2,21 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { catchError, map } from "rxjs";
-
 import { SuccessResponse } from "src/success-response";
-import { AssessmentDto } from "src/assessment/dto/assessment.dto";
 import { ErrorResponse } from "src/error-response";
 import { AssessmentSearchDto } from "src/assessment/dto/assessment-search-dto";
+import { AssessmentsetDto } from "src/assessment/dto/assessmentset.dto";
 @Injectable()
-export class AssessmentService {
+export class AssessmentsetService {
   constructor(private httpService: HttpService) {}
-  assessmentURL = `${process.env.BASEAPIURL}/Assessment`;
   assessmentsetURL = `${process.env.BASEAPIURL}/Assessmentset`;
-  public async getAssessment(assessmentId: any, request: any) {
+
+  public async createAssessmentSet(
+    request: any,
+    assessmentsetDto: AssessmentsetDto
+  ) {
     return this.httpService
-      .get(`${this.assessmentURL}/${assessmentId}`, {
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-      })
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          const data = axiosResponse.data;
-          const assessmentDto = new AssessmentDto(data);
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "ok.",
-            data: assessmentDto,
-          });
-        })
-      );
-  }
-  public async createAssessment(request: any, assessmentDto: AssessmentDto) {
-    let answer = JSON.stringify(assessmentDto.answersheet);
-    var jsonObj = JSON.parse(answer);
-    let params = JSON.parse(jsonObj);
-
-    const questionIds = params.children.map((e: any) => {
-      return e.identifier;
-    });
-
-    assessmentDto.questions = questionIds;
-    let sum = 0;
-
-    params.children.map((e: any) => {
-      sum += e.score;
-      return sum;
-    });
-    const scoreLength = params.children.map((e: any) => {
-      return e.score;
-    });
-    assessmentDto.score = sum.toString();
-    let result = (sum * 100) / scoreLength.length;
-    assessmentDto.result = result.toString();
-
-    return this.httpService
-      .post(`${this.assessmentURL}`, assessmentDto, {
+      .post(`${this.assessmentsetURL}`, assessmentsetDto, {
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -77,13 +38,32 @@ export class AssessmentService {
         })
       );
   }
+  public async getAssessmentset(assessmentsetId: any, request: any) {
+    return this.httpService
+      .get(`${this.assessmentsetURL}/${assessmentsetId}`, {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      })
+      .pipe(
+        map((axiosResponse: AxiosResponse) => {
+          const data = axiosResponse.data;
+          const assessmentDto = new AssessmentsetDto(data);
+          return new SuccessResponse({
+            statusCode: 200,
+            message: "ok.",
+            data: assessmentDto,
+          });
+        })
+      );
+  }
 
-  public async searchAssessment(
+  public async searchAssessmentset(
     request: any,
     assessmentSearchDto: AssessmentSearchDto
   ) {
     return this.httpService
-      .post(`${this.assessmentURL}/search`, assessmentSearchDto, {
+      .post(`${this.assessmentsetURL}/search`, assessmentSearchDto, {
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -91,7 +71,7 @@ export class AssessmentService {
       .pipe(
         map((response) => {
           const responsedata = response.data.map(
-            (item: any) => new AssessmentDto(item)
+            (item: any) => new AssessmentsetDto(item)
           );
           return new SuccessResponse({
             statusCode: response.status,

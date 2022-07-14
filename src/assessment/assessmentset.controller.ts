@@ -18,14 +18,14 @@ import {
   Post,
   Body,
 } from "@nestjs/common";
-import { AssessmentService } from "src/adapters/sunbirdrc/assessment.adapter";
 import { AssessmentSearchDto } from "./dto/assessment-search-dto";
 import { AssessmentsetDto } from "./dto/assessmentset.dto";
+import { AssessmentsetService } from "src/adapters/sunbirdrc/assessmentset.adapter";
 
 @ApiTags("Assessmentset")
 @Controller("assessmentset")
 export class AssessmentsetController {
-  constructor(private service: AssessmentService) {}
+  constructor(private service: AssessmentsetService) {}
 
   @Post("/assessmentset")
   @ApiBasicAuth("access-token")
