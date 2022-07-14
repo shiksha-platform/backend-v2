@@ -12,10 +12,6 @@ export class TeacherDto {
   @Expose()
   teacherId: string;
 
-  @ApiProperty({
-    type: String,
-    description: "The firstname of the teacher",
-  })
   @ApiProperty()
   @Expose()
   refId1: string;
@@ -54,8 +50,7 @@ export class TeacherDto {
     description: "The contact number of the teacher",
   })
   @Expose()
-  @IsNumber()
-  phoneNumber: Number;
+  phoneNumber: string;
 
   @ApiProperty({
     type: String,
@@ -273,7 +268,7 @@ export class TeacherDto {
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
     this.middleName = obj?.middleName ? `${obj.middleName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
-    this.phoneNumber = obj?.phoneNumber ? obj.phoneNumber : "";
+    this.phoneNumber = obj?.phoneNumber ? `${obj.phoneNumber}` : "";
     this.email = obj?.email ? `${obj.email}` : "";
     this.aadhaar = obj?.aadhaar ? `${obj.aadhaar}` : "";
     this.gender = obj?.gender ? `${obj.gender}` : "";
