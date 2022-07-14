@@ -356,20 +356,20 @@ export class QumlQuestionService implements IServicelocator {
       data: res,
     });
   }
-  // public async getcompetenciesList() {
-  //   const response = {
-  //     competencies: [
-  //       "Cognitive",
-  //       "Critical Thinking",
-  //       "Enterprenurial",
-  //       "Reasoning",
-  //     ],
-  //   };
+  public async getcompetenciesList() {
+    const response = {
+      competencies: [
+        "Cognitive",
+        "Critical Thinking",
+        "Enterprenurial",
+        "Reasoning",
+      ],
+    };
 
-  //   return new SuccessResponse({
-  //     statusCode: 200,
-  //     message: "ok",
-  //     data: response,
-  //   });
-  // }
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: response,
+    });
+  }
 }
