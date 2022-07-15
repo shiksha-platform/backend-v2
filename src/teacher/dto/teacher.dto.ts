@@ -12,6 +12,10 @@ export class TeacherDto {
   @Expose()
   teacherId: string;
 
+  @ApiProperty({
+    type: String,
+    description: "The firstname of the teacher",
+  })
   @ApiProperty()
   @Expose()
   refId1: string;
@@ -50,7 +54,8 @@ export class TeacherDto {
     description: "The contact number of the teacher",
   })
   @Expose()
-  phoneNumber: string;
+  @IsNumber()
+  phoneNumber: Number;
 
   @ApiProperty({
     type: String,
@@ -247,6 +252,10 @@ export class TeacherDto {
   @Expose()
   metaData: [string];
 
+  @ApiPropertyOptional()
+  @Expose()
+  fcmToken: string;
+
   @Expose()
   createdAt: string;
 
@@ -264,11 +273,10 @@ export class TeacherDto {
     this.refId1 = obj?.refId1 ? `${obj.refId1}` : "";
     this.refId2 = obj?.refId2 ? `${obj.refId2}` : "";
     this.refId3 = obj?.refId3 ? `${obj.refId3}` : "";
-
     this.firstName = obj?.firstName ? `${obj.firstName}` : "";
     this.middleName = obj?.middleName ? `${obj.middleName}` : "";
     this.lastName = obj?.lastName ? `${obj.lastName}` : "";
-    this.phoneNumber = obj?.phoneNumber ? `${obj.phoneNumber}` : "";
+    this.phoneNumber = obj?.phoneNumber ? obj.phoneNumber : "";
     this.email = obj?.email ? `${obj.email}` : "";
     this.aadhaar = obj?.aadhaar ? `${obj.aadhaar}` : "";
     this.gender = obj?.gender ? `${obj.gender}` : "";
@@ -304,6 +312,7 @@ export class TeacherDto {
     this.reportsTo = obj?.reportsTo ? `${obj.reportsTo}` : "";
     this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
+    this.fcmToken = obj?.fcmToken ? `${obj.fcmToken}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
