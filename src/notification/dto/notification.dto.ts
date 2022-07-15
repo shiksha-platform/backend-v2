@@ -64,6 +64,9 @@ export class NotificationLogDto {
   @Expose()
   templateId: string;
 
+  @Expose()
+  scheduleDate: string;
+
   constructor(obj: any) {
     this.notificationLogId = obj?.osid ? `${obj.osid}` : "";
     this.content = obj?.content ? `${obj.content}` : "";
@@ -76,6 +79,7 @@ export class NotificationLogDto {
     this.medium = obj?.medium ? `${obj.medium}` : "";
     this.sentDate = obj?.sentDate ? `${obj.sentDate}` : "";
     this.sentBy = obj?.sentBy ? `${obj.sentBy}` : "";
+    this.scheduleDate = obj?.scheduleDate ? `${obj.scheduleDate}` : "";
     this.options = obj?.options ? obj.options : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
