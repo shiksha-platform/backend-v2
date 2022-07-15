@@ -62,11 +62,6 @@ export class scheduleNotificationController {
     @Query("taskName") taskName: string,
     @Req() request: Request
   ) {
-      console.log(month);
-console.log(date);
-console.log(hours);
-console.log(minutes);
-console.log(taskName);
     return this.service.scheduleSendNotification(
       module,
       eventTrigger,
