@@ -385,7 +385,7 @@ export class NotificationService {
           }
         );
         const logResponse = logRes.data;
-console.log("send",logResponse);
+
         var deleteCron = {
           method: "delete",
           url: `${this.baseURL}Notificationschedule/${osid}`,

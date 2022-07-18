@@ -44,6 +44,7 @@ export class QuestionController {
   @ApiQuery({ name: "limit", required: false })
   @ApiQuery({ name: "language", required: false })
   @ApiQuery({ name: "medium", required: false })
+  @ApiQuery({ name: "bloomsLevel", required: false })
   public async getAllQuestions(
     @Param("adapter") adapter: string,
     @Query("questionType") questionType: string,
@@ -51,6 +52,7 @@ export class QuestionController {
     @Query("limit") limit: string,
     @Query("language") language: string,
     @Query("medium") medium: string,
+    @Query("bloomsLevel") bloomsLevel: string,
     @Req() request: Request
   ) {
     if (adapter === "diksha") {
@@ -60,6 +62,7 @@ export class QuestionController {
         limit,
         language,
         medium,
+        bloomsLevel,
         request
       );
     } else if (adapter === "khanacademy") {
@@ -69,6 +72,7 @@ export class QuestionController {
         limit,
         language,
         medium,
+        bloomsLevel,
         request
       );
     }

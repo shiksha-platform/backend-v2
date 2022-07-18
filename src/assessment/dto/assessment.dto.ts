@@ -30,6 +30,9 @@ export class AssessmentDto {
   @Expose()
   assessmentsetId: string;
 
+  @ApiPropertyOptional({
+    description: "Questions",
+  })
   @Expose()
   questions: [string];
 
