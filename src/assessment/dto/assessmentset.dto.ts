@@ -1,4 +1,4 @@
-import { Exclude, Expose } from "class-transformer";
+import { Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AssessmentsetDto {
@@ -24,7 +24,7 @@ export class AssessmentsetDto {
   typeDetails: string;
 
   @ApiProperty({
-    description: "Assessmentset type, Ex - marks, boolean, grade",
+    description: "Assessmentset type details",
   })
   @Expose()
   gradetype: string;
