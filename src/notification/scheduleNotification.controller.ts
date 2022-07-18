@@ -43,11 +43,11 @@ export class scheduleNotificationController {
   @ApiQuery({ name: "senderId" })
   @ApiQuery({ name: "groupId" })
   @ApiQuery({ name: "channel" })
-  @ApiQuery({ name: "month", required: false })
-  @ApiQuery({ name: "date", required: false })
-  @ApiQuery({ name: "hours", required: false })
-  @ApiQuery({ name: "minutes", required: false })
-  @ApiQuery({ name: "taskName", required: false })
+  @ApiQuery({ name: "month" })
+  @ApiQuery({ name: "date" })
+  @ApiQuery({ name: "hours" })
+  @ApiQuery({ name: "minutes" })
+  @ApiQuery({ name: "taskName" })
   public async scheduledSendNotification(
     @Query("module") module: string,
     @Query("eventTrigger") eventTrigger: string,
