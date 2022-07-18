@@ -14,6 +14,7 @@ export class QumlQuestionService implements IServicelocator {
     limit: string,
     language: string,
     medium: string,
+    bloomsLevel: string,
     request: any
   ) {
     var axios = require("axios");
@@ -26,6 +27,7 @@ export class QumlQuestionService implements IServicelocator {
           subject: subject,
           language: language,
           medium: medium,
+          bloomsLevel: bloomsLevel,
         },
         limit: limit,
       },

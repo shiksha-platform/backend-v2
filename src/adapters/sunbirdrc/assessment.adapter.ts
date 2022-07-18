@@ -36,11 +36,6 @@ export class AssessmentService {
     var jsonObj = JSON.parse(answer);
     let params = JSON.parse(jsonObj);
 
-    const questionIds = params.children.map((e: any) => {
-      return e.identifier;
-    });
-
-    assessmentDto.questions = questionIds;
     let sum = 0;
 
     params.children.map((e: any) => {
