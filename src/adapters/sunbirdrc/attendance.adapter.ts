@@ -12,6 +12,7 @@ import { Cron, SchedulerRegistry } from "@nestjs/schedule";
 import moment from "moment";
 
 import { IServicelocator } from "../attendanceservicelocator";
+import { StudentDto } from "src/student/dto/student.dto";
 export const SunbirdAttendanceToken = "SunbirdAttendance";
 
 @Injectable()
@@ -502,6 +503,50 @@ export class AttendanceService implements IServicelocator {
       statusCode: 200,
       message: " Ok.",
       data: responseArray,
+    });
+  }
+
+  public async studentByAttendance(date: string, userId: string, request: any) {
+    let axios = require("axios");
+    let data = {
+      filters: {
+        userId: {
+          eq: `${userId}`,
+        },
+        attendanceDate: {
+          eq: `${date}`,
+        },
+      },
+    };
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+    const studentId = response.data[0].userId;
+
+    const studentData = await axios.get(`${this.studentAPIUrl}/${studentId}`, {
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+    });
+
+    let result = new StudentDto(studentData.data);
+    const updatedStudent = {
+      ...result,
+      attendance: response.data[0].attendance,
+      attendanceDate: response.data[0].attendanceDate,
+    };
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: updatedStudent,
     });
   }
 }
