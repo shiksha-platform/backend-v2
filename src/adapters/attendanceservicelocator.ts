@@ -23,4 +23,5 @@ export interface IServicelocator {
     topicId: string,
     request: any
   );
+  studentByAttendance(date: string, userId: string, request: any);
 }

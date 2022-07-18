@@ -260,4 +260,24 @@ export class AttendanceController {
       return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
     }
   }
+
+  @Post("studentdetails")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "date", required: false })
+  @ApiQuery({ name: "userId", required: false })
+  public async studentByAttendance(
+    @Query("date") date: string,
+    @Query("userId") userId: string,
+
+    @Req() request: Request
+  ) {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.studentByAttendance(date, userId, request);
+    } else {
+      return this.eSamwadProvider.studentByAttendance(date, userId, request);
+    }
+  }
 }
