@@ -10,6 +10,6 @@ export interface IServicelocator {
   );
   getAllQuestionsByQuestionIds(questionIds: [string], request: any);
   getSubjectList();
-  getcompetenciesList();
+  getcompetenciesList(subject: string, limit: string, request: any);
   getOneQuestion(questionId: string, request: any);
 }

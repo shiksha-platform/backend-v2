@@ -141,14 +141,22 @@ export class QuestionController {
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all competencies list." })
   @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "subject", required: false })
+  @ApiQuery({ name: "limit", required: false })
   public async getcompetenciesList(
     @Param("adapter") adapter: string,
+    @Query("subject") subject: string,
+    @Query("limit") limit: string,
     @Req() request: Request
   ) {
     if (adapter === "diksha") {
-      return this.dikshaProvider.getcompetenciesList();
+      return this.dikshaProvider.getcompetenciesList(subject, limit, request);
     } else if (adapter === "khanacademy") {
-      return this.khanacademyProvider.getcompetenciesList();
+      return this.khanacademyProvider.getcompetenciesList(
+        subject,
+        limit,
+        request
+      );
     }
   }
 }

@@ -365,20 +365,49 @@ export class QumlQuestionService implements IServicelocator {
       data: res,
     });
   }
-  public async getcompetenciesList() {
-    const response = {
-      competencies: [
-        "Cognitive",
-        "Critical Thinking",
-        "Enterprenurial",
-        "Reasoning",
-      ],
-    };
 
-    return new SuccessResponse({
-      statusCode: 200,
-      message: "ok",
-      data: response,
-    });
+  public async getcompetenciesList(
+    subject: string,
+    limit: string,
+    request: any
+  ) {
+    var axios = require("axios");
+    try {
+      var data = {
+        request: {
+          filters: {
+            objectType: "Question",
+            status: ["Live"],
+
+            subject: subject,
+          },
+          limit: limit,
+        },
+      };
+
+      var config = {
+        method: "post",
+        url: `${this.url}/composite/v3/search`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: data,
+      };
+
+      const response = await axios(config);
+      const responseData = response.data.result.Question;
+      const resData = responseData.map((e: any) => {
+        return e.bloomsLevel;
+      });
+      let bloomsLevel = [...new Set(resData)];
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok",
+        data: bloomsLevel,
+      });
+    } catch (e) {
+      return `Subject not found.`;
+    }
   }
 }
