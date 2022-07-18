@@ -3,6 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 import { QuestionDto } from "src/Question/dto/question.dto";
 import { IServicelocator } from "../questionservicelocator";
+import e from "express";
 export const DikshaQuestionToken = "EsamwadQuestion";
 @Injectable()
 export class QumlQuestionService implements IServicelocator {
@@ -248,23 +249,29 @@ export class QumlQuestionService implements IServicelocator {
     });
   }
   public async getSubjectList() {
-    const response = {
-      subjects: [
-        "Social Science",
-        "Science",
-        "Mathematics",
-        "Hindi",
-        "English",
-        "History",
-        "Geography",
-      ],
-    };
+    try {
+      var axios = require("axios");
+      var config = {
+        method: "get",
+        url: `${process.env.FRAMEWORKAPIURL}ekstep_ncert_k-12?categories=subject`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const responseData = await axios(config);
+      const subjects =
+        responseData.data.result.framework.categories[0].terms.map((e: any) => {
+          return e.name;
+        });
 
-    return new SuccessResponse({
-      statusCode: 200,
-      message: "ok",
-      data: response,
-    });
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok",
+        data: subjects,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
   }
 
   public async getOneQuestion(questionId: string, request: any) {
