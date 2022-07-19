@@ -253,7 +253,7 @@ export class QumlQuestionService implements IServicelocator {
       var axios = require("axios");
       var config = {
         method: "get",
-        url: `${process.env.FRAMEWORKAPIURL}ekstep_ncert_k-12?categories=subject`,
+        url: "https:/dev.diksha.gov.in/api/framework/v1/read/ekstep_ncert_k-12?categories=subject",
         headers: {
           "Content-Type": "application/json",
         },
@@ -366,7 +366,7 @@ export class QumlQuestionService implements IServicelocator {
     });
   }
 
-  public async getcompetenciesList(
+  public async getCompetenciesList(
     subject: string,
     limit: string,
     request: any
@@ -407,7 +407,7 @@ export class QumlQuestionService implements IServicelocator {
         data: bloomsLevel,
       });
     } catch (e) {
-      return `Subject not found.`;
+      return ` Competencies not found.`;
     }
   }
 }
