@@ -150,9 +150,9 @@ export class QuestionController {
     @Req() request: Request
   ) {
     if (adapter === "diksha") {
-      return this.dikshaProvider.getcompetenciesList(subject, limit, request);
+      return this.dikshaProvider.getCompetenciesList(subject, limit, request);
     } else if (adapter === "khanacademy") {
-      return this.khanacademyProvider.getcompetenciesList(
+      return this.khanacademyProvider.getCompetenciesList(
         subject,
         limit,
         request
