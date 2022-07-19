@@ -253,12 +253,13 @@ export class QumlQuestionService implements IServicelocator {
       var axios = require("axios");
       var config = {
         method: "get",
-        url: "https:/dev.diksha.gov.in/api/framework/v1/read/ekstep_ncert_k-12?categories=subject",
+        url: "https://dev.diksha.gov.in/api/framework/v1/read/ekstep_ncert_k-12?categories=subject",
         headers: {
           "Content-Type": "application/json",
         },
       };
       const responseData = await axios(config);
+
       const subjects =
         responseData.data.result.framework.categories[0].terms.map((e: any) => {
           return e.name;
