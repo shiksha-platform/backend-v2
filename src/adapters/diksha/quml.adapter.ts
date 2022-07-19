@@ -3,6 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 import { QuestionDto } from "src/Question/dto/question.dto";
 import { IServicelocator } from "../questionservicelocator";
+import e from "express";
 export const DikshaQuestionToken = "EsamwadQuestion";
 @Injectable()
 export class QumlQuestionService implements IServicelocator {
@@ -248,23 +249,29 @@ export class QumlQuestionService implements IServicelocator {
     });
   }
   public async getSubjectList() {
-    const response = {
-      subjects: [
-        "Social Science",
-        "Science",
-        "Mathematics",
-        "Hindi",
-        "English",
-        "History",
-        "Geography",
-      ],
-    };
+    try {
+      var axios = require("axios");
+      var config = {
+        method: "get",
+        url: "https:/dev.diksha.gov.in/api/framework/v1/read/ekstep_ncert_k-12?categories=subject",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const responseData = await axios(config);
+      const subjects =
+        responseData.data.result.framework.categories[0].terms.map((e: any) => {
+          return e.name;
+        });
 
-    return new SuccessResponse({
-      statusCode: 200,
-      message: "ok",
-      data: response,
-    });
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok",
+        data: subjects,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
   }
 
   public async getOneQuestion(questionId: string, request: any) {
@@ -358,20 +365,49 @@ export class QumlQuestionService implements IServicelocator {
       data: res,
     });
   }
-  public async getcompetenciesList() {
-    const response = {
-      competencies: [
-        "Cognitive",
-        "Critical Thinking",
-        "Enterprenurial",
-        "Reasoning",
-      ],
-    };
 
-    return new SuccessResponse({
-      statusCode: 200,
-      message: "ok",
-      data: response,
-    });
+  public async getCompetenciesList(
+    subject: string,
+    limit: string,
+    request: any
+  ) {
+    var axios = require("axios");
+    try {
+      var data = {
+        request: {
+          filters: {
+            objectType: "Question",
+            status: ["Live"],
+
+            subject: subject,
+          },
+          limit: limit,
+        },
+      };
+
+      var config = {
+        method: "post",
+        url: `${this.url}/composite/v3/search`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: data,
+      };
+
+      const response = await axios(config);
+      const responseData = response.data.result.Question;
+      const resData = responseData.map((e: any) => {
+        return e.bloomsLevel;
+      });
+      let bloomsLevel = [...new Set(resData)];
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok",
+        data: bloomsLevel,
+      });
+    } catch (e) {
+      return ` Competencies not found.`;
+    }
   }
 }

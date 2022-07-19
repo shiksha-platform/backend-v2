@@ -28,5 +28,9 @@ export class KhanAcademyQuestionService implements IServicelocator {
 
   public async getOneQuestion(questionId: string, request: any) {}
 
-  public async getcompetenciesList() {}
+  public async getCompetenciesList(
+    subject: string,
+    limit: string,
+    request: any
+  ) {}
 }
