@@ -267,10 +267,9 @@ export class AttendanceController {
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "date", required: false })
-  @ApiQuery({ name: "groupId", required: false })
   public async studentAttendanceByGroup(
     @Query("date") date: string,
-    @Query("groupId") groupId: string,
+    @Param("groupId") groupId: string,
 
     @Req() request: Request
   ) {
@@ -295,10 +294,9 @@ export class AttendanceController {
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "date", required: false })
-  @ApiQuery({ name: "userId", required: false })
   public async studentAttendanceByUserId(
     @Query("date") date: string,
-    @Query("userId") userId: string,
+    @Param("userId") userId: string,
 
     @Req() request: Request
   ) {
