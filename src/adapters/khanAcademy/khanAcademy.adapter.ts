@@ -14,7 +14,7 @@ export class KhanAcademyQuestionService implements IServicelocator {
     limit: string,
     language: string,
     medium: string,
-    bloomsLevel: string,
+    bloomsLevel: [string],
     request: any
   ) {}
 

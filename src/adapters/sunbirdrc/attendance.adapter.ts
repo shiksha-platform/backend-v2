@@ -8,7 +8,6 @@ import { ErrorResponse } from "src/error-response";
 import { catchError } from "rxjs/operators";
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 import { SegmentDto } from "src/common-dto/userSegment.dto";
-import { Cron, SchedulerRegistry } from "@nestjs/schedule";
 import moment from "moment";
 
 import { IServicelocator } from "../attendanceservicelocator";
@@ -17,10 +16,7 @@ export const SunbirdAttendanceToken = "SunbirdAttendance";
 
 @Injectable()
 export class AttendanceService implements IServicelocator {
-  constructor(
-    private httpService: HttpService,
-    private schedulerRegistry: SchedulerRegistry
-  ) {}
+  constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Attendance`;
   studentAPIUrl = `${process.env.BASEAPIURL}/Student`;
   baseUrl = process.env.BASEAPIURL;
@@ -506,47 +502,63 @@ export class AttendanceService implements IServicelocator {
     });
   }
 
-  public async studentByAttendance(date: string, userId: string, request: any) {
+  public async studentByAttendance(
+    date: string,
+    groupId: string,
+    request: any
+  ) {
     let axios = require("axios");
-    let data = {
-      filters: {
-        userId: {
-          eq: `${userId}`,
+    try {
+      let data = {
+        filters: {
+          groupId: {
+            eq: `${groupId}`,
+          },
+          attendanceDate: {
+            eq: `${date}`,
+          },
         },
-        attendanceDate: {
-          eq: `${date}`,
+      };
+      let config = {
+        method: "post",
+        url: `${this.url}/search`,
+        headers: {
+          Authorization: request.headers.authorization,
         },
-      },
-    };
-    let config = {
-      method: "post",
-      url: `${this.url}/search`,
-      headers: {
-        Authorization: request.headers.authorization,
-      },
-      data: data,
-    };
+        data: data,
+      };
 
-    const response = await axios(config);
-    const studentId = response.data[0].userId;
+      const response = await axios(config);
 
-    const studentData = await axios.get(`${this.studentAPIUrl}/${studentId}`, {
-      headers: {
-        Authorization: request.headers.authorization,
-      },
-    });
+      if (response.data.length > 0) {
+        const studentId = response.data[0].userId;
 
-    let result = new StudentDto(studentData.data);
-    const updatedStudent = {
-      ...result,
-      attendance: response.data[0].attendance,
-      attendanceDate: response.data[0].attendanceDate,
-    };
+        const studentData = await axios.get(
+          `${this.studentAPIUrl}/${studentId}`,
+          {
+            headers: {
+              Authorization: request.headers.authorization,
+            },
+          }
+        );
 
-    return new SuccessResponse({
-      statusCode: 200,
-      message: "ok",
-      data: updatedStudent,
-    });
+        let result = new StudentDto(studentData.data);
+        const updatedStudent = {
+          ...result,
+          attendance: response.data[0].attendance,
+          attendanceDate: response.data[0].attendanceDate,
+        };
+
+        return new SuccessResponse({
+          statusCode: 200,
+          message: "ok",
+          data: updatedStudent,
+        });
+      } else {
+        return "Attendance not marked for this class yet";
+      }
+    } catch (e) {
+      return `${e}`;
+    }
   }
 }

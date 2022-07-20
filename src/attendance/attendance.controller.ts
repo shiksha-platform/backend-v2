@@ -267,17 +267,17 @@ export class AttendanceController {
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "date", required: false })
-  @ApiQuery({ name: "userId", required: false })
+  @ApiQuery({ name: "groupId", required: false })
   public async studentByAttendance(
     @Query("date") date: string,
-    @Query("userId") userId: string,
+    @Query("groupId") groupId: string,
 
     @Req() request: Request
   ) {
     if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.studentByAttendance(date, userId, request);
+      return this.sunbirdProvider.studentByAttendance(date, groupId, request);
     } else {
-      return this.eSamwadProvider.studentByAttendance(date, userId, request);
+      return this.eSamwadProvider.studentByAttendance(date, groupId, request);
     }
   }
 }

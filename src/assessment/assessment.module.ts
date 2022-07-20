@@ -1,8 +1,8 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { ScheduleModule } from "@nestjs/schedule";
-import { AssessmentService } from "src/adapters/sunbirdrc/assessment.adapter";
-import { AssessmentController } from "./assessment.controller";
+import { AssessmentService } from "src/adapters/sunbirdrc/trackassessment.adapter";
+import { AssessmentController } from "./trackassessment.controller";
 import { AssessmentsetController } from "./assessmentset.controller";
 import { AssessmentsetService } from "src/adapters/sunbirdrc/assessmentset.adapter";
 const ttl = process.env.TTL as never;
