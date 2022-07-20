@@ -18,7 +18,7 @@ import {
   Post,
   Body,
 } from "@nestjs/common";
-import { AssessmentSearchDto } from "./dto/assessment-search-dto";
+import { AssessmentSetSearchDto } from "./dto/assessmentset-search-dto";
 import { AssessmentsetDto } from "./dto/assessmentset.dto";
 import { AssessmentsetService } from "src/adapters/sunbirdrc/assessmentset.adapter";
 
@@ -59,7 +59,7 @@ export class AssessmentsetController {
   @Post("assessmentset/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Assessment set list." })
-  @ApiBody({ type: AssessmentSearchDto })
+  @ApiBody({ type: AssessmentSetSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
@@ -67,7 +67,7 @@ export class AssessmentsetController {
   })
   public async searchAssessmentset(
     @Req() request: Request,
-    @Body() assessmentSearchDto: AssessmentSearchDto
+    @Body() assessmentSearchDto: AssessmentSetSearchDto
   ) {
     return await this.service.searchAssessmentset(request, assessmentSearchDto);
   }

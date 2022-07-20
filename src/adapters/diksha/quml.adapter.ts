@@ -15,10 +15,11 @@ export class QumlQuestionService implements IServicelocator {
     limit: string,
     language: string,
     medium: string,
-    bloomsLevel: string,
+    bloomsLevel: [string],
     request: any
   ) {
     var axios = require("axios");
+
     var data = {
       request: {
         filters: {
@@ -37,9 +38,6 @@ export class QumlQuestionService implements IServicelocator {
     var config = {
       method: "post",
       url: `${this.url}/composite/v3/search`,
-      headers: {
-        Authorization: request.headers.authorization,
-      },
       data: data,
     };
 
@@ -389,9 +387,6 @@ export class QumlQuestionService implements IServicelocator {
       var config = {
         method: "post",
         url: `${this.url}/composite/v3/search`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
         data: data,
       };
 

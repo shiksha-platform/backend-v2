@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class AssessmentSearchDto {
+export class TrackAssessmentSearchDto {
   @ApiProperty({
     type: String,
     description: "Limit",
@@ -14,7 +14,7 @@ export class AssessmentSearchDto {
   @ApiPropertyOptional()
   filters: object;
 
-  constructor(partial: Partial<AssessmentSearchDto>) {
+  constructor(partial: Partial<TrackAssessmentSearchDto>) {
     Object.assign(this, partial);
   }
 }

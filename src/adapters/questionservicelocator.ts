@@ -5,7 +5,7 @@ export interface IServicelocator {
     limit: string,
     language: string,
     medium: string,
-    bloomsLevel: string,
+    bloomsLevel: [string],
     request: any
   );
   getAllQuestionsByQuestionIds(questionIds: [string], request: any);

@@ -18,26 +18,26 @@ import {
   Post,
   Body,
 } from "@nestjs/common";
-import { AssessmentService } from "src/adapters/sunbirdrc/assessment.adapter";
-import { AssessmentDto } from "./dto/assessment.dto";
-import { AssessmentSearchDto } from "./dto/assessment-search-dto";
+import { TrackAssessmentService } from "src/adapters/sunbirdrc/trackassessment.adapter";
+import { TrackAssessmentDto } from "./dto/trackassessment.dto";
+import { TrackAssessmentSearchDto } from "./dto/trackassessment-search-dto";
 
-@ApiTags("Assessment")
-@Controller("assessment")
+@ApiTags("Track Assessment")
+@Controller("trackassessment")
 export class AssessmentController {
-  constructor(private service: AssessmentService) {}
+  constructor(private service: TrackAssessmentService) {}
 
   @Post()
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "Assessment has been created successfully.",
+    description: "Track Assessment has been created successfully.",
   })
-  @ApiBody({ type: AssessmentDto })
+  @ApiBody({ type: TrackAssessmentDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async createAssessment(
     @Req() request: Request,
-    @Body() assessmentDto: AssessmentDto
+    @Body() assessmentDto: TrackAssessmentDto
   ) {
     return this.service.createAssessment(request, assessmentDto);
   }
@@ -45,7 +45,7 @@ export class AssessmentController {
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Assessment detail" })
+  @ApiCreatedResponse({ description: "Track Assessment detail" })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
@@ -59,8 +59,8 @@ export class AssessmentController {
 
   @Post("/search")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Assessment list." })
-  @ApiBody({ type: AssessmentSearchDto })
+  @ApiCreatedResponse({ description: "Track Assessment list." })
+  @ApiBody({ type: TrackAssessmentSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
@@ -68,7 +68,7 @@ export class AssessmentController {
   })
   public async searchAssessment(
     @Req() request: Request,
-    @Body() assessmentSearchDto: AssessmentSearchDto
+    @Body() assessmentSearchDto: TrackAssessmentSearchDto
   ) {
     return await this.service.searchAssessment(request, assessmentSearchDto);
   }

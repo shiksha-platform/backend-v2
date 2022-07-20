@@ -2,15 +2,14 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { catchError, map } from "rxjs";
-
 import { SuccessResponse } from "src/success-response";
-import { AssessmentDto } from "src/assessment/dto/assessment.dto";
+import { TrackAssessmentDto } from "src/trackAssessment/dto/trackassessment.dto";
 import { ErrorResponse } from "src/error-response";
-import { AssessmentSearchDto } from "src/assessment/dto/assessment-search-dto";
+import { TrackAssessmentSearchDto } from "src/trackAssessment/dto/trackassessment-search-dto";
 @Injectable()
-export class AssessmentService {
+export class TrackAssessmentService {
   constructor(private httpService: HttpService) {}
-  assessmentURL = `${process.env.BASEAPIURL}/Assessment`;
+  assessmentURL = `${process.env.BASEAPIURL}/Trackassessment`;
   assessmentsetURL = `${process.env.BASEAPIURL}/Assessmentset`;
   public async getAssessment(assessmentId: any, request: any) {
     return this.httpService
@@ -22,7 +21,7 @@ export class AssessmentService {
       .pipe(
         map((axiosResponse: AxiosResponse) => {
           const data = axiosResponse.data;
-          const assessmentDto = new AssessmentDto(data);
+          const assessmentDto = new TrackAssessmentDto(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
@@ -31,7 +30,10 @@ export class AssessmentService {
         })
       );
   }
-  public async createAssessment(request: any, assessmentDto: AssessmentDto) {
+  public async createAssessment(
+    request: any,
+    assessmentDto: TrackAssessmentDto
+  ) {
     let answer = JSON.stringify(assessmentDto.answersheet);
     var jsonObj = JSON.parse(answer);
     let params = JSON.parse(jsonObj);
@@ -42,13 +44,7 @@ export class AssessmentService {
       sum += e.score;
       return sum;
     });
-    const scoreLength = params.children.map((e: any) => {
-      return e.score;
-    });
     assessmentDto.score = sum.toString();
-    let result = (sum * 100) / scoreLength.length;
-    assessmentDto.result = result.toString();
-
     return this.httpService
       .post(`${this.assessmentURL}`, assessmentDto, {
         headers: {
@@ -75,7 +71,7 @@ export class AssessmentService {
 
   public async searchAssessment(
     request: any,
-    assessmentSearchDto: AssessmentSearchDto
+    assessmentSearchDto: TrackAssessmentSearchDto
   ) {
     return this.httpService
       .post(`${this.assessmentURL}/search`, assessmentSearchDto, {
@@ -86,7 +82,7 @@ export class AssessmentService {
       .pipe(
         map((response) => {
           const responsedata = response.data.map(
-            (item: any) => new AssessmentDto(item)
+            (item: any) => new TrackAssessmentDto(item)
           );
           return new SuccessResponse({
             statusCode: response.status,

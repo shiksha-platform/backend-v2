@@ -261,23 +261,59 @@ export class AttendanceController {
     }
   }
 
-  @Post("studentdetails")
+  @Post(":groupId/studentdetails")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "date", required: false })
+  @ApiQuery({ name: "groupId", required: false })
+  public async studentAttendanceByGroup(
+    @Query("date") date: string,
+    @Query("groupId") groupId: string,
+
+    @Req() request: Request
+  ) {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.studentAttendanceByGroup(
+        date,
+        groupId,
+        request
+      );
+    } else {
+      return this.eSamwadProvider.studentAttendanceByGroup(
+        date,
+        groupId,
+        request
+      );
+    }
+  }
+
+  @Post("studentdetail/:userId")
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "date", required: false })
   @ApiQuery({ name: "userId", required: false })
-  public async studentByAttendance(
+  public async studentAttendanceByUserId(
     @Query("date") date: string,
     @Query("userId") userId: string,
 
     @Req() request: Request
   ) {
     if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.studentByAttendance(date, userId, request);
+      return this.sunbirdProvider.studentAttendanceByUserId(
+        date,
+        userId,
+        request
+      );
     } else {
-      return this.eSamwadProvider.studentByAttendance(date, userId, request);
+      return this.eSamwadProvider.studentAttendanceByUserId(
+        date,
+        userId,
+        request
+      );
     }
   }
 }

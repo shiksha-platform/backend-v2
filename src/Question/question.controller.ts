@@ -36,7 +36,7 @@ export class QuestionController {
 
   @Get(":adapter/search")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
+  //@ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all Questions detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "questionType", required: false })
@@ -52,7 +52,7 @@ export class QuestionController {
     @Query("limit") limit: string,
     @Query("language") language: string,
     @Query("medium") medium: string,
-    @Query("bloomsLevel") bloomsLevel: string,
+    @Query("bloomsLevel") bloomsLevel: [string],
     @Req() request: Request
   ) {
     if (adapter === "diksha") {
@@ -80,7 +80,7 @@ export class QuestionController {
 
   @Get(":adapter/questionIds")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
+  //@ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all Questions detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "questionIds", required: false })
@@ -104,7 +104,7 @@ export class QuestionController {
 
   @Get(":adapter/subjectlist")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
+  // @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all subject list" })
   @ApiForbiddenResponse({ description: "Forbidden" })
   public async getSubjectList(
@@ -120,7 +120,7 @@ export class QuestionController {
 
   @Get(":adapter/questionid")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
+  // @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get Questions detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "questionId", required: false })
@@ -138,7 +138,7 @@ export class QuestionController {
 
   @Get(":adapter/competencieslist")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
+  //@ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all competencies list." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "subject", required: false })

@@ -1,7 +1,7 @@
 import { Exclude, Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class AssessmentDto {
+export class TrackAssessmentDto {
   @Expose()
   assessmentId: string;
 
@@ -17,6 +17,18 @@ export class AssessmentDto {
   @Expose()
   type: string;
 
+  @ApiPropertyOptional({
+    description: "Array of question Id's against the assessment is given",
+  })
+  @Expose()
+  questions: [string];
+
+  @ApiPropertyOptional({
+    description: "Assessment questions source",
+  })
+  @Expose()
+  source: string;
+
   @ApiProperty({
     description:
       "JSON encoded QUML player response against the given questions of the assessment",
@@ -24,29 +36,20 @@ export class AssessmentDto {
   @Expose()
   answersheet: string;
 
-  @ApiPropertyOptional({
-    description: "Assesment set id",
-  })
-  @Expose()
-  assessmentsetId: string;
-
-  @ApiPropertyOptional({
-    description: "Questions",
-  })
-  @Expose()
-  questions: [string];
-
   @Expose()
   score: string;
 
-  @Expose()
-  result: string;
-
   @ApiProperty({
-    description: "reviewerId",
+    description: "student Id who has given assessment",
   })
   @Expose()
-  reviewerId: string;
+  studentId: string;
+
+  @ApiProperty({
+    description: "Teacher Id who has assigned the assessment",
+  })
+  @Expose()
+  teacherId: string;
 
   @Expose()
   createdAt: string;
@@ -65,11 +68,11 @@ export class AssessmentDto {
     this.filter = obj?.filter ? `${obj.filter}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.questions = obj?.questions ? obj.questions : "";
-    this.assessmentsetId = obj?.assessmentsetId ? `${obj.assessmetsentId}` : "";
+    this.source = obj?.source ? `${obj.source}` : "";
     this.answersheet = obj?.answersheet ? `${obj.answersheet}` : "";
     this.score = obj?.score ? `${obj.score}` : "";
-    this.result = obj?.result ? `${obj.result}` : "";
-    this.reviewerId = obj?.reviewerId ? `${obj.reviewerId}` : "";
+    this.studentId = obj?.studentId ? `${obj.studentId}` : "";
+    this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
