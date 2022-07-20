@@ -3,9 +3,9 @@ import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
-import { TrackAssessmentDto } from "src/assessment/dto/trackassessmentset.dto";
+import { TrackAssessmentDto } from "src/trackAssessment/dto/trackassessment.dto";
 import { ErrorResponse } from "src/error-response";
-import { AssessmentSearchDto } from "src/assessment/dto/assessment-search-dto";
+import { AssessmentSearchDto } from "src/trackAssessment/dto/assessment-search-dto";
 @Injectable()
 export class AssessmentService {
   constructor(private httpService: HttpService) {}

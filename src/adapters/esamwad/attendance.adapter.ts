@@ -375,9 +375,11 @@ export class AttendanceEsamwadService implements IServicelocator {
       data: responsedata,
     });
   }
-  public async studentByAttendance(
+  public async studentAttendanceByGroup(
     date: string,
     userId: string,
     request: any
   ) {}
+
+  studentAttendanceByUserId(date: string, userId: string, request: any) {}
 }

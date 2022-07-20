@@ -502,13 +502,14 @@ export class AttendanceService implements IServicelocator {
     });
   }
 
-  public async studentByAttendance(
+  public async studentAttendanceByGroup(
     date: string,
     groupId: string,
     request: any
   ) {
     let axios = require("axios");
     try {
+      let studentArray = [];
       let data = {
         filters: {
           groupId: {
@@ -531,32 +532,91 @@ export class AttendanceService implements IServicelocator {
       const response = await axios(config);
 
       if (response.data.length > 0) {
-        const studentId = response.data[0].userId;
+        const studentIds = response.data.map((e: any) => {
+          return e.userId;
+        });
 
-        const studentData = await axios.get(
-          `${this.studentAPIUrl}/${studentId}`,
-          {
-            headers: {
-              Authorization: request.headers.authorization,
-            },
-          }
-        );
+        for (let studentId of studentIds) {
+          const studentData = await axios.get(
+            `${this.studentAPIUrl}/${studentId}`,
+            {
+              headers: {
+                Authorization: request.headers.authorization,
+              },
+            }
+          );
 
-        let result = new StudentDto(studentData.data);
-        const updatedStudent = {
-          ...result,
-          attendance: response.data[0].attendance,
-          attendanceDate: response.data[0].attendanceDate,
-        };
+          let result = new StudentDto(studentData.data);
+          const updatedStudent = {
+            ...result,
+            attendance: response.data[0].attendance,
+            attendanceDate: response.data[0].attendanceDate,
+          };
+          studentArray.push(updatedStudent);
+        }
 
         return new SuccessResponse({
           statusCode: 200,
           message: "ok",
-          data: updatedStudent,
+          data: studentArray,
         });
       } else {
         return "Attendance not marked for this class yet";
       }
+    } catch (e) {
+      return `${e}`;
+    }
+  }
+
+  public async studentAttendanceByUserId(
+    date: string,
+    userId: string,
+    request: any
+  ) {
+    let axios = require("axios");
+    try {
+      let data = {
+        filters: {
+          userId: {
+            eq: `${userId}`,
+          },
+          attendanceDate: {
+            eq: `${date}`,
+          },
+        },
+      };
+      let config = {
+        method: "post",
+        url: `${this.url}/search`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: data,
+      };
+
+      const response = await axios(config);
+      const studentId = response.data[0].userId;
+      const studentData = await axios.get(
+        `${this.studentAPIUrl}/${studentId}`,
+        {
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+        }
+      );
+
+      let result = new StudentDto(studentData.data);
+      const updatedStudent = {
+        ...result,
+        attendance: response.data[0].attendance,
+        attendanceDate: response.data[0].attendanceDate,
+      };
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok",
+        data: updatedStudent,
+      });
     } catch (e) {
       return `${e}`;
     }

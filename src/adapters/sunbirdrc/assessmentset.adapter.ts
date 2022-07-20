@@ -4,8 +4,8 @@ import { AxiosResponse } from "axios";
 import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-import { AssessmentSearchDto } from "src/assessment/dto/assessment-search-dto";
-import { AssessmentsetDto } from "src/assessment/dto/assessmentset.dto";
+import { AssessmentSearchDto } from "src/trackAssessment/dto/assessment-search-dto";
+import { AssessmentsetDto } from "src/assessmentset/dto/assessmentset.dto";
 @Injectable()
 export class AssessmentsetService {
   constructor(private httpService: HttpService) {}

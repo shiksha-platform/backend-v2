@@ -19,7 +19,8 @@ import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
 import { AdminFormModule } from "./adminForm/adminForm.module";
 import { LikeModule } from "./like/like.module";
 import { CommentModule } from "./comment/comment.module";
-import { AssessmentModule } from "./assessment/assessment.module";
+import { AssessmentModule } from "./trackAssessment/assessment.module";
+import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -43,6 +44,7 @@ import { AssessmentModule } from "./assessment/assessment.module";
     LikeModule,
     CommentModule,
     AssessmentModule,
+    AssessmentSetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
