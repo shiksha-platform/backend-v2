@@ -5,9 +5,9 @@ import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { TrackAssessmentDto } from "src/trackAssessment/dto/trackassessment.dto";
 import { ErrorResponse } from "src/error-response";
-import { AssessmentSearchDto } from "src/trackAssessment/dto/assessment-search-dto";
+import { TrackAssessmentSearchDto } from "src/trackAssessment/dto/trackassessment-search-dto";
 @Injectable()
-export class AssessmentService {
+export class TrackAssessmentService {
   constructor(private httpService: HttpService) {}
   assessmentURL = `${process.env.BASEAPIURL}/Trackassessment`;
   assessmentsetURL = `${process.env.BASEAPIURL}/Assessmentset`;
@@ -71,7 +71,7 @@ export class AssessmentService {
 
   public async searchAssessment(
     request: any,
-    assessmentSearchDto: AssessmentSearchDto
+    assessmentSearchDto: TrackAssessmentSearchDto
   ) {
     return this.httpService
       .post(`${this.assessmentURL}/search`, assessmentSearchDto, {

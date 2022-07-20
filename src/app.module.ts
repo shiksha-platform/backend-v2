@@ -19,7 +19,7 @@ import { LessonPlanModule } from "./lessonPlan/lessonPlan.module";
 import { AdminFormModule } from "./adminForm/adminForm.module";
 import { LikeModule } from "./like/like.module";
 import { CommentModule } from "./comment/comment.module";
-import { AssessmentModule } from "./trackAssessment/assessment.module";
+import { TrackAssessmentModule } from "./trackAssessment/trackassessment.module";
 import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
 @Module({
   imports: [
@@ -43,7 +43,7 @@ import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
     AdminFormModule,
     LikeModule,
     CommentModule,
-    AssessmentModule,
+    TrackAssessmentModule,
     AssessmentSetModule,
   ],
   controllers: [AppController],

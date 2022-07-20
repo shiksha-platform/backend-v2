@@ -18,14 +18,14 @@ import {
   Post,
   Body,
 } from "@nestjs/common";
-import { AssessmentService } from "src/adapters/sunbirdrc/trackassessment.adapter";
+import { TrackAssessmentService } from "src/adapters/sunbirdrc/trackassessment.adapter";
 import { TrackAssessmentDto } from "./dto/trackassessment.dto";
-import { AssessmentSearchDto } from "./dto/assessment-search-dto";
+import { TrackAssessmentSearchDto } from "./dto/trackassessment-search-dto";
 
 @ApiTags("Track Assessment")
 @Controller("trackassessment")
 export class AssessmentController {
-  constructor(private service: AssessmentService) {}
+  constructor(private service: TrackAssessmentService) {}
 
   @Post()
   @ApiBasicAuth("access-token")
@@ -60,7 +60,7 @@ export class AssessmentController {
   @Post("/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Track Assessment list." })
-  @ApiBody({ type: AssessmentSearchDto })
+  @ApiBody({ type: TrackAssessmentSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
@@ -68,7 +68,7 @@ export class AssessmentController {
   })
   public async searchAssessment(
     @Req() request: Request,
-    @Body() assessmentSearchDto: AssessmentSearchDto
+    @Body() assessmentSearchDto: TrackAssessmentSearchDto
   ) {
     return await this.service.searchAssessment(request, assessmentSearchDto);
   }

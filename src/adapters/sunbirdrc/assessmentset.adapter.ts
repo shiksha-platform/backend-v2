@@ -4,8 +4,8 @@ import { AxiosResponse } from "axios";
 import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-import { AssessmentSearchDto } from "src/trackAssessment/dto/assessment-search-dto";
 import { AssessmentsetDto } from "src/assessmentset/dto/assessmentset.dto";
+import { AssessmentSetSearchDto } from "src/assessmentset/dto/assessmentset-search-dto";
 @Injectable()
 export class AssessmentsetService {
   constructor(private httpService: HttpService) {}
@@ -60,7 +60,7 @@ export class AssessmentsetService {
 
   public async searchAssessmentset(
     request: any,
-    assessmentSearchDto: AssessmentSearchDto
+    assessmentSearchDto: AssessmentSetSearchDto
   ) {
     return this.httpService
       .post(`${this.assessmentsetURL}/search`, assessmentSearchDto, {
