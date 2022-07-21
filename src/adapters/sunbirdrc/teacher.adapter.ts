@@ -9,6 +9,7 @@ import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
 import { TeacherDto } from "../../teacher/dto/teacher.dto";
 import jwt_decode from "jwt-decode";
 import { IServicelocator } from "../teacherservicelocator";
+import { TeacherSegementDto } from "src/teacher/dto/teacher-segment.dto";
 export const SunbirdTeacherToken = "SunbirdTeacher";
 @Injectable()
 export class TeacherService implements IServicelocator {
@@ -146,5 +147,32 @@ export class TeacherService implements IServicelocator {
       message: "ok",
       data: result,
     });
+  }
+
+  public async teacherSegment(schoolId: string, request: any) {
+    const teacherSearchDto = {
+      filters: {
+        schoolId: {
+          eq: `${schoolId}`,
+        },
+      },
+    };
+    return this.httpService.post(`${this.url}/search`, teacherSearchDto).pipe(
+      map((response) => {
+        const responsedata = response.data.map(
+          (item: any) => new TeacherSegementDto(item)
+        );
+        return new SuccessResponse({
+          data: responsedata,
+        });
+      }),
+      catchError((e) => {
+        var error = new ErrorResponse({
+          errorCode: e.response.status,
+          errorMessage: e.response.data.params.errmsg,
+        });
+        throw new HttpException(error, e.response.status);
+      })
+    );
   }
 }
