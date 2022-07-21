@@ -12,6 +12,7 @@ import jwt_decode from "jwt-decode";
 export class CommentService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Comment`;
+  teacherUrl = `${process.env.BASEAPIURL}/Teacher`;
 
   public async getComment(commentId: string, request: any) {
     return this.httpService
@@ -43,8 +44,27 @@ export class CommentService {
   public async createComment(request: any, commentDto: CommentDto) {
     const authToken = request.headers.authorization;
     const decoded: any = jwt_decode(authToken);
-    let userId = decoded.sub;
-    commentDto.userId = userId;
+    let email = decoded.email;
+    let axios = require("axios");
+    let data = {
+      filters: {
+        email: {
+          eq: `${email}`,
+        },
+      },
+    };
+    let config = {
+      method: "post",
+      url: `${this.teacherUrl}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: data,
+    };
+    const response = await axios(config);
+    const result = response.data[0];
+    commentDto.userId = "Teacher-" + result.osid;
+
     return this.httpService
       .post(`${this.url}`, commentDto, {
         headers: {
@@ -78,8 +98,26 @@ export class CommentService {
     var data = commentDto;
     const authToken = request.headers.authorization;
     const decoded: any = jwt_decode(authToken);
-    let userId = decoded.sub;
-    data.userId = userId;
+    let email = decoded.email;
+    let updateData = {
+      filters: {
+        email: {
+          eq: `${email}`,
+        },
+      },
+    };
+    let configData = {
+      method: "post",
+      url: `${this.teacherUrl}/search`,
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+      data: updateData,
+    };
+    const teacherResponse = await axios(configData);
+    const result = teacherResponse.data[0];
+    commentDto.userId = "Teacher-" + result.osid;
+
     var config = {
       method: "put",
       url: `${this.url}/${commentId}`,
