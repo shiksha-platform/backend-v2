@@ -11,6 +11,7 @@ export class TrackAssessmentService {
   constructor(private httpService: HttpService) {}
   assessmentURL = `${process.env.BASEAPIURL}/Trackassessment`;
   assessmentsetURL = `${process.env.BASEAPIURL}/Assessmentset`;
+  url = process.env.DIKSHADEVBASEAPIURL;
   public async getAssessment(assessmentId: any, request: any) {
     return this.httpService
       .get(`${this.assessmentURL}/${assessmentId}`, {
@@ -34,6 +35,7 @@ export class TrackAssessmentService {
     request: any,
     assessmentDto: TrackAssessmentDto
   ) {
+    var axios = require("axios");
     let answer = JSON.stringify(assessmentDto.answersheet);
     var jsonObj = JSON.parse(answer);
     let params = JSON.parse(jsonObj);
@@ -45,6 +47,29 @@ export class TrackAssessmentService {
       return sum;
     });
     assessmentDto.score = sum.toString();
+
+    const questionIds = assessmentDto.questions;
+    let totalScoreArray = [];
+    for (let value of questionIds) {
+      let config = {
+        method: "get",
+        url: `${this.url}/question/v1/read/${value}?fields=maxScore`,
+      };
+      const response = await axios(config);
+      const data = response?.data;
+      const final = data.result.question;
+
+      const scoreResponse = {
+        maxScore: final.maxScore,
+      };
+      totalScoreArray.push(scoreResponse);
+    }
+    let totalScore = 0;
+    totalScoreArray.map((e: any) => {
+      totalScore += e.maxScore;
+      return totalScore;
+    });
+    assessmentDto.totalScore = totalScore.toString();
     return this.httpService
       .post(`${this.assessmentURL}`, assessmentDto, {
         headers: {
