@@ -21,6 +21,7 @@ import { LikeModule } from "./like/like.module";
 import { CommentModule } from "./comment/comment.module";
 import { TrackAssessmentModule } from "./trackAssessment/trackassessment.module";
 import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
+import { InAppNotificationModule } from "./inAppNotification/inAppNotification.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -45,6 +46,7 @@ import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
     CommentModule,
     TrackAssessmentModule,
     AssessmentSetModule,
+    InAppNotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

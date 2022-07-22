@@ -108,7 +108,7 @@ export class TeacherController {
     return await this.service.searchTeacher(request, teacherSearchDto);
   }
 
-  @Post("teachersegment/:schoolId")
+  @Get("teachersegment/:schoolId")
   // @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Teacher list." })
   @ApiForbiddenResponse({ description: "Forbidden" })
