@@ -561,10 +561,17 @@ export class AttendanceService implements IServicelocator {
           data: studentArray,
         });
       } else {
-        return "Attendance not marked for this class yet";
+        return new SuccessResponse({
+          statusCode: 200,
+          message: "Attendance not marked for this class yet",
+          data: [],
+        });
       }
     } catch (e) {
-      return `${e}`;
+      return new ErrorResponse({
+        errorCode: e.response.status,
+        errorMessage: e.response.data.params.errmsg,
+      });
     }
   }
 
