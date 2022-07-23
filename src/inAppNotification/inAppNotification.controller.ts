@@ -22,6 +22,25 @@ import { InAppNotificationService } from "src/adapters/sunbirdrc/inAppNotificati
 export class InAppNotificationController {
   constructor(private service: InAppNotificationService) {}
 
+  @Post("inappnotification")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Notification has been sent successfully.",
+  })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "module" })
+  @ApiQuery({ name: "groupId" })
+  @ApiQuery({ name: "templateId" })
+  public async inAppNotification(
+    @Query("module") module: string,
+    @Query("groupId") groupId: string,
+    @Query("templateId") templateId: string,
+    @Req() request: Request
+  ) {
+    return this.service.inAppNotification(module, groupId, request, templateId);
+  }
+
   @Get("/userhistory")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
