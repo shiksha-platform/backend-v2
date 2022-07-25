@@ -179,4 +179,45 @@ export class InAppNotificationService {
       return { data: e.response.data };
     }
   }
+
+  public async readReceipt(
+    eventType: string,
+    externalId: string,
+    destAdd: string,
+    fcmDestAdd: string,
+    messageId: string,
+    text: string,
+    from: string,
+    request: any
+  ) {
+    var axios = require("axios");
+    var data = {
+      text: text,
+      from: from,
+      messageId: messageId,
+      eventType: eventType,
+      report: {
+        externalId: externalId,
+        destAdd: destAdd,
+        fcmDestAdd: fcmDestAdd,
+      },
+    };
+
+    var config = {
+      method: "post",
+      url: "http://143.110.255.220:8080/firebase/web",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "Ok.",
+      data: response.data,
+    });
+  }
 }
