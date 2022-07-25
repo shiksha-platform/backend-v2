@@ -205,7 +205,7 @@ export class InAppNotificationService {
 
     var config = {
       method: "post",
-      url: "http://143.110.255.220:8080/firebase/web",
+      url: "http://139.59.14.252:9080/firebase/web",
       headers: {
         "Content-Type": "application/json",
       },
