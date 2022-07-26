@@ -11,11 +11,13 @@ export class QumlQuestionService implements IServicelocator {
   url = process.env.DIKSHADEVBASEAPIURL;
   public async getAllQuestions(
     questionType: string,
-    subject: string,
+    subject: [string],
     limit: string,
     language: string,
     medium: string,
     bloomsLevel: [string],
+    topic: [string],
+    className: [string],
     request: any
   ) {
     var axios = require("axios");
@@ -28,6 +30,8 @@ export class QumlQuestionService implements IServicelocator {
           qType: questionType,
           subject: subject,
           language: language,
+          topic: topic,
+          gradeLevel: className,
           medium: medium,
           bloomsLevel: bloomsLevel,
         },
