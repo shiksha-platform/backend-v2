@@ -1,7 +1,6 @@
 import { Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-
 export class AnnouncementsDto {
   @ApiProperty({
     type: String,
@@ -51,7 +50,6 @@ export class AnnouncementsDto {
   @Expose()
   additionalTags: string[];
 
-
   @ApiProperty({
     type: Boolean,
     description: "Whether announcement is pinned or not",
@@ -68,10 +66,18 @@ export class AnnouncementsDto {
   @Expose()
   status: string;
 
+  @ApiProperty({
+    type: String,
+    description: "The author of the announcement",
+    default: "",
+  })
+  @Expose()
+  author: string;
+
   @ApiPropertyOptional({
     type: Object,
     description: "Additional properties for pinned announcements",
-    default: {}
+    default: {},
   })
   @Expose()
   pinnedAnnouncementProperties: any;
@@ -80,13 +86,14 @@ export class AnnouncementsDto {
     this.announcementId = obj?.id ? `${obj.id}` : "";
     this.title = obj?.title ? `${obj.title}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
-    this.announcementType = obj?.status ? `${obj.type}` : "";
+    this.author = obj?.author ? `${obj.author}` : "";
+    this.announcementType = obj?.type ? `${obj.type}` : "";
     this.dateModified = obj?.modified_at ? `${obj.modified_at}` : "";
     this.data = obj?.data ? `${obj.data}` : "";
     this.isPinned = obj?.is_pinned ? obj.is_pinned : false;
     this.additionalTags = obj?.additional_tags ? obj.additional_tags : [];
     this.pinnedAnnouncementProperties = {
-      isDismissable: obj?.is_dismissable ?? false
+      isDismissable: obj?.is_dismissable ?? false,
     };
   }
 }

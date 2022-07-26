@@ -5,18 +5,23 @@ import {
   AnnouncementsEsamwadService,
   ESamwadAnnouncementsToken,
 } from "../adapters/esamwad/announcements.adapter";
-import { AnnouncementsController } from './announcements.controller';
+import { AnnouncementsController } from "./announcements.controller";
 
 const ttl = process.env.TTL as never;
 @Module({
-  imports: [HttpModule,
+  imports: [
+    HttpModule,
     CacheModule.register({
       ttl: ttl,
     }),
-    ScheduleModule.forRoot(),],
+    ScheduleModule.forRoot(),
+  ],
   providers: [
     AnnouncementsEsamwadService,
-    { provide: ESamwadAnnouncementsToken, useClass: AnnouncementsEsamwadService },
+    {
+      provide: ESamwadAnnouncementsToken,
+      useClass: AnnouncementsEsamwadService,
+    },
   ],
   controllers: [AnnouncementsController],
 })

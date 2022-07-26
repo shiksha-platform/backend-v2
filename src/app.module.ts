@@ -37,7 +37,7 @@ import {
   AttendanceService,
 } from "./adapters/sunbirdrc/attendance.adapter";
 
-import { AnnouncementsModule } from './announcements/announcements.module';
+import { AnnouncementsModule } from "./announcements/announcements.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
