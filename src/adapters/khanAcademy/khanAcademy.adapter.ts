@@ -10,11 +10,13 @@ export class KhanAcademyQuestionService implements IServicelocator {
 
   public async getAllQuestions(
     questionType: string,
-    subject: string,
+    subject: [string],
     limit: string,
     language: string,
     medium: string,
     bloomsLevel: [string],
+    topic: [string],
+    className: [string],
     request: any
   ) {}
 
