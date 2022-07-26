@@ -136,6 +136,19 @@ export class WorksheetDto {
   })
   @Expose()
   qumlVersion: string;
+
+  @ApiProperty({
+    description: "Array of topic.",
+  })
+  @Expose()
+  topic: [string];
+
+  @ApiProperty({
+    description: "source of worksheet",
+  })
+  @Expose()
+  source: string;
+
   @Expose()
   createdAt: string;
 
@@ -175,6 +188,8 @@ export class WorksheetDto {
     this.purpose = obj?.purpose ? `${obj.purpose}` : "";
     this.visibility = obj?.visibility ? `${obj.visibility}` : "";
     this.qumlVersion = obj?.qumlVersion ? `${obj.qumlVersion}` : "";
+    this.topic = obj?.topic ? obj.topic : "";
+    this.source = obj?.source ? `${obj.source}` : "";
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
     this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
