@@ -8,7 +8,7 @@ import { AnnouncementsFilterDto } from "src/announcements/dto/announcements-filt
 export const ESamwadAnnouncementsToken = "ESamwadAnnouncements";
 @Injectable()
 export class AnnouncementsEsamwadService implements IServicelocator {
-  constructor(private httpService: HttpService) {}
+  constructor(private httpService: HttpService) { }
   baseURL = process.env.HASURAURL;
   adminSecret = process.env.ADMINSECRET;
 
@@ -84,8 +84,8 @@ export class AnnouncementsEsamwadService implements IServicelocator {
     }
     if (filters?.author) {
       variables["_author"] = filters.author;
-      queryVar += `$_author: String,`;
-      selectClause += `author:{_ilike: $_author},`;
+      queryVar += `$_author: [String],`;
+      selectClause += `author:{_in: $_author},`;
     }
     if (filters?.isPinned) {
       variables["_isPinned"] = filters?.isPinned;
@@ -105,8 +105,8 @@ export class AnnouncementsEsamwadService implements IServicelocator {
     }
     if (filters?.announcementType) {
       variables["_type"] = filters?.announcementType;
-      queryVar += `$_type: String,`;
-      selectClause += `type: {_ilike: $_type},`;
+      queryVar += `$_type: [String]`;
+      selectClause += `type: {_in: $_type},`;
     }
     if (filters?.startDate && filters?.endDate) {
       variables["_startDate"] = filters?.startDate;
@@ -129,7 +129,7 @@ export class AnnouncementsEsamwadService implements IServicelocator {
           title
           type
         }
-        announcements_aggregate {
+        announcements_aggregate(where: {${selectClause}}) {
           aggregate {
             count
           }

@@ -25,12 +25,12 @@ export class AnnouncementsFilterDto {
   title: string;
 
   @ApiPropertyOptional({
-    type: String,
+    type: Array,
     description: "The author of announcement",
     default: "",
   })
   @Expose()
-  author: string;
+  author: string[];
 
   @ApiPropertyOptional({
     type: Boolean,
@@ -57,12 +57,12 @@ export class AnnouncementsFilterDto {
   status: string;
 
   @ApiPropertyOptional({
-    type: String,
+    type: Array,
     description: "The type of announcement",
     default: "",
   })
   @Expose()
-  announcementType: string;
+  announcementType: string[];
 
   @ApiPropertyOptional({
     type: String,
