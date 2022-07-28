@@ -17,6 +17,7 @@ export class MonitorTrackingService {
           monitorTrackingId
           scheduleVisitDate
           schoolId
+          monitorId
           status
           updated_at
           visitDate
@@ -53,13 +54,14 @@ export class MonitorTrackingService {
   ) {
     var axios = require("axios");
     var data = {
-      query: `mutation CreateMonitorTracking($schoolId:String,$scheduleVisit:date,$visitDate:date, $feedback:String, $status:String) {
-        insert_monitortracking_one(object: {schoolId: $schoolId, scheduleVisitDate: $scheduleVisit, visitDate:$visitDate, feedback: $feedback, status: $status}) {
+      query: `mutation CreateMonitorTracking($schoolId:String,$monitorId:String,$scheduleVisit:date,$visitDate:date, $feedback:String, $status:String) {
+        insert_monitortracking_one(object: {schoolId: $schoolId, monitorId:$monitorId,scheduleVisitDate: $scheduleVisit, visitDate:$visitDate, feedback: $feedback, status: $status}) {
           monitorTrackingId
         }
       }`,
       variables: {
         schoolId: monitorTrackingDto.schoolId,
+        monitorId: monitorTrackingDto.monitorId,
         scheduleVisit: monitorTrackingDto.scheduleVisitDate,
         visitDate: monitorTrackingDto.visitDate,
         feedback: monitorTrackingDto.feedback,
@@ -87,20 +89,21 @@ export class MonitorTrackingService {
   }
 
   public async updateMonitorTracking(
-    monitorId: string,
+    monitorTrackingId: string,
     request: any,
     monitorTrackingDto: MonitorTrackingDto
   ) {
     var axios = require("axios");
     var data = {
-      query: `mutation MyMutation($monitorTrackingId:uuid,$scheduleVisitDate:date,$visitDate:date,$schoolId:String,$status:String,$feedback:String) {
-        update_monitortracking(where: {monitorTrackingId: {_eq: $monitorTrackingId}}, _set: {visitDate:$visitDate, schoolId: $schoolId, status:$status, scheduleVisitDate: $scheduleVisitDate, feedback: $feedback}) {
+      query: `mutation MyMutation($monitorTrackingId:uuid,$scheduleVisitDate:date,$visitDate:date,$schoolId:String,monitorId:String,$status:String,$feedback:String) {
+        update_monitortracking(where: {monitorTrackingId: {_eq: $monitorTrackingId}}, _set: {visitDate:$visitDate, schoolId: $schoolId, monitorId:$monitorId status:$status, scheduleVisitDate: $scheduleVisitDate, feedback: $feedback}) {
           affected_rows
         }
 }`,
       variables: {
-        monitorTrackingId: monitorId,
+        monitorTrackingId: monitorTrackingId,
         schoolId: monitorTrackingDto.schoolId,
+        monitorId: monitorTrackingDto.monitorId,
         scheduleVisitDate: monitorTrackingDto.scheduleVisitDate,
         visitDate: monitorTrackingDto.visitDate,
         feedback: monitorTrackingDto.feedback,
@@ -132,6 +135,7 @@ export class MonitorTrackingService {
   public async searchMonitorTracking(
     limit: string,
     monitorTrackingId: string,
+    monitorId: string,
     schoolId: string,
     scheduleVisitDate: Date,
     visitDate: Date,
@@ -141,6 +145,7 @@ export class MonitorTrackingService {
 
     const searchData = {
       monitorTrackingId,
+      monitorId,
       schoolId,
       scheduleVisitDate,
       visitDate,
@@ -162,6 +167,7 @@ export class MonitorTrackingService {
               scheduleVisitDate
               status
               schoolId
+              monitorId
               updated_at
               visitDate
             }

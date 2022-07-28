@@ -37,8 +37,8 @@ export class MonitorTrackingController {
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getMonitor(@Param("id") monitorId: string, @Req() request: Request) {
-    return this.service.getMonitorTracking(monitorId, request);
+  getMonitor(@Param("id") monitorTrackingId: string, @Req() request: Request) {
+    return this.service.getMonitorTracking(monitorTrackingId, request);
   }
 
   @Post()
@@ -64,12 +64,12 @@ export class MonitorTrackingController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async updateMonitor(
-    @Param("id") monitorId: string,
+    @Param("id") monitorTrackingId: string,
     @Req() request: Request,
     @Body() monitorDto: MonitorTrackingDto
   ) {
     return await this.service.updateMonitorTracking(
-      monitorId,
+      monitorTrackingId,
       request,
       monitorDto
     );
@@ -82,12 +82,14 @@ export class MonitorTrackingController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "limit", required: false })
   @ApiQuery({ name: "monitorTrackingId", required: false })
+  @ApiQuery({ name: "monitorId", required: false })
   @ApiQuery({ name: "schoolId", required: false })
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
   public async searchMonitorTracking(
     @Query("limit") limit: string,
     @Query("monitorTrackingId") monitorTrackingId: string,
+    @Query("monitorId") monitorId: string,
     @Query("schoolId") schoolId: string,
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
@@ -96,6 +98,7 @@ export class MonitorTrackingController {
     return this.service.searchMonitorTracking(
       limit,
       monitorTrackingId,
+      monitorId,
       schoolId,
       scheduleVisitDate,
       visitDate,

@@ -7,6 +7,10 @@ export class MonitorTrackingDto {
 
   @ApiProperty({})
   @Expose()
+  monitorId: string;
+
+  @ApiProperty({})
+  @Expose()
   schoolId: string;
 
   @ApiProperty({})
@@ -41,8 +45,8 @@ export class MonitorTrackingDto {
     this.monitorTrackingId = obj?.monitorTrackingId
       ? `${obj.monitorTrackingId}`
       : "";
+    this.monitorId = obj?.monitorId ? `${obj.monitorId}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-
     this.scheduleVisitDate = obj?.scheduleVisitDate
       ? `${obj.scheduleVisitDate}`
       : "";
