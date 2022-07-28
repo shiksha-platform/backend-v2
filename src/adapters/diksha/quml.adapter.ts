@@ -11,11 +11,13 @@ export class QumlQuestionService implements IServicelocator {
   url = process.env.DIKSHADEVBASEAPIURL;
   public async getAllQuestions(
     questionType: string,
-    subject: string,
+    subject: [string],
     limit: string,
     language: string,
     medium: string,
     bloomsLevel: [string],
+    topic: [string],
+    className: [string],
     request: any
   ) {
     var axios = require("axios");
@@ -28,6 +30,8 @@ export class QumlQuestionService implements IServicelocator {
           qType: questionType,
           subject: subject,
           language: language,
+          topic: topic,
+          gradeLevel: className,
           medium: medium,
           bloomsLevel: bloomsLevel,
         },
@@ -65,7 +69,7 @@ export class QumlQuestionService implements IServicelocator {
 
     let config = {
       method: "get",
-      url: `${this.url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks`,
+      url: `${this.url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks,maxScore,bloomsLevel,compatibilityLevel,language,source`,
     };
 
     const response = await axios(config);
@@ -91,6 +95,8 @@ export class QumlQuestionService implements IServicelocator {
       hints: final.hints,
 
       options: final.editorState.options,
+
+      answer: final.answer,
 
       media: final.media,
 
@@ -140,6 +146,14 @@ export class QumlQuestionService implements IServicelocator {
 
       numSkips: final.numSkips,
 
+      source: final.source,
+
+      learningOutcome: final.learningOutcome,
+
+      compatibilityLevel: final.compatibilityLevel,
+
+      language: final.language,
+
       avgRating: final.avgRating,
 
       totalRatings: final.totalRatings,
@@ -158,7 +172,7 @@ export class QumlQuestionService implements IServicelocator {
     for (let value of questionIds) {
       let config = {
         method: "get",
-        url: `${this.url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks`,
+        url: `${this.url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks,maxScore,bloomsLevel,compatibilityLevel,language,source`,
       };
       const response = await axios(config);
       const data = response?.data;
@@ -182,6 +196,8 @@ export class QumlQuestionService implements IServicelocator {
         hints: final.hints,
 
         options: final.editorState.options,
+
+        answer: final.answer,
 
         media: final.media,
 
@@ -231,6 +247,14 @@ export class QumlQuestionService implements IServicelocator {
 
         numSkips: final.numSkips,
 
+        source: final.source,
+
+        learningOutcome: final.learningOutcome,
+
+        compatibilityLevel: final.compatibilityLevel,
+
+        language: final.language,
+
         avgRating: final.avgRating,
 
         totalRatings: final.totalRatings,
@@ -278,7 +302,7 @@ export class QumlQuestionService implements IServicelocator {
 
     let config = {
       method: "get",
-      url: `${this.url}/question/v1/read/${questionId}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks`,
+      url: `${this.url}/question/v1/read/${questionId}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks,maxScore,bloomsLevel,compatibilityLevel,language,source`,
     };
 
     const response = await axios(config);
@@ -304,6 +328,8 @@ export class QumlQuestionService implements IServicelocator {
       hints: final.hints,
 
       options: final.editorState.options,
+
+      answer: final.answer,
 
       media: final.media,
 
@@ -353,10 +379,19 @@ export class QumlQuestionService implements IServicelocator {
 
       numSkips: final.numSkips,
 
+      source: final.source,
+
+      learningOutcome: final.learningOutcome,
+
+      compatibilityLevel: final.compatibilityLevel,
+
+      language: final.language,
+
       avgRating: final.avgRating,
 
       totalRatings: final.totalRatings,
     };
+
     let res = new QuestionDto(mappedResponse);
     return new SuccessResponse({
       statusCode: 200,

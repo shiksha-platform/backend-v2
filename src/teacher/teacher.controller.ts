@@ -107,4 +107,16 @@ export class TeacherController {
   ) {
     return await this.service.searchTeacher(request, teacherSearchDto);
   }
+
+  @Get("teachersegment/:schoolId")
+  // @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Teacher list." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async teacherSegment(
+    @Param("schoolId") schoolId: string,
+    @Req() request: Request
+  ) {
+    return await this.service.teacherSegment(schoolId, request);
+  }
 }
