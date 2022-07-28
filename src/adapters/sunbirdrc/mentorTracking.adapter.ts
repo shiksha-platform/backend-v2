@@ -11,15 +11,15 @@ export class MentorTrackingService {
 
     var data = {
       query: `query getMentorTracking($mentorTrackingId: uuid!) {
-  V_Mentortracking(where: {MentorTrackingId: {_eq: $mentorTrackingId}}) {
-    MentorTrackingId
-    createdAt
+  mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}) {
+    mentorTrackingId
+    created_at
     feedback
     mentorId
     scheduleVisitDate
     status
     teacherId
-    updatedAt
+    updated_at
     visitDate
   }
 }`,
@@ -38,7 +38,7 @@ export class MentorTrackingService {
 
     const response = await axios(config);
 
-    let result = response.data.data.V_Mentortracking.map(
+    let result = response.data.data.mentortracking.map(
       (item: any) => new MentorTrackingDto(item)
     );
 
@@ -48,6 +48,7 @@ export class MentorTrackingService {
       data: result,
     });
   }
+
   public async createMentorTracking(
     request: any,
     mentorTrackingDto: MentorTrackingDto
@@ -55,8 +56,8 @@ export class MentorTrackingService {
     var axios = require("axios");
     var data = {
       query: `mutation createMentorTracking($mentorId:String,$teacherId:String,$scheduleVisitDate:date,$visitDate:date,$status:String,$feedback:String) {
-  insert_V_Mentortracking_one(object: {mentorId: $mentorId, teacherId:$teacherId, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, status: $status, feedback:$feedback}) {
-    MentorTrackingId
+  insert_mentortracking_one(object: {mentorId: $mentorId, teacherId:$teacherId, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, status: $status, feedback:$feedback}) {
+    mentorTrackingId
   }
 }`,
       variables: {
@@ -80,7 +81,7 @@ export class MentorTrackingService {
     };
 
     const response = await axios(config);
-    const result = response.data.data.insert_V_Mentortracking_one;
+    const result = response.data.data.insert_mentortracking_one;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
@@ -95,13 +96,13 @@ export class MentorTrackingService {
   ) {
     var axios = require("axios");
     var data = {
-      query: `mutation updateMentorTracking($MentorTrackingId: uuid, $mentorId: String, $teacherId: String, $scheduleVisitDate: date, $visitDate: date, $status: String, $feedback: String) {
-  update_V_Mentortracking(where: {MentorTrackingId: {_eq: $MentorTrackingId}}, _set: {mentorId: $mentorId, teacherId: $teacherId, status: $status, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, feedback: $feedback}) {
+      query: `mutation updateMentorTracking($mentorTrackingId: uuid, $mentorId: String, $teacherId: String, $scheduleVisitDate: date, $visitDate: date, $status: String, $feedback: String) {
+  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {mentorId: $mentorId, teacherId: $teacherId, status: $status, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, feedback: $feedback}) {
     affected_rows
   }
 }`,
       variables: {
-        MentorTrackingId: mentorId,
+        mentorTrackingId: mentorId,
         mentorId: mentorTrackingDto.mentorId,
         teacherId: mentorTrackingDto.teacherId,
         scheduleVisitDate: mentorTrackingDto.scheduleVisitDate,
@@ -135,29 +136,42 @@ export class MentorTrackingService {
     mentorTrackingId: string,
     mentorId: string,
     teacherId: string,
+    scheduleVisitDate: Date,
+    visitDate: Date,
     request: any
   ) {
     var axios = require("axios");
 
+    const searchData = {
+      mentorTrackingId,
+      mentorId,
+      teacherId,
+      scheduleVisitDate,
+      visitDate,
+    };
+
+    let newDataObject = "";
+    const newData = Object.keys(searchData).forEach((e) => {
+      if (searchData[e] && searchData[e] != "") {
+        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+      }
+    });
     var data = {
-      query: `query searchMentorTracking($limit:Int,$mentorTrackingId: uuid, $mentorId: String, $teacherId: String) {
-  V_Mentortracking(limit: $limit, where: {_and: {MentorTrackingId: {_eq: $mentorTrackingId}, _and: {mentorId: {_eq: $mentorId}}, teacherId: {_eq: $teacherId}}}) {
-    MentorTrackingId
-    createdAt
+      query: `query searchMentorTracking($limit:Int) {
+  mentortracking(limit: $limit, where: {${newDataObject}}) {
+    mentorTrackingId
+    created_at
     feedback
     mentorId
     scheduleVisitDate
     status
     teacherId
-    updatedAt
+    updated_at
     visitDate
   }
 }`,
       variables: {
         limit: parseInt(limit),
-        mentorTrackingId: mentorTrackingId,
-        mentorId: mentorId,
-        teacherId: teacherId,
       },
     };
 
@@ -173,7 +187,7 @@ export class MentorTrackingService {
 
     const response = await axios(config);
 
-    let result = response.data.data.V_Mentortracking.map(
+    let result = response.data.data.mentortracking.map(
       (item: any) => new MentorTrackingDto(item)
     );
 

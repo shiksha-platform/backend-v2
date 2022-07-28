@@ -22,56 +22,56 @@ import {
   ApiQuery,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
-import { MentorTrackingService } from "src/adapters/sunbirdrc/mentorTracking.adapter";
-import { MentorTrackingDto } from "./dto/mentorTracking.dto";
+import { MonitorTrackingDto } from "./dto/monitorTracking.dto";
+import { MonitorTrackingService } from "src/adapters/sunbirdrc/monitorTracking.adapter";
 
-@ApiTags("Mentor Tracking")
-@Controller("mentortracking")
-export class MentorTrackingController {
-  constructor(private readonly service: MentorTrackingService) {}
+@ApiTags("Monitor Tracking")
+@Controller("monitortracking")
+export class MonitorTrackingController {
+  constructor(private readonly service: MonitorTrackingService) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Mentor Tracking detail." })
+  @ApiOkResponse({ description: "Monitor Tracking detail." })
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getMentor(@Param("id") mentorId: string, @Req() request: Request) {
-    return this.service.getMentorTracking(mentorId, request);
+  getMonitor(@Param("id") monitorId: string, @Req() request: Request) {
+    return this.service.getMonitorTracking(monitorId, request);
   }
 
   @Post()
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "Mentor Tracking has been created successfully.",
+    description: "Monitor Tracking has been created successfully.",
   })
-  @ApiBody({ type: MentorTrackingDto })
+  @ApiBody({ type: MonitorTrackingDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createMentor(
+  public async createMonitor(
     @Req() request: Request,
-    @Body() mentorDto: MentorTrackingDto
+    @Body() monitorDto: MonitorTrackingDto
   ) {
-    return this.service.createMentorTracking(request, mentorDto);
+    return this.service.createMonitorTracking(request, monitorDto);
   }
 
   @Put("/:id")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
-    description: "Mentor Tracking has been updated successfully.",
+    description: "Monitor Tracking has been updated successfully.",
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async updateMentor(
-    @Param("id") mentorId: string,
+  public async updateMonitor(
+    @Param("id") monitorId: string,
     @Req() request: Request,
-    @Body() mentorDto: MentorTrackingDto
+    @Body() monitorDto: MonitorTrackingDto
   ) {
-    return await this.service.updateMentorTracking(
-      mentorId,
+    return await this.service.updateMonitorTracking(
+      monitorId,
       request,
-      mentorDto
+      monitorDto
     );
   }
 
@@ -81,25 +81,22 @@ export class MentorTrackingController {
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "limit", required: false })
-  @ApiQuery({ name: "mentorTrackingId", required: false })
-  @ApiQuery({ name: "mentorId", required: false })
-  @ApiQuery({ name: "teacherId", required: false })
+  @ApiQuery({ name: "monitorTrackingId", required: false })
+  @ApiQuery({ name: "schoolId", required: false })
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
-  public async searchMentorTracking(
+  public async searchMonitorTracking(
     @Query("limit") limit: string,
-    @Query("mentorTrackingId") mentorTrackingId: string,
-    @Query("mentorId") mentorId: string,
-    @Query("teacherId") teacherId: string,
+    @Query("monitorTrackingId") monitorTrackingId: string,
+    @Query("schoolId") schoolId: string,
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
     @Req() request: Request
   ) {
-    return this.service.searchMentorTracking(
+    return this.service.searchMonitorTracking(
       limit,
-      mentorTrackingId,
-      mentorId,
-      teacherId,
+      monitorTrackingId,
+      schoolId,
       scheduleVisitDate,
       visitDate,
       request

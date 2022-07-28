@@ -1,17 +1,13 @@
 import { Expose } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class MentorTrackingDto {
+export class MonitorTrackingDto {
   @Expose()
-  mentorTrackingId: string;
+  monitorTrackingId: string;
 
   @ApiProperty({})
   @Expose()
-  mentorId: string;
-
-  @ApiProperty({})
-  @Expose()
-  teacherId: string;
+  schoolId: string;
 
   @ApiProperty({})
   @Expose()
@@ -42,11 +38,11 @@ export class MentorTrackingDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.mentorTrackingId = obj?.mentorTrackingId
-      ? `${obj.mentorTrackingId}`
+    this.monitorTrackingId = obj?.monitorTrackingId
+      ? `${obj.monitorTrackingId}`
       : "";
-    this.mentorId = obj?.mentorId ? `${obj.mentorId}` : "";
-    this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
+    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+
     this.scheduleVisitDate = obj?.scheduleVisitDate
       ? `${obj.scheduleVisitDate}`
       : "";
