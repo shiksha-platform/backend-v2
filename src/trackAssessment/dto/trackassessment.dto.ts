@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class TrackAssessmentDto {
   @Expose()
-  assessmentId: string;
+  trackAssessmentId: string;
 
   @ApiProperty({
     description: "JSON string of filters selected for the assessment ",
@@ -51,31 +51,43 @@ export class TrackAssessmentDto {
   @Expose()
   teacherId: string;
 
+  @ApiProperty({
+    description: "GroupId of teacher",
+  })
+  @Expose()
+  groupId: string;
+
+  @ApiProperty({
+    description: "subject",
+  })
+  @Expose()
+  subject: string;
+
+  @Expose()
+  totalScore: string;
+
   @Expose()
   createdAt: string;
 
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.assessmentId = obj?.osid ? `${obj.osid}` : "";
+    this.trackAssessmentId = obj?.trackAssessmentId
+      ? `${obj.trackAssessmentId}`
+      : "";
     this.filter = obj?.filter ? `${obj.filter}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.questions = obj?.questions ? obj.questions : "";
     this.source = obj?.source ? `${obj.source}` : "";
     this.answersheet = obj?.answersheet ? `${obj.answersheet}` : "";
     this.score = obj?.score ? `${obj.score}` : "";
+    this.totalScore = obj?.totalScore ? `${obj.totalScore}` : "";
     this.studentId = obj?.studentId ? `${obj.studentId}` : "";
     this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
+    this.subject = obj?.subject ? `${obj.subject}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }
