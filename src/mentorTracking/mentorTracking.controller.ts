@@ -84,6 +84,7 @@ export class MentorTrackingController {
   @ApiQuery({ name: "mentorTrackingId", required: false })
   @ApiQuery({ name: "mentorId", required: false })
   @ApiQuery({ name: "teacherId", required: false })
+  @ApiQuery({ name: "schoolId", required: false })
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
   public async searchMentorTracking(
@@ -91,6 +92,7 @@ export class MentorTrackingController {
     @Query("mentorTrackingId") mentorTrackingId: string,
     @Query("mentorId") mentorId: string,
     @Query("teacherId") teacherId: string,
+    @Query("schoolId") schoolId: string,
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
     @Req() request: Request
@@ -100,6 +102,7 @@ export class MentorTrackingController {
       mentorTrackingId,
       mentorId,
       teacherId,
+      schoolId,
       scheduleVisitDate,
       visitDate,
       request

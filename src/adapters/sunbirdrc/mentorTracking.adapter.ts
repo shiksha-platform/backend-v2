@@ -19,6 +19,7 @@ export class MentorTrackingService {
     scheduleVisitDate
     status
     teacherId
+    schoolId
     updated_at
     visitDate
   }
@@ -55,14 +56,15 @@ export class MentorTrackingService {
   ) {
     var axios = require("axios");
     var data = {
-      query: `mutation createMentorTracking($mentorId:String,$teacherId:String,$scheduleVisitDate:date,$visitDate:date,$status:String,$feedback:String) {
-  insert_mentortracking_one(object: {mentorId: $mentorId, teacherId:$teacherId, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, status: $status, feedback:$feedback}) {
+      query: `mutation createMentorTracking($mentorId:String,$teacherId:String,$schoolId:String,$scheduleVisitDate:date,$visitDate:date,$status:String,$feedback:String) {
+  insert_mentortracking_one(object: {mentorId: $mentorId, teacherId:$teacherId, schoolId:$schoolId,scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, status: $status, feedback:$feedback}) {
     mentorTrackingId
   }
 }`,
       variables: {
         mentorId: mentorTrackingDto.mentorId,
         teacherId: mentorTrackingDto.teacherId,
+        schoolId: mentorTrackingDto.schoolId,
         scheduleVisitDate: mentorTrackingDto.scheduleVisitDate,
         visitDate: mentorTrackingDto.visitDate,
         status: mentorTrackingDto.status,
@@ -96,8 +98,8 @@ export class MentorTrackingService {
   ) {
     var axios = require("axios");
     var data = {
-      query: `mutation updateMentorTracking($mentorTrackingId: uuid, $mentorId: String, $teacherId: String, $scheduleVisitDate: date, $visitDate: date, $status: String, $feedback: String) {
-  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {mentorId: $mentorId, teacherId: $teacherId, status: $status, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, feedback: $feedback}) {
+      query: `mutation updateMentorTracking($mentorTrackingId: uuid, $mentorId: String, $teacherId: String, $schoolId:String, $scheduleVisitDate: date, $visitDate: date, $status: String, $feedback: String) {
+  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {mentorId: $mentorId, teacherId: $teacherId, schoolId:$schoolId, status: $status, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, feedback: $feedback}) {
     affected_rows
   }
 }`,
@@ -105,6 +107,7 @@ export class MentorTrackingService {
         mentorTrackingId: mentorId,
         mentorId: mentorTrackingDto.mentorId,
         teacherId: mentorTrackingDto.teacherId,
+        schoolId: mentorTrackingDto.schoolId,
         scheduleVisitDate: mentorTrackingDto.scheduleVisitDate,
         visitDate: mentorTrackingDto.visitDate,
         status: mentorTrackingDto.status,
@@ -136,6 +139,7 @@ export class MentorTrackingService {
     mentorTrackingId: string,
     mentorId: string,
     teacherId: string,
+    schoolId: string,
     scheduleVisitDate: Date,
     visitDate: Date,
     request: any
@@ -146,6 +150,7 @@ export class MentorTrackingService {
       mentorTrackingId,
       mentorId,
       teacherId,
+      schoolId,
       scheduleVisitDate,
       visitDate,
     };
@@ -166,6 +171,7 @@ export class MentorTrackingService {
     scheduleVisitDate
     status
     teacherId
+    schoolId
     updated_at
     visitDate
   }

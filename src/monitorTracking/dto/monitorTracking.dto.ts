@@ -13,11 +13,15 @@ export class MonitorTrackingDto {
   @Expose()
   schoolId: string;
 
-  @ApiProperty({})
+  @ApiProperty({
+    default: new Date().toISOString().split("T")[0],
+  })
   @Expose()
   scheduleVisitDate: string;
 
-  @ApiProperty({})
+  @ApiProperty({
+    default: new Date().toISOString().split("T")[0],
+  })
   @Expose()
   visitDate: string;
 
