@@ -4,6 +4,7 @@ import {
   ApiCreatedResponse,
   ApiBasicAuth,
   ApiBody,
+  ApiQuery,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -17,6 +18,7 @@ import {
   CacheInterceptor,
   Post,
   Body,
+  Query,
 } from "@nestjs/common";
 import { AssessmentSetSearchDto } from "./dto/assessmentset-search-dto";
 import { AssessmentsetDto } from "./dto/assessmentset.dto";
@@ -59,16 +61,31 @@ export class AssessmentsetController {
   @Post("assessmentset/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Assessment set list." })
-  @ApiBody({ type: AssessmentSetSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     strategy: "excludeAll",
   })
+  @ApiQuery({ name: "limit", required: false })
+  @ApiQuery({ name: "assessmentsetId", required: false })
+  @ApiQuery({ name: "type", required: false })
+  @ApiQuery({ name: "title", required: false })
+  @ApiQuery({ name: "gradeType", required: false })
   public async searchAssessmentset(
     @Req() request: Request,
-    @Body() assessmentSearchDto: AssessmentSetSearchDto
+    @Query("limit") limit: string,
+    @Query("assessmentsetId") assessmentsetId: string,
+    @Query("type") type: string,
+    @Query("title") title: string,
+    @Query("gradeType") gradeType: string
   ) {
-    return await this.service.searchAssessmentset(request, assessmentSearchDto);
+    return await this.service.searchAssessmentset(
+      limit,
+      assessmentsetId,
+      type,
+      title,
+      gradeType,
+      request
+    );
   }
 }

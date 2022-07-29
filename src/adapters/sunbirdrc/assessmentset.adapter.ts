@@ -15,77 +15,152 @@ export class AssessmentsetService {
     request: any,
     assessmentsetDto: AssessmentsetDto
   ) {
-    return this.httpService
-      .post(`${this.assessmentsetURL}`, assessmentsetDto, {
-        headers: {
-          Authorization: request.headers.authorization,
+    var axios = require("axios");
+    try {
+      var data = {
+        query: `mutation CreateAssessmentset($gradeType:String,$options:String,$title:String,$type:String,$typeDetails:String) {
+  insert_assessmentset_one(object: {gradeType: $gradeType, options: $options, title: $title, type: $type, typeDetails: $typeDetails}) {
+    assessmentsetId
+  }
+}`,
+        variables: {
+          gradeType: assessmentsetDto.gradeType,
+          options: assessmentsetDto.options,
+          title: assessmentsetDto.title,
+          type: assessmentsetDto.type,
+          typeDetails: assessmentsetDto.typeDetails,
         },
-      })
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "Ok.",
-            data: axiosResponse.data,
-          });
-        }),
-        catchError((e) => {
-          var error = new ErrorResponse({
-            errorCode: e.response?.status,
-            errorMessage: e.response?.data?.params?.errmsg,
-          });
-          throw new HttpException(error, e.response.status);
-        })
-      );
+      };
+
+      var config = {
+        method: "post",
+        url: process.env.REGISTRYHASURA,
+        headers: {
+          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = await axios(config);
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "Ok.",
+        data: response.data,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
   }
   public async getAssessmentset(assessmentsetId: any, request: any) {
-    return this.httpService
-      .get(`${this.assessmentsetURL}/${assessmentsetId}`, {
+    var axios = require("axios");
+    try {
+      var data = {
+        query: `query GetAssessmentset($assessmentsetId:uuid) {
+      assessmentset(where: {assessmentsetId: {_eq: $assessmentsetId}}) {
+        assessmentsetId
+        gradeType
+        title
+        options
+        type
+        typeDetails
+        created_at
+        updated_at
+      }
+    }`,
+        variables: { assessmentsetId: assessmentsetId },
+      };
+
+      var config = {
+        method: "post",
+        url: process.env.REGISTRYHASURA,
         headers: {
-          Authorization: request.headers.authorization,
+          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+          "Content-Type": "application/json",
         },
-      })
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          const data = axiosResponse.data;
-          const assessmentDto = new AssessmentsetDto(data);
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "ok.",
-            data: assessmentDto,
-          });
-        })
+        data: data,
+      };
+
+      const response = await axios(config);
+
+      let result = response.data.data.assessmentset.map(
+        (item: any) => new AssessmentsetDto(item)
       );
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "Ok.",
+        data: result,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
   }
 
   public async searchAssessmentset(
-    request: any,
-    assessmentSearchDto: AssessmentSetSearchDto
+    limit: string,
+    assessmentsetId: string,
+    type: string,
+    title: string,
+    gradeType: string,
+    request: any
   ) {
-    return this.httpService
-      .post(`${this.assessmentsetURL}/search`, assessmentSearchDto, {
+    var axios = require("axios");
+    try {
+      const searchData = {
+        assessmentsetId,
+        type,
+        title,
+        gradeType,
+      };
+
+      let newDataObject = "";
+      const newData = Object.keys(searchData).forEach((e) => {
+        if (searchData[e] && searchData[e] != "") {
+          newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        }
+      });
+
+      var data = {
+        query: `query GetAssessmentset($limit:Int) {
+      assessmentset(limit:$limit,where: {${newDataObject}}) {
+        assessmentsetId
+        gradeType
+        title
+        options
+        type
+        typeDetails
+        created_at
+        updated_at
+      }
+    }`,
+        variables: { limit: parseInt(limit) },
+      };
+
+      var config = {
+        method: "post",
+        url: process.env.REGISTRYHASURA,
         headers: {
-          Authorization: request.headers.authorization,
+          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+          "Content-Type": "application/json",
         },
-      })
-      .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new AssessmentsetDto(item)
-          );
-          return new SuccessResponse({
-            statusCode: response.status,
-            message: "Ok.",
-            data: responsedata,
-          });
-        }),
-        catchError((e) => {
-          var error = new ErrorResponse({
-            errorCode: e.response.status,
-            errorMessage: e.response.data.params.errmsg,
-          });
-          throw new HttpException(error, e.response.status);
-        })
+        data: data,
+      };
+
+      const response = await axios(config);
+
+      let result = response.data.data.assessmentset.map(
+        (item: any) => new AssessmentsetDto(item)
       );
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "Ok.",
+        data: result,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
   }
 }

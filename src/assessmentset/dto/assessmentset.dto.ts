@@ -27,7 +27,7 @@ export class AssessmentsetDto {
     description: "Assessmentset type details",
   })
   @Expose()
-  gradetype: string;
+  gradeType: string;
 
   @ApiProperty({
     description: "Extra data against assessment sent",
@@ -41,22 +41,14 @@ export class AssessmentsetDto {
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.assessmentsetId = obj?.osid ? `${obj.osid}` : "";
+    this.assessmentsetId = obj?.assessmentsetId ? `${obj.assessmentsetId}` : "";
     this.title = obj?.title ? `${obj.title}` : "";
     this.type = obj?.type ? obj.type : "";
     this.typeDetails = obj?.typeDetails ? obj.typeDetails : "";
-    this.gradetype = obj?.gradetype ? `${obj.gradetype}` : "";
+    this.gradeType = obj?.gradeType ? `${obj.gradeType}` : "";
     this.options = obj?.options ? `${obj.options}` : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }
