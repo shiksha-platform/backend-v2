@@ -5,7 +5,7 @@ import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { TrackAssessmentDto } from "src/trackAssessment/dto/trackassessment.dto";
 import { ErrorResponse } from "src/error-response";
-import { TrackAssessmentSearchDto } from "src/trackAssessment/dto/trackassessment-search-dto";
+
 @Injectable()
 export class TrackAssessmentService {
   constructor(private httpService: HttpService) {}
@@ -13,115 +13,209 @@ export class TrackAssessmentService {
   assessmentsetURL = `${process.env.BASEAPIURL}/Assessmentset`;
   url = process.env.DIKSHADEVBASEAPIURL;
   public async getAssessment(assessmentId: any, request: any) {
-    return this.httpService
-      .get(`${this.assessmentURL}/${assessmentId}`, {
-        headers: {
-          Authorization: request.headers.authorization,
+    var axios = require("axios");
+    try {
+      var data = {
+        query: `query GetTrackAssessment($trackAssessmentId:uuid) {
+      trackassessment(where: {trackAssessmentId: {_eq: $trackAssessmentId}}) {
+        answersheet
+        filter
+        created_at
+        updated_at
+      trackAssessmentId
+        questions
+        score
+        totalScore
+        source
+        studentId
+        teacherId
+        groupId
+        subject
+        type
+      }
+    }`,
+        variables: {
+          trackAssessmentId: assessmentId,
         },
-      })
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          const data = axiosResponse.data;
-          const assessmentDto = new TrackAssessmentDto(data);
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "ok.",
-            data: assessmentDto,
-          });
-        })
+      };
+
+      var config = {
+        method: "post",
+        url: process.env.REGISTRYHASURA,
+        headers: {
+          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = await axios(config);
+
+      let result = response.data.data.trackassessment.map(
+        (item: any) => new TrackAssessmentDto(item)
       );
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "Ok.",
+        data: result,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
   }
   public async createAssessment(
     request: any,
     assessmentDto: TrackAssessmentDto
   ) {
     var axios = require("axios");
-    let answer = JSON.stringify(assessmentDto.answersheet);
-    var jsonObj = JSON.parse(answer);
-    let params = JSON.parse(jsonObj);
+    try {
+      let answer = JSON.stringify(assessmentDto.answersheet);
+      var jsonObj = JSON.parse(answer);
+      let params = JSON.parse(jsonObj);
 
-    let sum = 0;
+      let sum = 0;
 
-    params.children.map((e: any) => {
-      sum += e.score;
-      return sum;
-    });
-    assessmentDto.score = sum.toString();
+      params.children.map((e: any) => {
+        sum += e.score;
+        return sum;
+      });
+      assessmentDto.score = sum.toString();
 
-    const questionIds = assessmentDto.questions;
-    let totalScoreArray = [];
-    for (let value of questionIds) {
-      let config = {
-        method: "get",
-        url: `${this.url}/question/v1/read/${value}?fields=maxScore`,
-      };
-      const response = await axios(config);
-      const data = response?.data;
-      const final = data.result.question;
+      const questionIds = assessmentDto.questions;
+      let totalScoreArray = [];
+      for (let value of questionIds) {
+        let config = {
+          method: "get",
+          url: `${this.url}/question/v1/read/${value}?fields=maxScore`,
+        };
+        const response = await axios(config);
+        const data = response?.data;
+        const final = data.result.question;
 
-      const scoreResponse = {
-        maxScore: final.maxScore,
-      };
-      totalScoreArray.push(scoreResponse);
-    }
-    let totalScore = 0;
-    totalScoreArray.map((e: any) => {
-      totalScore += e.maxScore;
-      return totalScore;
-    });
-    assessmentDto.totalScore = totalScore.toString();
-    return this.httpService
-      .post(`${this.assessmentURL}`, assessmentDto, {
-        headers: {
-          Authorization: request.headers.authorization,
+        const scoreResponse = {
+          maxScore: final.maxScore,
+        };
+        totalScoreArray.push(scoreResponse);
+      }
+      let totalScore = 0;
+      totalScoreArray.map((e: any) => {
+        totalScore += e.maxScore;
+        return totalScore;
+      });
+      assessmentDto.totalScore = totalScore.toString();
+
+      var data = {
+        query: `mutation CreateTrackAssessment($filter: String, $score: String, $totalScore:String, $source: String, $questions: String, $studentId: String, $teacherId: String, $type: String, $answersheet: String,$groupId:String, $subject:String) {
+      insert_trackassessment_one(object:{filter: $filter, score: $score, totalScore:$totalScore, source: $source, questions: $questions, studentId: $studentId, teacherId: $teacherId, type: $type, answersheet: $answersheet,groupId:$groupId,subject:$subject}) {
+        trackAssessmentId
+      }
+    }`,
+        variables: {
+          filter: assessmentDto.filter,
+          source: assessmentDto.source,
+          questions: assessmentDto.questions.toString(),
+          studentId: assessmentDto.studentId,
+          teacherId: assessmentDto.teacherId,
+          type: assessmentDto.type,
+          answersheet: assessmentDto.answersheet,
+          score: assessmentDto.score,
+          totalScore: assessmentDto.totalScore,
+          groupId: assessmentDto.groupId,
+          subject: assessmentDto.subject,
         },
-      })
-      .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          return new SuccessResponse({
-            statusCode: 200,
-            message: "Ok.",
-            data: axiosResponse.data,
-          });
-        }),
-        catchError((e) => {
-          var error = new ErrorResponse({
-            errorCode: e.response?.status,
-            errorMessage: e.response?.data?.params?.errmsg,
-          });
-          throw new HttpException(error, e.response.status);
-        })
-      );
+      };
+
+      var config = {
+        method: "post",
+        url: process.env.REGISTRYHASURA,
+        headers: {
+          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = await axios(config);
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "Ok.",
+        data: response.data,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
   }
 
   public async searchAssessment(
-    request: any,
-    assessmentSearchDto: TrackAssessmentSearchDto
+    limit: string,
+    source: string,
+    studentId: string,
+    teacherId: string,
+    groupId: string,
+    subject: string,
+    request: any
   ) {
-    return this.httpService
-      .post(`${this.assessmentURL}/search`, assessmentSearchDto, {
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-      })
-      .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new TrackAssessmentDto(item)
-          );
-          return new SuccessResponse({
-            statusCode: response.status,
-            message: "Ok.",
-            data: responsedata,
-          });
-        }),
-        catchError((e) => {
-          var error = new ErrorResponse({
-            errorCode: e.response.status,
-            errorMessage: e.response.data.params.errmsg,
-          });
-          throw new HttpException(error, e.response.status);
-        })
-      );
+    var axios = require("axios");
+    const searchData = {
+      source,
+      studentId,
+      teacherId,
+      groupId,
+      subject,
+    };
+    let newDataObject = "";
+    const newData = Object.keys(searchData).forEach((e) => {
+      if (searchData[e] && searchData[e] != "") {
+        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+      }
+    });
+
+    var data = {
+      query: `query searchTrackAssessment($limit:Int) {
+  trackassessment(limit: $limit, where: {${newDataObject}}) {
+    answersheet
+    filter
+    created_at
+    updated_at
+  trackAssessmentId
+    questions
+    score
+    totalScore
+    source
+    studentId
+    teacherId
+    groupId
+    subject
+    type
+  }
+}`,
+      variables: {
+        limit: parseInt(limit),
+      },
+    };
+
+    var config = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+
+    let result = response.data.data.trackassessment.map(
+      (item: any) => new TrackAssessmentDto(item)
+    );
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "Ok.",
+      data: result,
+    });
   }
 }

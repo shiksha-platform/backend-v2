@@ -15,9 +15,17 @@ export class MentorTrackingDto {
 
   @ApiProperty({})
   @Expose()
+  schoolId: string;
+
+  @ApiProperty({
+    default: new Date().toISOString().split("T")[0],
+  })
+  @Expose()
   scheduleVisitDate: string;
 
-  @ApiProperty({})
+  @ApiProperty({
+    default: new Date().toISOString().split("T")[0],
+  })
   @Expose()
   visitDate: string;
 
@@ -47,6 +55,7 @@ export class MentorTrackingDto {
       : "";
     this.mentorId = obj?.mentorId ? `${obj.mentorId}` : "";
     this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
+    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
     this.scheduleVisitDate = obj?.scheduleVisitDate
       ? `${obj.scheduleVisitDate}`
       : "";
