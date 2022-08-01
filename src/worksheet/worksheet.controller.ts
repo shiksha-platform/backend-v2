@@ -4,6 +4,7 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import {
@@ -13,12 +14,14 @@ import {
   Controller,
   Get,
   Param,
+  Query,
   Post,
   Put,
   Req,
   SerializeOptions,
   UseInterceptors,
   Request,
+  ConsoleLogger,
 } from "@nestjs/common";
 import { WorksheetService } from "src/adapters/sunbirdrc/worksheet.adapter";
 import { WorksheetDto } from "./dto/worksheet.dto";
@@ -88,5 +91,20 @@ export class WorksheetController {
     @Body() worksheetSearchDto: WorksheetSearchDto
   ) {
     return await this.service.searchWorksheet(request, worksheetSearchDto);
+  }
+
+  @Post(":worksheet/pdf")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "worksheetId", required: true })
+  @ApiQuery({ name: "templateId", required: true })
+  public async getWorksheetPdf(
+    @Query("worksheetId") worksheetId: string,
+    @Query("templateId") templateId: number,
+    @Req() request: Request
+  ) {
+    return this.service.downloadWorksheet(worksheetId, templateId, request);
   }
 }
