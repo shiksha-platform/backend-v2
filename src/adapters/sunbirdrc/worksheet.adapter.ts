@@ -13,6 +13,7 @@ export class WorksheetService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Worksheet`;
   questionurl = process.env.DIKSHADEVBASEAPIURL;
+  templateurl = process.env.TEMPLATERURL;
 
   public async createWorksheet(request: any, worksheetDto: WorksheetDto) {
     return this.httpService
@@ -128,6 +129,20 @@ export class WorksheetService {
     request: any
   ) {
     var axios = require("axios");
+    var template_id = parseInt(templateId);
+
+    const templateDetail = await axios.get(
+      `${this.templateurl}${template_id}`,
+      {
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+      }
+    );
+
+    const templateData = templateDetail.data;
+    var templateTags = templateData.tag;
+
     const worksheetDetail = await axios.get(`${this.url}/${worksheetId}`, {
       headers: {
         Authorization: request.headers.authorization,
@@ -135,6 +150,7 @@ export class WorksheetService {
     });
 
     const resData = worksheetDetail.data;
+
     let questionIds = resData.questions;
     let questionsArray = [];
 
@@ -150,11 +166,15 @@ export class WorksheetService {
       const scoreResponse = {
         question: final.body,
       };
-      questionsArray.push("<li>" + final.body + "</li>");
+      if (templateTags.includes("with_answers")) {
+        questionsArray.push(
+          "<li>" + final.body + "<br>Ans - <hr><hr><hr></li>"
+        );
+      } else {
+        questionsArray.push("<li>" + final.body + "</li>");
+      }
     }
 
-    var template_id = parseInt(templateId);
-    console.log(typeof template_id);
     var data = {
       config_id: 1,
       data: {
