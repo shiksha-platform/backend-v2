@@ -246,9 +246,14 @@ export class TeacherDto {
   @ApiPropertyOptional()
   @Expose()
   metaData: [string];
+
   @ApiPropertyOptional()
   @Expose()
   fcmToken: string;
+
+  @ApiPropertyOptional()
+  @Expose()
+  fcmClickActionUrl: string;
 
   @Expose()
   createdAt: string;
@@ -308,6 +313,9 @@ export class TeacherDto {
     this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
     this.fcmToken = obj?.fcmToken ? `${obj.fcmToken}` : "";
+    this.fcmClickActionUrl = obj?.fcmClickActionUrl
+      ? `${obj.fcmClickActionUrl}`
+      : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
