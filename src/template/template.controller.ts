@@ -1,6 +1,7 @@
 import {
   ApiBasicAuth,
   ApiBody,
+  ApiQuery,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
@@ -12,6 +13,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Query,
   Param,
   Post,
   Req,
@@ -66,5 +68,19 @@ export class TemplateController {
   })
   public async getTemplate(@Param("id") id: string, @Req() request: Request) {
     return this.service.getTemplate(id, request);
+  }
+  @Get(":/searchByTag")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  //@ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Get all Questions detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "tag", required: true })
+  public async getTemplates(
+    @Query("tag") tag: string,
+    @Req() request: Request
+  ) {
+    console.log(tag);
+
+    return this.service.getTemplateByTag(tag, request);
   }
 }
