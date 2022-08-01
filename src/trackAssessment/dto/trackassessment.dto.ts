@@ -51,8 +51,23 @@ export class TrackAssessmentDto {
   @Expose()
   teacherId: string;
 
+  @ApiProperty({
+    description: "GroupId of teacher",
+  })
+  @Expose()
+  groupId: string;
+
+  @ApiProperty({
+    description: "subject",
+  })
+  @Expose()
+  subject: string;
+
   @Expose()
   totalScore: string;
+
+  @Expose()
+  date: string;
 
   @Expose()
   createdAt: string;
@@ -60,14 +75,10 @@ export class TrackAssessmentDto {
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.trackAssessmentId = obj?.osid ? `${obj.osid}` : "";
+    this.trackAssessmentId = obj?.trackAssessmentId
+      ? `${obj.trackAssessmentId}`
+      : "";
     this.filter = obj?.filter ? `${obj.filter}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.questions = obj?.questions ? obj.questions : "";
@@ -77,9 +88,10 @@ export class TrackAssessmentDto {
     this.totalScore = obj?.totalScore ? `${obj.totalScore}` : "";
     this.studentId = obj?.studentId ? `${obj.studentId}` : "";
     this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
+    this.subject = obj?.subject ? `${obj.subject}` : "";
+    this.date = obj?.date ? `${obj.date}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }

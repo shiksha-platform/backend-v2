@@ -4,6 +4,8 @@ import {
   ApiCreatedResponse,
   ApiBasicAuth,
   ApiBody,
+  ApiQuery,
+  ApiOkResponse,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -17,10 +19,10 @@ import {
   CacheInterceptor,
   Post,
   Body,
+  Query,
 } from "@nestjs/common";
 import { TrackAssessmentService } from "src/adapters/sunbirdrc/trackassessment.adapter";
 import { TrackAssessmentDto } from "./dto/trackassessment.dto";
-import { TrackAssessmentSearchDto } from "./dto/trackassessment-search-dto";
 
 @ApiTags("Track Assessment")
 @Controller("trackassessment")
@@ -60,16 +62,49 @@ export class AssessmentController {
   @Post("/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Track Assessment list." })
-  @ApiBody({ type: TrackAssessmentSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     strategy: "excludeAll",
   })
+  @ApiQuery({ name: "limit", required: false })
+  @ApiQuery({ name: "source", required: false })
+  @ApiQuery({ name: "studentId", required: false })
+  @ApiQuery({ name: "teacherId", required: false })
+  @ApiQuery({ name: "groupId", required: false })
+  @ApiQuery({ name: "subject", required: false })
   public async searchAssessment(
-    @Req() request: Request,
-    @Body() assessmentSearchDto: TrackAssessmentSearchDto
+    @Query("limit") limit: string,
+    @Query("source") source: string,
+    @Query("studentId") studentId: string,
+    @Query("teacherId") teacherId: string,
+    @Query("groupId") groupId: string,
+    @Query("subject") subject: string,
+    @Req() request: Request
   ) {
-    return await this.service.searchAssessment(request, assessmentSearchDto);
+    return await this.service.searchAssessment(
+      limit,
+      source,
+      studentId,
+      teacherId,
+      groupId,
+      subject,
+      request
+    );
+  }
+
+  @Get("")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "fromDate", required: false })
+  @ApiQuery({ name: "toDate", required: false })
+  public async trackassessmentFilter(
+    @Query("fromDate") date: string,
+    @Query("toDate") toDate: string,
+    @Req() request: Request
+  ) {
+    return this.service.trackAssessmentFilter(date, toDate, request);
   }
 }
