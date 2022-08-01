@@ -7,7 +7,6 @@ import { map, catchError } from "rxjs";
 import { ErrorResponse } from "src/error-response";
 import { WorksheetSearchDto } from "src/worksheet/dto/worksheet-search.dto";
 import { parse } from "path";
-import { TemplateService } from "./template.adapter";
 
 @Injectable()
 export class WorksheetService {
@@ -144,7 +143,6 @@ export class WorksheetService {
     const templateData = templateDetail.data;
     var templateTags = templateData.tag;
 
-    return;
     const worksheetDetail = await axios.get(`${this.url}/${worksheetId}`, {
       headers: {
         Authorization: request.headers.authorization,
