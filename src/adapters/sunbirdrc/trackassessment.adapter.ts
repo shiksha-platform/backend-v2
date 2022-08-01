@@ -218,4 +218,56 @@ export class TrackAssessmentService {
       data: result,
     });
   }
+  public async trackAssessmentFilter(
+    fromDate: string,
+    toDate: string,
+    request: any
+  ) {
+    var axios = require("axios");
+
+    var data = {
+      query: `query AssessmentFilter($fromDate:date,$toDate:date) {
+        trackassessment(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}}}) {
+          answersheet
+          filter
+          created_at
+          updated_at
+        trackAssessmentId
+          questions
+          score
+          totalScore
+          source
+          studentId
+          teacherId
+          groupId
+          subject
+          type
+          date    
+        }
+      }`,
+      variables: { fromDate: fromDate, toDate: toDate },
+    };
+
+    var config = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+
+    let result = response.data.data.trackassessment.map(
+      (item: any) => new TrackAssessmentDto(item)
+    );
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "Ok.",
+      data: result,
+    });
+  }
 }
