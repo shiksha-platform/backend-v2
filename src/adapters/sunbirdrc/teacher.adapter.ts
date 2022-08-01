@@ -15,6 +15,7 @@ export const SunbirdTeacherToken = "SunbirdTeacher";
 export class TeacherService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Teacher`;
+  templaterURL = process.env.TEMPLATERURL;
 
   public async getTeacher(id: any, request: any) {
     return this.httpService
@@ -149,7 +150,11 @@ export class TeacherService implements IServicelocator {
     });
   }
 
-  public async teacherSegment(schoolId: string, request: any) {
+  public async teacherSegment(
+    schoolId: string,
+    templateId: string,
+    request: any
+  ) {
     const teacherSearchDto = {
       filters: {
         schoolId: {
@@ -157,22 +162,38 @@ export class TeacherService implements IServicelocator {
         },
       },
     };
-    return this.httpService.post(`${this.url}/search`, teacherSearchDto).pipe(
-      map((response) => {
-        const responsedata = response.data.map(
-          (item: any) => new TeacherSegementDto(item)
-        );
-        return new SuccessResponse({
-          data: responsedata,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response.status,
-          errorMessage: e.response.data.params.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
-      })
+    var axios = require("axios");
+    var confi = {
+      method: "get",
+      url: `${this.templaterURL}${templateId}`,
+    };
+    const getContent = await axios(confi);
+    const contentData = getContent.data;
+    let optionStr = JSON.stringify(contentData.tag[0]);
+    var jsonObj = JSON.parse(optionStr);
+    let params = JSON.parse(jsonObj);
+
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+
+      data: teacherSearchDto,
+    };
+    const response = await axios(config);
+    let responseData = response.data.map(
+      (item: any) => new TeacherSegementDto(item)
     );
+    const result = responseData.map((obj: any) => {
+      if (obj.fcmClickActionUrl) {
+        return { ...obj, fcmClickActionUrl: params.attendance };
+      }
+      return obj;
+    });
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: result,
+    });
   }
 }

@@ -20,6 +20,12 @@ export class TemplateCreateDto {
   @Expose()
   user: string;
 
+  @ApiProperty({
+    description: "User id",
+  })
+  @Expose()
+  tag: [string];
+
   @Expose()
   createdAt: string;
 
@@ -29,7 +35,7 @@ export class TemplateCreateDto {
     this.body = obj?.body ? `${obj.body}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.user = obj?.user ? `${obj.user}` : "";
-
+    this.tag = obj?.tag ? obj.tag : "";
     this.createdAt = obj?.createdAt ? `${obj.createdAt}` : "";
     this.updatedAt = obj?.updatedAt ? `${obj.updatedAt}` : "";
   }
