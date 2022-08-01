@@ -163,15 +163,15 @@ export class TeacherService implements IServicelocator {
       },
     };
     var axios = require("axios");
-    var confi = {
+    var getTemplate = {
       method: "get",
       url: `${this.templaterURL}${templateId}`,
     };
-    const getContent = await axios(confi);
-    const contentData = getContent.data;
-    let optionStr = JSON.stringify(contentData.tag[0]);
-    var jsonObj = JSON.parse(optionStr);
-    let params = JSON.parse(jsonObj);
+    const getfcmClickActionUrl = await axios(getTemplate);
+    const fcmClickActionUrlData = getfcmClickActionUrl.data;
+    let tagString = JSON.stringify(fcmClickActionUrlData.tag[0]);
+    var jsonToObj = JSON.parse(tagString);
+    let fcmClickActionUrl = JSON.parse(jsonToObj);
 
     let config = {
       method: "post",
@@ -183,9 +183,9 @@ export class TeacherService implements IServicelocator {
     let responseData = response.data.map(
       (item: any) => new TeacherSegementDto(item)
     );
-    const result = responseData.map((obj: any) => {
+    const teachersegment = responseData.map((obj: any) => {
       if (obj.fcmClickActionUrl) {
-        return { ...obj, fcmClickActionUrl: params.attendance };
+        return { ...obj, fcmClickActionUrl: fcmClickActionUrl.attendance };
       }
       return obj;
     });
@@ -193,7 +193,7 @@ export class TeacherService implements IServicelocator {
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
-      data: result,
+      data: teachersegment,
     });
   }
 }
