@@ -6,11 +6,13 @@ import { AxiosResponse } from "axios";
 import { map, catchError } from "rxjs";
 import { ErrorResponse } from "src/error-response";
 import { WorksheetSearchDto } from "src/worksheet/dto/worksheet-search.dto";
+import { parse } from "path";
 
 @Injectable()
 export class WorksheetService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Worksheet`;
+  questionurl = process.env.DIKSHADEVBASEAPIURL;
 
   public async createWorksheet(request: any, worksheetDto: WorksheetDto) {
     return this.httpService
@@ -119,5 +121,66 @@ export class WorksheetService {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+  public async downloadWorksheet(
+    worksheetId: any,
+    templateId: any,
+    request: any
+  ) {
+    var axios = require("axios");
+    const worksheetDetail = await axios.get(`${this.url}/${worksheetId}`, {
+      headers: {
+        Authorization: request.headers.authorization,
+      },
+    });
+
+    const resData = worksheetDetail.data;
+    let questionIds = resData.questions;
+    let questionsArray = [];
+
+    for (let value of questionIds) {
+      let qData = {
+        method: "get",
+        url: `${this.questionurl}/question/v1/read/${value}?fields=body`,
+      };
+      const response = await axios(qData);
+      const data = response?.data;
+      const final = data.result.question;
+
+      const scoreResponse = {
+        question: final.body,
+      };
+      questionsArray.push("<li>" + final.body + "</li>");
+    }
+
+    var template_id = parseInt(templateId);
+    console.log(typeof template_id);
+    var data = {
+      config_id: 1,
+      data: {
+        title: resData.name,
+        grade: resData.grade,
+        subject: resData.subject,
+        questions: questionsArray,
+      },
+      template_id: template_id,
+    };
+
+    const pdf = await axios.post(
+      `http://68.183.94.187:8000/generate/?plugin=pdf`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const pdfUrl = pdf.data;
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: pdfUrl,
+    });
   }
 }
