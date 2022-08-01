@@ -67,6 +67,9 @@ export class TrackAssessmentDto {
   totalScore: string;
 
   @Expose()
+  date: string;
+
+  @Expose()
   createdAt: string;
 
   @Expose()
@@ -87,6 +90,7 @@ export class TrackAssessmentDto {
     this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
     this.groupId = obj?.groupId ? `${obj.groupId}` : "";
     this.subject = obj?.subject ? `${obj.subject}` : "";
+    this.date = obj?.date ? `${obj.date}` : "";
     this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
     this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }

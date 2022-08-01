@@ -5,6 +5,7 @@ import {
   ApiBasicAuth,
   ApiBody,
   ApiQuery,
+  ApiOkResponse,
 } from "@nestjs/swagger";
 import {
   Controller,
@@ -90,5 +91,20 @@ export class AssessmentController {
       subject,
       request
     );
+  }
+
+  @Get("")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "fromDate", required: false })
+  @ApiQuery({ name: "toDate", required: false })
+  public async trackassessmentFilter(
+    @Query("fromDate") date: string,
+    @Query("toDate") toDate: string,
+    @Req() request: Request
+  ) {
+    return this.service.trackAssessmentFilter(date, toDate, request);
   }
 }
