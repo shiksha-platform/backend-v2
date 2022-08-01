@@ -11,6 +11,7 @@ import {
   Req,
   CacheInterceptor,
   Inject,
+  Query,
 } from "@nestjs/common";
 import {
   SunbirdTeacherToken,
@@ -24,6 +25,7 @@ import {
   ApiForbiddenResponse,
   ApiCreatedResponse,
   ApiBasicAuth,
+  ApiQuery,
 } from "@nestjs/swagger";
 
 import { TeacherDto } from "./dto/teacher.dto";
@@ -113,10 +115,12 @@ export class TeacherController {
   @ApiCreatedResponse({ description: "Teacher list." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @ApiQuery({ name: "templateId", required: false })
   public async teacherSegment(
     @Param("schoolId") schoolId: string,
+    @Query("templateId") templateId: string,
     @Req() request: Request
   ) {
-    return await this.service.teacherSegment(schoolId, request);
+    return await this.service.teacherSegment(schoolId, templateId, request);
   }
 }
