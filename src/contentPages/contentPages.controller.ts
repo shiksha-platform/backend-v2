@@ -11,8 +11,14 @@ import {
 @Controller('contentPages')
 export class ContentPagesController {
   constructor(private hasuraService: ContentPagesEsamwadService,
-    @Inject(ESamwadContentPagesToken) private eSamwadProvider: IServicelocator) { }
+  @Inject(ESamwadContentPagesToken) private eSamwadProvider: IServicelocator) { }
 
-  //api calls
+  //to get content pages set with limit and offset
+
+
+  //to retreive details about a given content page
+
+  
+  //to create a content page
 
 }
