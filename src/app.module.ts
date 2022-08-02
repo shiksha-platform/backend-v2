@@ -24,6 +24,20 @@ import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
 import { InAppNotificationModule } from "./inAppNotification/inAppNotification.module";
 import { MentorTrackingModule } from "./mentorTracking/mentorTracking.module";
 import { MonitorTrackingModule } from "./monitorTracking/monitorTracking.module";
+import {
+  AttendanceEsamwadService,
+  EsamwadAttendanceToken,
+} from "./adapters/esamwad/attendance.adapter";
+import {
+  AnnouncementsEsamwadService,
+  ESamwadAnnouncementsToken,
+} from "./adapters/esamwad/announcements.adapter";
+import {
+  SunbirdAttendanceToken,
+  AttendanceService,
+} from "./adapters/sunbirdrc/attendance.adapter";
+
+import { AnnouncementsModule } from "./announcements/announcements.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -51,6 +65,7 @@ import { MonitorTrackingModule } from "./monitorTracking/monitorTracking.module"
     InAppNotificationModule,
     MentorTrackingModule,
     MonitorTrackingModule,
+    AnnouncementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
