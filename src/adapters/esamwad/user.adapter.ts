@@ -5,21 +5,22 @@ import { map } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
-import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import { UserSearchDto } from "src/user/dto/user-search.dto";
+import { UserDto } from "../../user/dto/user.dto";
 import jwt_decode from "jwt-decode";
-import { IServicelocator } from "../teacherservicelocator";
-import { EsamwadTeacherDto } from "src/teacher/dto/esamwad.teacher.dto";
-export const EsamwadTeacherToken = "EsamwadTeacher";
-@Injectable()
-export class EsamwadTeacherService implements IServicelocator {
-  constructor(private httpService: HttpService) {}
-  url = `${process.env.BASEAPIURL}/Teacher`;
 
-  public async getTeacherByAuth(request: any) {
+import { EsamwadUserDto } from "src/user/dto/esamwad.user.dto";
+import { IServicelocator } from "../userservicelocator";
+export const EsamwadUserToken = "EsamwadUser";
+@Injectable()
+export class EsamwadUserService implements IServicelocator {
+  constructor(private httpService: HttpService) {}
+  url = `${process.env.BASEAPIURL}/User`;
+
+  public async getUserByAuth(request: any) {
     const response = [
       {
-        teacherId: "85",
+        userId: "85",
         refId1: "string",
         refId2: "string",
         refId3: "string",
@@ -44,7 +45,7 @@ export class EsamwadTeacherService implements IServicelocator {
         religion: "string",
         homeDistance: "string",
         schoolId: "15547",
-        teacherAddress: "string",
+        address: "string",
         village: "string",
         block: "string",
         district: "string",
@@ -61,7 +62,7 @@ export class EsamwadTeacherService implements IServicelocator {
         metaData: ["string"],
       },
     ];
-    let result = response.map((item: any) => new EsamwadTeacherDto(item));
+    let result = response.map((item: any) => new EsamwadUserDto(item));
 
     return new SuccessResponse({
       statusCode: 200,

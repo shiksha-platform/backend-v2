@@ -11,9 +11,8 @@ import { GroupMembershipSearchDto } from "src/groupMembership/dto/groupMembershi
 const resolvePath = require("object-resolve-path");
 import { StudentDto } from "src/student/dto/student.dto";
 import axios from "axios";
-import { TeacherDto } from "src/teacher/dto/teacher.dto";
+import { UserDto } from "src/user/dto/user.dto";
 import { GroupDto } from "src/group/dto/group.dto";
-import { TeacherDetailDto } from "src/teacher/dto/teacher-detail.dto";
 import { IServicelocator } from "../groupmembershipservicelocator";
 export const SunbirdGroupMembershipToken = "SunbirdGroupMembership";
 @Injectable()
@@ -68,7 +67,7 @@ export class GroupMembershipService implements IServicelocator {
       if (classObj?.teacherId) {
         let classFinal = {
           method: "get",
-          url: `${this.url}/Teacher/${classObj.teacherId}`,
+          url: `${this.url}/User/${classObj.teacherId}`,
           headers: {
             Authorization: request.headers.authorization,
           },
@@ -76,7 +75,7 @@ export class GroupMembershipService implements IServicelocator {
 
         const responseData = await axios(classFinal);
 
-        const teacherDetailDto = new TeacherDto(responseData.data);
+        const teacherDetailDto = new UserDto(responseData.data);
 
         resData = [teacherDetailDto];
       }

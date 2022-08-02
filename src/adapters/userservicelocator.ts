@@ -1,3 +1,3 @@
 export interface IServicelocator {
-  getTeacherByAuth(request);
+  getUserByAuth(request);
 }
