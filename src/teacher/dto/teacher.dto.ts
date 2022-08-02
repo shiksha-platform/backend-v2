@@ -246,6 +246,7 @@ export class TeacherDto {
   @ApiPropertyOptional()
   @Expose()
   metaData: [string];
+
   @ApiPropertyOptional()
   @Expose()
   fcmToken: string;
