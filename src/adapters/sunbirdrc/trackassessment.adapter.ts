@@ -221,13 +221,15 @@ export class TrackAssessmentService {
   public async trackAssessmentFilter(
     fromDate: string,
     toDate: string,
+    groupId: string,
+    subject: string,
     request: any
   ) {
     var axios = require("axios");
 
     var data = {
-      query: `query AssessmentFilter($fromDate:date,$toDate:date) {
-        trackassessment(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}}}) {
+      query: `query AssessmentFilter($fromDate:date,$toDate:date,$groupId:String,$subject:String) {
+        trackassessment(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}},groupId: {_eq: $groupId},subject: {_eq: $subject}}) {
           answersheet
           filter
           created_at
@@ -245,7 +247,12 @@ export class TrackAssessmentService {
           date    
         }
       }`,
-      variables: { fromDate: fromDate, toDate: toDate },
+      variables: {
+        fromDate: fromDate,
+        toDate: toDate,
+        groupId: groupId,
+        subject: subject,
+      },
     };
 
     var config = {
