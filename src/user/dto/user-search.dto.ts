@@ -8,7 +8,7 @@ import {
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class TeacherSearchDto {
+export class UserSearchDto {
   @ApiProperty({
     type: String,
     description: "Limit",
@@ -22,7 +22,7 @@ export class TeacherSearchDto {
   @ApiPropertyOptional()
   filters: object;
 
-  constructor(partial: Partial<TeacherSearchDto>) {
+  constructor(partial: Partial<UserSearchDto>) {
     Object.assign(this, partial);
   }
 }

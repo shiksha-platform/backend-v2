@@ -6,7 +6,7 @@ import { ConfigDto } from "src/configs/dto/config.dto";
 import { first, map, Observable } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import jwt_decode from "jwt-decode";
-import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import { UserDto } from "../../user/dto/user.dto";
 @Injectable()
 export class ConfigService {
   constructor(private httpService: HttpService) {}
@@ -109,7 +109,7 @@ export class ConfigService {
     };
     let config = {
       method: "post",
-      url: `${process.env.BASEAPIURL}/Teacher/search`,
+      url: `${process.env.BASEAPIURL}/User/search`,
       headers: {
         Authorization: request.headers.authorization,
       },
@@ -118,10 +118,10 @@ export class ConfigService {
     const response = await axios(config);
 
     let teacherProfileData =
-      response?.data && response.data.map((item: any) => new TeacherDto(item));
+      response?.data && response.data.map((item: any) => new UserDto(item));
 
-    let schoolId = teacherProfileData.map(function (TeacherDto) {
-      return TeacherDto.schoolId;
+    let schoolId = teacherProfileData.map(function (UserDto) {
+      return UserDto.schoolId;
     });
 
     let teacherConfig = {

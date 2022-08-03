@@ -14,9 +14,9 @@ import {
   Query,
 } from "@nestjs/common";
 import {
-  SunbirdTeacherToken,
-  TeacherService,
-} from "../adapters/sunbirdrc/teacher.adapter";
+  SunbirdUserToken,
+  UserService,
+} from "../adapters/sunbirdrc/user.adapter";
 import { Request } from "@nestjs/common";
 import {
   ApiTags,
@@ -28,91 +28,90 @@ import {
   ApiQuery,
 } from "@nestjs/swagger";
 
-import { TeacherDto } from "./dto/teacher.dto";
-import { TeacherSearchDto } from "./dto/teacher-search.dto";
-import { EsamwadTeacherToken } from "src/adapters/esamwad/teacher.adapter";
-import { IServicelocator } from "src/adapters/teacherservicelocator";
-@ApiTags("Teacher")
+import { UserDto } from "./dto/user.dto";
+import { UserSearchDto } from "./dto/user-search.dto";
+import { IServicelocator } from "src/adapters/userservicelocator";
+@ApiTags("User")
 @Controller("teacher")
-export class TeacherController {
+export class UserController {
   constructor(
-    private readonly service: TeacherService,
-    @Inject(EsamwadTeacherToken) private eSamwadProvider: IServicelocator,
-    @Inject(SunbirdTeacherToken) private sunbirdProvider: IServicelocator
+    private readonly service: UserService,
+    @Inject(EsamwadUserToken) private eSamwadProvider: IServicelocator,
+    @Inject(SunbirdUserToken) private sunbirdProvider: IServicelocator
   ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Teacher detail." })
+  @ApiOkResponse({ description: "User detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async getTeacher(@Param("id") id: string, @Req() request: Request) {
-    return this.service.getTeacher(id, request);
+  public async getUser(@Param("id") id: string, @Req() request: Request) {
+    return this.service.getUser(id, request);
   }
 
   @Get()
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Teacher detail." })
+  @ApiOkResponse({ description: "User detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async getTeacherByAuth(@Req() request: Request) {
+  public async getUserByAuth(@Req() request: Request) {
     if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.getTeacherByAuth(request);
+      return this.sunbirdProvider.getUserByAuth(request);
     } else {
-      return this.eSamwadProvider.getTeacherByAuth(request);
+      return this.eSamwadProvider.getUserByAuth(request);
     }
   }
 
   @Post()
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Teacher has been created successfully." })
-  @ApiBody({ type: TeacherDto })
+  @ApiCreatedResponse({ description: "User has been created successfully." })
+  @ApiBody({ type: UserDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createTeacher(
+  public async createUser(
     @Req() request: Request,
-    @Body() teacherDto: TeacherDto
+    @Body() teacherDto: UserDto
   ) {
-    return this.service.createTeacher(request, teacherDto);
+    return this.service.createUser(request, teacherDto);
   }
 
   @Put("/:id")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Teacher has been updated successfully." })
+  @ApiCreatedResponse({ description: "User has been updated successfully." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async updateTeacher(
+  public async updateUser(
     @Param("id") id: string,
     @Req() request: Request,
-    @Body() teacherDto: TeacherDto
+    @Body() teacherDto: UserDto
   ) {
-    return await this.service.updateTeacher(id, request, teacherDto);
+    return await this.service.updateUser(id, request, teacherDto);
   }
   @Post("/search")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Teacher list." })
-  @ApiBody({ type: TeacherSearchDto })
+  @ApiCreatedResponse({ description: "User list." })
+  @ApiBody({ type: UserSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async searchTeacher(
+  public async searchUser(
     @Req() request: Request,
-    @Body() teacherSearchDto: TeacherSearchDto
+    @Body() teacherSearchDto: UserSearchDto
   ) {
-    return await this.service.searchTeacher(request, teacherSearchDto);
+    return await this.service.searchUser(request, teacherSearchDto);
   }
 
   @Get("teachersegment/:schoolId")
   // @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({ description: "Teacher list." })
+  @ApiCreatedResponse({ description: "User list." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiQuery({ name: "templateId", required: false })
@@ -123,4 +122,7 @@ export class TeacherController {
   ) {
     return await this.service.teacherSegment(schoolId, templateId, request);
   }
+}
+function EsamwadUserToken(EsamwadUserToken: any) {
+  throw new Error("Function not implemented.");
 }
