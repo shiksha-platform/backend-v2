@@ -31,6 +31,7 @@ import {
 import { UserDto } from "./dto/user.dto";
 import { UserSearchDto } from "./dto/user-search.dto";
 import { IServicelocator } from "src/adapters/userservicelocator";
+import { EsamwadUserToken } from "src/adapters/esamwad/user.adapter";
 @ApiTags("User")
 @Controller("teacher")
 export class UserController {
@@ -122,7 +123,4 @@ export class UserController {
   ) {
     return await this.service.teacherSegment(schoolId, templateId, request);
   }
-}
-function EsamwadUserToken(EsamwadUserToken: any) {
-  throw new Error("Function not implemented.");
 }
