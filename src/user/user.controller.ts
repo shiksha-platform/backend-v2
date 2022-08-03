@@ -33,7 +33,7 @@ import { UserSearchDto } from "./dto/user-search.dto";
 import { IServicelocator } from "src/adapters/userservicelocator";
 import { EsamwadUserToken } from "src/adapters/esamwad/user.adapter";
 @ApiTags("User")
-@Controller("teacher")
+@Controller("user")
 export class UserController {
   constructor(
     private readonly service: UserService,
@@ -75,11 +75,8 @@ export class UserController {
   @ApiBody({ type: UserDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async createUser(
-    @Req() request: Request,
-    @Body() teacherDto: UserDto
-  ) {
-    return this.service.createUser(request, teacherDto);
+  public async createUser(@Req() request: Request, @Body() userDto: UserDto) {
+    return this.service.createUser(request, userDto);
   }
 
   @Put("/:id")
@@ -90,9 +87,9 @@ export class UserController {
   public async updateUser(
     @Param("id") id: string,
     @Req() request: Request,
-    @Body() teacherDto: UserDto
+    @Body() userDto: UserDto
   ) {
-    return await this.service.updateUser(id, request, teacherDto);
+    return await this.service.updateUser(id, request, userDto);
   }
   @Post("/search")
   @ApiBasicAuth("access-token")
@@ -105,9 +102,9 @@ export class UserController {
   })
   public async searchUser(
     @Req() request: Request,
-    @Body() teacherSearchDto: UserSearchDto
+    @Body() userSearchDto: UserSearchDto
   ) {
-    return await this.service.searchUser(request, teacherSearchDto);
+    return await this.service.searchUser(request, userSearchDto);
   }
 
   @Get("teachersegment/:schoolId")
