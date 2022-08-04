@@ -74,18 +74,15 @@ export class CourseController {
   @ApiOkResponse({ description: "Get all Course detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "courseIds", required: false })
-  public async getAllCourseBycourseIds(
+  public async getCoursesByIds(
     @Param("adapter") adapter: string,
     @Query("courseIds") courseIds: [string],
     @Req() request: Request
   ) {
     if (adapter === "diksha") {
-      return this.dikshaProvider.getAllCoursesByCourseIds(courseIds, request);
+      return this.dikshaProvider.getCoursesByIds(courseIds, request);
     } else if (adapter === "khanacademy") {
-      return this.khanAcademyProvider.getAllCoursesByCourseIds(
-        courseIds,
-        request
-      );
+      return this.khanAcademyProvider.getCoursesByIds(courseIds, request);
     }
   }
 
@@ -94,15 +91,15 @@ export class CourseController {
   @ApiOkResponse({ description: "Get Course detail." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "courseId", required: false })
-  public async getOnecourse(
+  public async getCourseDetail(
     @Param("adapter") adapter: string,
     @Query("courseId") courseId: string,
     @Req() request: Request
   ) {
     if (adapter === "diksha") {
-      return this.dikshaProvider.getOneCourse(courseId, request);
+      return this.dikshaProvider.getCourseDetail(courseId, request);
     } else if (adapter === "khanacademy") {
-      return this.khanAcademyProvider.getOneCourse(courseId, request);
+      return this.khanAcademyProvider.getCourseDetail(courseId, request);
     }
   }
 }

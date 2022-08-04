@@ -160,7 +160,7 @@ export class DikshaCourseService implements IServicelocator {
     return mappedResponse;
   }
 
-  public async getAllCoursesByCourseIds(courseIds: [string], request: any) {
+  public async getCoursesByIds(courseIds: [string], request: any) {
     let courseArray = [];
     for (let value of courseIds) {
       let courseData = this.getCourse(value);
@@ -173,7 +173,7 @@ export class DikshaCourseService implements IServicelocator {
     });
   }
 
-  public async getOneCourse(questionId: string, request: any) {
+  public async getCourseDetail(questionId: string, request: any) {
     let value = questionId;
     let courseData = await this.getCourse(value);
     return new SuccessResponse({

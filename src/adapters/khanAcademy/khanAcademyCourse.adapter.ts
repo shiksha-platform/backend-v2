@@ -15,7 +15,7 @@ export class KhanAcadermyCourseService implements IServicelocator {
     request: any
   ) {}
 
-  public async getAllCoursesByCourseIds(courseIds: [string], request: any) {}
+  public async getCoursesByIds(courseIds: [string], request: any) {}
 
-  public async getOneCourse(courseId: string, request: any) {}
+  public async getCourseDetail(courseId: string, request: any) {}
 }

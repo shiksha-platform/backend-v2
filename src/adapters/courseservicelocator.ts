@@ -8,6 +8,6 @@ export interface IServicelocator {
     request: any
   );
 
-  getAllCoursesByCourseIds(courseIds: [string], request: any);
-  getOneCourse(courseId: string, request: any);
+  getCoursesByIds(courseIds: [string], request: any);
+  getCourseDetail(courseId: string, request: any);
 }
