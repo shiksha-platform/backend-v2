@@ -21,7 +21,7 @@ import {
   Body,
   Query,
 } from "@nestjs/common";
-import { TrackAssessmentService } from "src/adapters/sunbirdrc/trackassessment.adapter";
+import { TrackAssessmentService } from "src/adapters/hasura/trackassessment.adapter";
 import { TrackAssessmentDto } from "./dto/trackassessment.dto";
 
 @ApiTags("Track Assessment")

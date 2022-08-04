@@ -24,6 +24,8 @@ import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
 import { InAppNotificationModule } from "./inAppNotification/inAppNotification.module";
 import { MentorTrackingModule } from "./mentorTracking/mentorTracking.module";
 import { MonitorTrackingModule } from "./monitorTracking/monitorTracking.module";
+import { CourseModule } from "./course/course.module";
+import { CourseTrackingModule } from "./courseTracking/courseTracking.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -51,6 +53,8 @@ import { MonitorTrackingModule } from "./monitorTracking/monitorTracking.module"
     InAppNotificationModule,
     MentorTrackingModule,
     MonitorTrackingModule,
+    CourseModule,
+    CourseTrackingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
