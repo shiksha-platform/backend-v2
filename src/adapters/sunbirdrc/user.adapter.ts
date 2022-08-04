@@ -184,10 +184,7 @@ export class UserService implements IServicelocator {
       (item: any) => new TeacherSegementDto(item)
     );
     const teachersegment = responseData.map((obj: any) => {
-      if (obj.fcmClickActionUrl) {
-        return { ...obj, fcmClickActionUrl: fcmClickActionUrl.attendance };
-      }
-      return obj;
+      return { ...obj, fcmClickActionUrl: fcmClickActionUrl.attendance };
     });
 
     return new SuccessResponse({
