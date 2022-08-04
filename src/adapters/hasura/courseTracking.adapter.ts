@@ -172,12 +172,14 @@ export class CourseTrackingService {
     limit: string,
     courseId: string,
     userId: string,
+    status: string,
     request: any
   ) {
     var axios = require("axios");
     const searchData = {
       courseId,
       userId,
+      status,
     };
     let newDataObject = "";
     const newData = Object.keys(searchData).forEach((e) => {
