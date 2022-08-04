@@ -1,6 +1,6 @@
 export interface GroupInterface {
-  groupId?: string
-  name?: string
-  type?: string
-  status?: string
-  }
+  groupId?: string;
+  name?: string;
+  type?: string;
+  status?: string;
+}

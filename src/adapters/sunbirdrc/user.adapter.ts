@@ -5,18 +5,19 @@ import { map } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { SuccessResponse } from "src/success-response";
 import { ErrorResponse } from "src/error-response";
-import { TeacherSearchDto } from "src/teacher/dto/teacher-search.dto";
-import { TeacherDto } from "../../teacher/dto/teacher.dto";
+import { UserSearchDto } from "src/user/dto/user-search.dto";
+import { UserDto } from "../../user/dto/user.dto";
 import jwt_decode from "jwt-decode";
-import { IServicelocator } from "../teacherservicelocator";
-import { TeacherSegementDto } from "src/teacher/dto/teacher-segment.dto";
-export const SunbirdTeacherToken = "SunbirdTeacher";
+import { IServicelocator } from "../userservicelocator";
+import { TeacherSegementDto } from "src/user/dto/teacher-segment.dto";
+export const SunbirdUserToken = "SunbirdUser";
 @Injectable()
-export class TeacherService implements IServicelocator {
+export class UserService implements IServicelocator {
   constructor(private httpService: HttpService) {}
-  url = `${process.env.BASEAPIURL}/Teacher`;
+  url = `${process.env.BASEAPIURL}/User`;
+  templaterURL = process.env.TEMPLATERURL;
 
-  public async getTeacher(id: any, request: any) {
+  public async getUser(id: any, request: any) {
     return this.httpService
       .get(`${this.url}/${id}`, {
         headers: {
@@ -27,11 +28,11 @@ export class TeacherService implements IServicelocator {
         map((axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
 
-          const teacherDto = new TeacherDto(data);
+          const teacherDto = new UserDto(data);
 
           return new SuccessResponse({
             statusCode: 200,
-            message: "Teacher found Successfully",
+            message: "User found Successfully",
             data: teacherDto,
           });
         }),
@@ -45,7 +46,7 @@ export class TeacherService implements IServicelocator {
       );
   }
 
-  public async createTeacher(request: any, teacherDto: TeacherDto) {
+  public async createUser(request: any, teacherDto: UserDto) {
     return this.httpService
       .post(`${this.url}`, teacherDto, {
         headers: {
@@ -56,7 +57,7 @@ export class TeacherService implements IServicelocator {
         map((axiosResponse: AxiosResponse) => {
           return new SuccessResponse({
             statusCode: 200,
-            message: "Teacher created Successfully",
+            message: "User created Successfully",
             data: axiosResponse.data,
           });
         }),
@@ -70,7 +71,7 @@ export class TeacherService implements IServicelocator {
       );
   }
 
-  public async updateTeacher(id: string, request: any, teacherDto: TeacherDto) {
+  public async updateUser(id: string, request: any, teacherDto: UserDto) {
     var axios = require("axios");
     var data = teacherDto;
 
@@ -85,11 +86,11 @@ export class TeacherService implements IServicelocator {
     const response = await axios(config);
     return new SuccessResponse({
       statusCode: 200,
-      message: "Teacher updated Successfully",
+      message: "User updated Successfully",
       data: response.data,
     });
   }
-  public async searchTeacher(request: any, teacherSearchDto: TeacherSearchDto) {
+  public async searchUser(request: any, teacherSearchDto: UserSearchDto) {
     return this.httpService
       .post(`${this.url}/search`, teacherSearchDto, {
         headers: {
@@ -99,11 +100,11 @@ export class TeacherService implements IServicelocator {
       .pipe(
         map((response) => {
           const responsedata = response.data.map(
-            (item: any) => new TeacherDto(item)
+            (item: any) => new UserDto(item)
           );
           return new SuccessResponse({
             statusCode: response.status,
-            message: "Teacher found Successfully",
+            message: "User found Successfully",
             data: responsedata,
           });
         }),
@@ -117,7 +118,7 @@ export class TeacherService implements IServicelocator {
       );
   }
 
-  public async getTeacherByAuth(request: any) {
+  public async getUserByAuth(request: any) {
     const authToken = request.headers.authorization;
     const decoded: any = jwt_decode(authToken);
     let email = decoded.email;
@@ -140,7 +141,7 @@ export class TeacherService implements IServicelocator {
     };
     const response = await axios(config);
     let result =
-      response?.data && response.data.map((item: any) => new TeacherDto(item));
+      response?.data && response.data.map((item: any) => new UserDto(item));
 
     return new SuccessResponse({
       statusCode: 200,
@@ -149,7 +150,11 @@ export class TeacherService implements IServicelocator {
     });
   }
 
-  public async teacherSegment(schoolId: string, request: any) {
+  public async teacherSegment(
+    schoolId: string,
+    templateId: string,
+    request: any
+  ) {
     const teacherSearchDto = {
       filters: {
         schoolId: {
@@ -157,22 +162,38 @@ export class TeacherService implements IServicelocator {
         },
       },
     };
-    return this.httpService.post(`${this.url}/search`, teacherSearchDto).pipe(
-      map((response) => {
-        const responsedata = response.data.map(
-          (item: any) => new TeacherSegementDto(item)
-        );
-        return new SuccessResponse({
-          data: responsedata,
-        });
-      }),
-      catchError((e) => {
-        var error = new ErrorResponse({
-          errorCode: e.response.status,
-          errorMessage: e.response.data.params.errmsg,
-        });
-        throw new HttpException(error, e.response.status);
-      })
+    var axios = require("axios");
+    var getTemplate = {
+      method: "get",
+      url: `${this.templaterURL}${templateId}`,
+    };
+    const getfcmClickActionUrl = await axios(getTemplate);
+    const fcmClickActionUrlData = getfcmClickActionUrl.data;
+    let tagString = JSON.stringify(fcmClickActionUrlData.tag[0]);
+    var jsonToObj = JSON.parse(tagString);
+    let fcmClickActionUrl = JSON.parse(jsonToObj);
+
+    let config = {
+      method: "post",
+      url: `${this.url}/search`,
+
+      data: teacherSearchDto,
+    };
+    const response = await axios(config);
+    let responseData = response.data.map(
+      (item: any) => new TeacherSegementDto(item)
     );
+    const teachersegment = responseData.map((obj: any) => {
+      if (obj.fcmClickActionUrl) {
+        return { ...obj, fcmClickActionUrl: fcmClickActionUrl.attendance };
+      }
+      return obj;
+    });
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: teachersegment,
+    });
   }
 }

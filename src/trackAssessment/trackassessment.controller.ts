@@ -100,11 +100,21 @@ export class AssessmentController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "fromDate", required: false })
   @ApiQuery({ name: "toDate", required: false })
+  @ApiQuery({ name: "groupId", required: false })
+  @ApiQuery({ name: "subject", required: false })
   public async trackassessmentFilter(
     @Query("fromDate") date: string,
     @Query("toDate") toDate: string,
+    @Query("groupId") groupId: string,
+    @Query("subject") subject: string,
     @Req() request: Request
   ) {
-    return this.service.trackAssessmentFilter(date, toDate, request);
+    return this.service.trackAssessmentFilter(
+      date,
+      toDate,
+      groupId,
+      subject,
+      request
+    );
   }
 }

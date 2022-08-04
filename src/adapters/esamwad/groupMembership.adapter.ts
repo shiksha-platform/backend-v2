@@ -3,7 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 const resolvePath = require("object-resolve-path");
 import { StudentDto } from "src/student/dto/student.dto";
-import { TeacherDto } from "src/teacher/dto/teacher.dto";
+import { UserDto } from "src/user/dto/user.dto";
 import { GroupDto } from "src/group/dto/group.dto";
 import { IServicelocator } from "../groupmembershipservicelocator";
 import { EsamwadStudentDto } from "src/student/dto/esamwad-student.dto";
@@ -94,7 +94,7 @@ export class GroupMembershipEsamwadService implements IServicelocator {
 
         const responseData = await axios(classFinal);
 
-        const teacherDetailDto = new TeacherDto(responseData.data);
+        const teacherDetailDto = new UserDto(responseData.data);
 
         resData = [teacherDetailDto];
       }

@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { StudentModule } from "./student/student.module";
-import { TeacherModule } from "./teacher/teacher.module";
+import { UserModule } from "./user/user.module";
 import { SchoolModule } from "./school/school.module";
 import { AttendanceModule } from "./attendance/attendance.module";
 import { GroupModule } from "./group/group.module";
@@ -26,6 +26,7 @@ import { MentorTrackingModule } from "./mentorTracking/mentorTracking.module";
 import { MonitorTrackingModule } from "./monitorTracking/monitorTracking.module";
 import { CourseModule } from "./course/course.module";
 import { CourseTrackingModule } from "./courseTracking/courseTracking.module";
+import { AnnouncementsModule } from "./announcements/announcements.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -33,7 +34,7 @@ import { CourseTrackingModule } from "./courseTracking/courseTracking.module";
       dest: "./uploads",
     }),
     StudentModule,
-    TeacherModule,
+    UserModule,
     SchoolModule,
     GroupModule,
     AttendanceModule,
@@ -55,6 +56,7 @@ import { CourseTrackingModule } from "./courseTracking/courseTracking.module";
     MonitorTrackingModule,
     CourseModule,
     CourseTrackingModule,
+    AnnouncementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

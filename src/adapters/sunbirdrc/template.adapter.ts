@@ -85,4 +85,22 @@ export class TemplateService {
       data: responseData,
     });
   }
+  public async getTemplateByTag(tag: string, request: any) {
+    console.log(tag);
+    var axios = require("axios");
+
+    let config = {
+      method: "get",
+      url: `${this.url}search/tag?queryString=${tag}`,
+    };
+
+    const response = await axios(config);
+    const data = response?.data;
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: data,
+    });
+  }
 }

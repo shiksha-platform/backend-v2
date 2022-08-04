@@ -1,14 +1,6 @@
-import { Exclude, Expose } from "class-transformer";
-import {
-  MaxLength,
-  IsNotEmpty,
-  IsEmail,
-  IsString,
-  IsNumber,
-} from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class TeacherSearchDto {
+export class TemplateSearchDto {
   @ApiProperty({
     type: String,
     description: "Limit",
@@ -22,7 +14,7 @@ export class TeacherSearchDto {
   @ApiPropertyOptional()
   filters: object;
 
-  constructor(partial: Partial<TeacherSearchDto>) {
+  constructor(partial: Partial<TemplateSearchDto>) {
     Object.assign(this, partial);
   }
 }
