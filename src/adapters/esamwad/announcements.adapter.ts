@@ -223,7 +223,7 @@ export class AnnouncementsEsamwadService implements IServicelocator {
         }
         `,
       variables: {
-        additional_tags: `{${announcementsData?.additionalTags?.toString()}}`,
+        additional_tags: announcementsData?.additionalTags?.toString(),
         data: announcementsData.data,
         is_dismissable:
           announcementsData.pinnedAnnouncementProperties?.is_dismissable,
