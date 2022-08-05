@@ -2,7 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
 export class WorksheetDto {
-  @ApiProperty()
   @Expose()
   worksheetId: string;
 
@@ -71,7 +70,7 @@ export class WorksheetDto {
       "Configuration to enable/disable hints for the student while using the question set.",
   })
   @Expose()
-  showHints: boolean;
+  showHints: string;
 
   @ApiProperty({
     description: " learning outcome",

@@ -12,7 +12,7 @@ import jwt_decode from "jwt-decode";
 export class CommentService {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Comment`;
-  teacherUrl = `${process.env.BASEAPIURL}/Teacher`;
+  userUrl = `${process.env.BASEAPIURL}/User`;
 
   public async getComment(commentId: string, request: any) {
     return this.httpService
@@ -55,7 +55,7 @@ export class CommentService {
     };
     let config = {
       method: "post",
-      url: `${this.teacherUrl}/search`,
+      url: `${this.userUrl}/search`,
       headers: {
         Authorization: request.headers.authorization,
       },
@@ -64,7 +64,6 @@ export class CommentService {
     const response = await axios(config);
     const result = response.data[0];
     commentDto.userId = result.osid;
-    commentDto.userType = "Teacher";
 
     return this.httpService
       .post(`${this.url}`, commentDto, {
@@ -109,16 +108,15 @@ export class CommentService {
     };
     let configData = {
       method: "post",
-      url: `${this.teacherUrl}/search`,
+      url: `${this.userUrl}/search`,
       headers: {
         Authorization: request.headers.authorization,
       },
       data: updateData,
     };
-    const teacherResponse = await axios(configData);
-    const result = teacherResponse.data[0];
+    const userResponse = await axios(configData);
+    const result = userResponse.data[0];
     commentDto.userId = result.osid;
-    commentDto.userType = "Teacher";
 
     var config = {
       method: "put",
