@@ -191,7 +191,7 @@ export class UserDto {
 
   @ApiProperty()
   @Expose()
-  pincode: Number;
+  pincode: string;
 
   @ApiProperty()
   @Expose()
@@ -251,6 +251,13 @@ export class UserDto {
   @Expose()
   fcmToken: string;
 
+  @ApiProperty({
+    type: String,
+    description: "roleId of user, teacher, mentor,monitor",
+  })
+  @Expose()
+  role: string;
+
   @Expose()
   createdAt: string;
 
@@ -309,6 +316,7 @@ export class UserDto {
     this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
     this.fcmToken = obj?.fcmToken ? `${obj.fcmToken}` : "";
+    this.role = obj?.role ? `${obj.role}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
