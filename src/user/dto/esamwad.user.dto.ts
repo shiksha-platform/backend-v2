@@ -251,6 +251,12 @@ export class EsamwadUserDto {
   @ApiPropertyOptional()
   @Expose()
   metaData: [string];
+  @ApiProperty({
+    type: String,
+    description: "roleId of user, teacher, mentor,monitor",
+  })
+  @Expose()
+  role: string;
 
   @Expose()
   createdAt: string;
@@ -307,6 +313,7 @@ export class EsamwadUserDto {
       ? `${obj.deactivationReason}`
       : "";
     this.reportsTo = obj?.reportsTo ? `${obj.reportsTo}` : "";
+    this.role = obj?.role ? `${obj.role}` : "";
     this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];

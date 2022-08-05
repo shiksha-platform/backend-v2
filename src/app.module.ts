@@ -38,6 +38,7 @@ import {
 } from "./adapters/sunbirdrc/attendance.adapter";
 
 import { AnnouncementsModule } from "./announcements/announcements.module";
+import { RoleModule } from "./role/role.module";
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -48,6 +49,7 @@ import { AnnouncementsModule } from "./announcements/announcements.module";
     UserModule,
     SchoolModule,
     GroupModule,
+    RoleModule,
     AttendanceModule,
     HolidayModule,
     ConfigurationModule,
