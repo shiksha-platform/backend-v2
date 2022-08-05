@@ -37,7 +37,7 @@ export class RoleController {
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getMentor(@Param("id") roleId: string, @Req() request: Request) {
+  getRole(@Param("id") roleId: string, @Req() request: Request) {
     return this.service.getRole(roleId, request);
   }
 

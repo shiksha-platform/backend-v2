@@ -34,9 +34,7 @@ export class RoleService {
 
     const response = await axios(config);
 
-    let result = response.data.data.mentortracking.map(
-      (item: any) => new RoleDto(item)
-    );
+    let result = response.data.data.role.map((item: any) => new RoleDto(item));
 
     return new SuccessResponse({
       statusCode: 200,
@@ -71,7 +69,7 @@ export class RoleService {
     };
 
     const response = await axios(config);
-    const result = response.data.data.insert_mentortracking_one;
+    const result = response.data.data.insert_role_one;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
@@ -176,9 +174,7 @@ export class RoleService {
 
     const response = await axios(config);
 
-    let result = response.data.data.mentortracking.map(
-      (item: any) => new RoleDto(item)
-    );
+    let result = response.data.data.role.map((item: any) => new RoleDto(item));
 
     return new SuccessResponse({
       statusCode: 200,
