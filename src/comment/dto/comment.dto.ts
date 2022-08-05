@@ -16,9 +16,6 @@ export class CommentDto {
   @Expose()
   userId: string;
 
-  @Expose()
-  userType: string;
-
   @ApiProperty({})
   @Expose()
   comment: string;
@@ -52,7 +49,6 @@ export class CommentDto {
     this.contextId = obj?.contextId ? `${obj.contextId}` : "";
     this.context = obj?.context ? `${obj.context}` : "";
     this.userId = obj?.userId ? `${obj.userId}` : "";
-    this.userType = obj?.userType ? `${obj.userType}` : "";
     this.comment = obj?.comment ? `${obj.comment}` : "";
     this.privacy = obj?.privacy ? `${obj.privacy}` : "";
     this.parentId = obj?.parentId ? `${obj.parentId}` : "";
