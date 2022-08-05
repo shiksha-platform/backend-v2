@@ -33,7 +33,7 @@ export class BlockDto {
         default: {},
     })
     @Expose()
-    blockIndex: object;
+    blockIndex: number;
 
     constructor(obj: any) {
         this.blockId = obj?.id ?? "";

@@ -45,6 +45,14 @@ export class ContentPagesDto {
     status: string;
 
     @ApiProperty({
+        type: String,
+        description: "The author of the page",
+        default: "",
+    })
+    @Expose()
+    author: string;
+
+    @ApiProperty({
         type: Array,
         description: "The blocks for the content page",
         default: []
