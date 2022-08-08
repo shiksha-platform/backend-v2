@@ -94,20 +94,30 @@ export class MonitorTrackingService {
     monitorTrackingDto: MonitorTrackingDto
   ) {
     var axios = require("axios");
+    const updateData = {
+      schoolId: monitorTrackingDto.schoolId,
+      monitorId: monitorTrackingDto.monitorId,
+      scheduleVisitDate: monitorTrackingDto.scheduleVisitDate,
+      visitDate: monitorTrackingDto.visitDate,
+      feedback: monitorTrackingDto.feedback,
+      status: monitorTrackingDto.status,
+    };
+
+    let newDataObject = "";
+    const newData = Object.keys(updateData).forEach((e) => {
+      if (updateData[e] && updateData[e] != "") {
+        newDataObject += `${e}:"${updateData[e]}"`;
+      }
+    });
+
     var data = {
-      query: `mutation MyMutation($monitorTrackingId:uuid,$scheduleVisitDate:date,$visitDate:date,$schoolId:String,monitorId:String,$status:String,$feedback:String) {
-        update_monitortracking(where: {monitorTrackingId: {_eq: $monitorTrackingId}}, _set: {visitDate:$visitDate, schoolId: $schoolId, monitorId:$monitorId status:$status, scheduleVisitDate: $scheduleVisitDate, feedback: $feedback}) {
+      query: `mutation UpdatedMonitorTracking($monitorTrackingId:uuid) {
+        update_monitortracking(where: {monitorTrackingId: {_eq: $monitorTrackingId}}, _set: {${newDataObject}}) {
           affected_rows
         }
 }`,
       variables: {
         monitorTrackingId: monitorTrackingId,
-        schoolId: monitorTrackingDto.schoolId,
-        monitorId: monitorTrackingDto.monitorId,
-        scheduleVisitDate: monitorTrackingDto.scheduleVisitDate,
-        visitDate: monitorTrackingDto.visitDate,
-        feedback: monitorTrackingDto.feedback,
-        status: monitorTrackingDto.status,
       },
     };
 
@@ -124,7 +134,6 @@ export class MonitorTrackingService {
     const response = await axios(config);
 
     const result = response.data.data;
-
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",

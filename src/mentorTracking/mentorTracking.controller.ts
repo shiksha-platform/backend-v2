@@ -22,8 +22,9 @@ import {
   ApiQuery,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
-import { MentorTrackingService } from "src/adapters/sunbirdrc/mentorTracking.adapter";
+
 import { MentorTrackingDto } from "./dto/mentorTracking.dto";
+import { MentorTrackingService } from "src/adapters/hasura/mentorTracking.adapter";
 
 @ApiTags("Mentor Tracking")
 @Controller("mentortracking")
@@ -64,14 +65,14 @@ export class MentorTrackingController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async updateMentor(
-    @Param("id") mentorId: string,
+    @Param("id") mentorTrackingId: string,
     @Req() request: Request,
-    @Body() mentorDto: MentorTrackingDto
+    @Body() mentorTrackingDto: MentorTrackingDto
   ) {
     return await this.service.updateMentorTracking(
-      mentorId,
+      mentorTrackingId,
       request,
-      mentorDto
+      mentorTrackingDto
     );
   }
 

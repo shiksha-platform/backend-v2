@@ -1,8 +1,8 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
 import { ScheduleModule } from "@nestjs/schedule";
-import { AssessmentsetController } from "./assessmentset.controller";
-import { AssessmentsetService } from "src/adapters/hasura/assessmentset.adapter";
+import { CourseTrackingService } from "src/adapters/hasura/courseTracking.adapter";
+import { CourseTrackingController } from "./courseTracking.controller";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -12,7 +12,7 @@ const ttl = process.env.TTL as never;
     }),
     ScheduleModule.forRoot(),
   ],
-  controllers: [AssessmentsetController],
-  providers: [AssessmentsetService],
+  controllers: [CourseTrackingController],
+  providers: [CourseTrackingService],
 })
-export class AssessmentSetModule {}
+export class CourseTrackingModule {}

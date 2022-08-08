@@ -24,19 +24,8 @@ import { AssessmentSetModule } from "./assessmentset/assessmentset.module";
 import { InAppNotificationModule } from "./inAppNotification/inAppNotification.module";
 import { MentorTrackingModule } from "./mentorTracking/mentorTracking.module";
 import { MonitorTrackingModule } from "./monitorTracking/monitorTracking.module";
-import {
-  AttendanceEsamwadService,
-  EsamwadAttendanceToken,
-} from "./adapters/esamwad/attendance.adapter";
-import {
-  AnnouncementsEsamwadService,
-  ESamwadAnnouncementsToken,
-} from "./adapters/esamwad/announcements.adapter";
-import {
-  SunbirdAttendanceToken,
-  AttendanceService,
-} from "./adapters/sunbirdrc/attendance.adapter";
-
+import { CourseModule } from "./course/course.module";
+import { CourseTrackingModule } from "./courseTracking/courseTracking.module";
 import { AnnouncementsModule } from "./announcements/announcements.module";
 import { RoleModule } from "./role/role.module";
 @Module({
@@ -67,6 +56,8 @@ import { RoleModule } from "./role/role.module";
     InAppNotificationModule,
     MentorTrackingModule,
     MonitorTrackingModule,
+    CourseModule,
+    CourseTrackingModule,
     AnnouncementsModule,
   ],
   controllers: [AppController],

@@ -23,7 +23,7 @@ import {
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
 import { MonitorTrackingDto } from "./dto/monitorTracking.dto";
-import { MonitorTrackingService } from "src/adapters/sunbirdrc/monitorTracking.adapter";
+import { MonitorTrackingService } from "src/adapters/hasura/monitorTracking.adapter";
 
 @ApiTags("Monitor Tracking")
 @Controller("monitortracking")
