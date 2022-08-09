@@ -86,7 +86,7 @@ export class GroupMembershipEsamwadService implements IServicelocator {
       if (classObj?.teacherId) {
         let classFinal = {
           method: "get",
-          url: `${this.baseURL}/Teacher/${classObj.teacherId}`,
+          url: `${this.baseURL}/User/${classObj.teacherId}`,
           headers: {
             Authorization: request.headers.authorization,
           },
