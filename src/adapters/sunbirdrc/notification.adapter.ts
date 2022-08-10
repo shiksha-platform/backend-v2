@@ -47,39 +47,6 @@ export class NotificationService {
       const getContent = await axios(confi);
       const contentData = getContent.data;
 
-      // Conversation Logic
-      var conversationData = {
-        data: {
-          name: `Shiksha ${channel} Broadcast ${result}`,
-          transformers: [
-            {
-              id: process.env.TRANSFORMERSID,
-              meta: {
-                body: contentData.body,
-                type: contentData.type,
-                user: process.env.TRANSFORMERSUSER,
-              },
-              type: "broadcast",
-            },
-          ],
-          adapter: contentData.user,
-        },
-      };
-
-      const conversation = await axios.post(
-        `${this.UCIURL}/conversationLogic/create`,
-        conversationData,
-        {
-          headers: {
-            "admin-token": process.env.UCIADMINTOKEN,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const resData = conversation.data;
-      const consversationLogicID = resData.result.data.id;
-
       var data = {
         filters: {
           osid: {
@@ -110,32 +77,72 @@ export class NotificationService {
       var notificationTrigger = triggers.filter(
         (obj: any) => obj.name === eventTrigger
       );
+      let botIdChecked = notificationTrigger[0].botId;
 
-      var botData = {
-        data: {
-          startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
-          name: `Shiksha Notification Broadcast ${result}`,
-          users: [notificationTrigger[0].userSegment],
-          logic: [consversationLogicID],
-          status: "enabled",
-          startDate: moment().format("Y-MM-DD"),
-          endDate: moment().format("Y-MM-DD"),
-        },
-      };
+      let botCreateID: any;
 
-      const botResponse = await axios.post(
-        `${this.UCIURL}/bot/create`,
-        botData,
-        {
-          headers: {
-            "admin-token": process.env.UCIADMINTOKEN,
-            "Content-Type": "application/json",
+      if (botIdChecked.length > 0) {
+        botCreateID = notificationTrigger[0].botId;
+      } else {
+        // Conversation Logic
+        var conversationData = {
+          data: {
+            name: `Shiksha ${channel} Broadcast ${result}`,
+            transformers: [
+              {
+                id: process.env.TRANSFORMERSID,
+                meta: {
+                  body: contentData.body,
+                  type: contentData.type,
+                  user: process.env.TRANSFORMERSUSER,
+                },
+                type: "broadcast",
+              },
+            ],
+            adapter: contentData.user,
           },
-        }
-      );
+        };
 
-      const botResData = botResponse.data;
-      const botCreateID = botResData.result.data.id;
+        const conversation = await axios.post(
+          `${this.UCIURL}/conversationLogic/create`,
+          conversationData,
+          {
+            headers: {
+              "admin-token": process.env.UCIADMINTOKEN,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const resData = conversation.data;
+        const consversationLogicID = resData.result.data.id;
+
+        var botData = {
+          data: {
+            startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+            name: `Shiksha Notification Broadcast ${result}`,
+            users: [notificationTrigger[0].userSegment],
+            logic: [consversationLogicID],
+            status: "enabled",
+            startDate: moment().format("Y-MM-DD"),
+            endDate: moment().format("Y-MM-DD"),
+          },
+        };
+
+        const botResponse = await axios.post(
+          `${this.UCIURL}/bot/create`,
+          botData,
+          {
+            headers: {
+              "admin-token": process.env.UCIADMINTOKEN,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const botResData = botResponse.data;
+        botCreateID = botResData.result.data.id;
+      }
 
       var configs = {
         method: "get",
@@ -246,6 +253,8 @@ export class NotificationService {
       var notificationTrigger = triggers.filter(
         (obj: any) => obj.name === eventTrigger
       );
+      let botIdChecked = notificationTrigger[0].botId;
+      let botCreateID: any;
 
       //save notification
       let notificationScheduleData = {
@@ -298,7 +307,6 @@ export class NotificationService {
       let utcHrs = utc.slice(11, 13);
       let utcDay = utc.slice(8, 11);
       let utcMon = utc.slice(5, 7);
-
       const job = new CronJob(
         // `0 ${utcMin} ${utcHrs} ${utcDay} ${utcMon} *`,
         `0 ${mins} ${hrs} ${d} ${mon} *`,
@@ -306,64 +314,70 @@ export class NotificationService {
           try {
             var axios = require("axios");
             const result = Math.random().toString(27).substring(1, 8);
-            var conversationData = {
-              data: {
-                name: `Shiksha ${channel} Broadcast ${result}`,
-                transformers: [
-                  {
-                    id: process.env.TRANSFORMERSID,
-                    meta: {
-                      body: contentData.body,
-                      type: contentData.type,
-                      user: process.env.TRANSFORMERSUSER,
+            console.log("316", botCreateID);
+
+            if (botIdChecked.length > 0) {
+              botCreateID = notificationTrigger[0].botId;
+            } else {
+              // Conversation Logic
+              var conversationData = {
+                data: {
+                  name: `Shiksha ${channel} Broadcast ${result}`,
+                  transformers: [
+                    {
+                      id: process.env.TRANSFORMERSID,
+                      meta: {
+                        body: contentData.body,
+                        type: contentData.type,
+                        user: process.env.TRANSFORMERSUSER,
+                      },
+                      type: "broadcast",
                     },
-                    type: "broadcast",
+                  ],
+                  adapter: contentData.user,
+                },
+              };
+
+              const conversation = await axios.post(
+                `${this.UCIURL}/conversationLogic/create`,
+                conversationData,
+                {
+                  headers: {
+                    "admin-token": process.env.UCIADMINTOKEN,
+                    "Content-Type": "application/json",
                   },
-                ],
-                adapter: contentData.user,
-              },
-            };
+                }
+              );
 
-            const conversation = await axios.post(
-              `${this.UCIURL}/conversationLogic/create`,
-              conversationData,
-              {
-                headers: {
-                  "admin-token": process.env.UCIADMINTOKEN,
-                  "Content-Type": "application/json",
+              const resData = conversation.data;
+              const consversationLogicID = resData.result.data.id;
+
+              var botData = {
+                data: {
+                  startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
+                  name: `Shiksha Notification Broadcast ${result}`,
+                  users: [notificationTrigger[0].userSegment],
+                  logic: [consversationLogicID],
+                  status: "enabled",
+                  startDate: moment().format("Y-MM-DD"),
+                  endDate: moment().format("Y-MM-DD"),
                 },
-              }
-            );
+              };
 
-            const resData = conversation.data;
+              const botResponse = await axios.post(
+                `${this.UCIURL}/bot/create`,
+                botData,
+                {
+                  headers: {
+                    "admin-token": process.env.UCIADMINTOKEN,
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
 
-            const consversationLogicID = resData.result.data.id;
-
-            // Bot Logic
-            var botData = {
-              data: {
-                startingMessage: `Hi Shiksha ${channel} Broadcast ${result}`,
-                name: `Shiksha Notification Broadcast ${result}`,
-                users: [notificationTrigger[0].userSegment],
-                logic: [consversationLogicID],
-                status: "enabled",
-                startDate: moment().format("Y-MM-DD"),
-                endDate: moment().format("Y-MM-DD"),
-              },
-            };
-
-            const botResponse = await axios.post(
-              `${this.UCIURL}/bot/create`,
-              botData,
-              {
-                headers: {
-                  "admin-token": process.env.UCIADMINTOKEN,
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            const botResData = botResponse.data;
-            const botCreateID = botResData.result.data.id;
+              const botResData = botResponse.data;
+              botCreateID = botResData.result.data.id;
+            }
 
             var configs = {
               method: "get",
@@ -371,6 +385,7 @@ export class NotificationService {
               headers: {},
             };
             const botres = await axios(configs);
+            console.log("log");
 
             const sendData = botres.data;
             // Notification Log

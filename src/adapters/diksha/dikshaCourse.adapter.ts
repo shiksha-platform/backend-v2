@@ -25,7 +25,7 @@ export class DikshaCourseService implements IServicelocator {
           subject: [subject],
           audience: [audience],
           contentType: ["Course"],
-          primaryCategory: ["Course", "Course Assessment"],
+          primaryCategory: ["Course"],
           "batches.enrollmentType": "open",
           "batches.status": 1,
           status: ["Live"],
@@ -105,6 +105,8 @@ export class DikshaCourseService implements IServicelocator {
       subjectIds: final.subjectIds,
 
       class: final.gradeLevel,
+
+      name: final.name,
 
       gradeId: final.se_gradeLevelIds,
 

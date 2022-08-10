@@ -37,6 +37,10 @@ export class CourseTrackingDto {
   @Expose()
   status: string;
 
+  @ApiProperty({})
+  @Expose()
+  source: string;
+
   @Expose()
   date: string;
 
@@ -58,6 +62,7 @@ export class CourseTrackingDto {
     this.endTime = obj?.endTime ? `${obj.endTime}` : "";
     this.certificate = obj?.certificate ? `${obj.certificate}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
+    this.source = obj?.source ? `${obj.source}` : "";
     this.date = obj?.date ? `${obj.date}` : "";
     this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
     this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
