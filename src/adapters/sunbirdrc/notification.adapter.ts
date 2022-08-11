@@ -314,7 +314,6 @@ export class NotificationService {
           try {
             var axios = require("axios");
             const result = Math.random().toString(27).substring(1, 8);
-            console.log("316", botCreateID);
 
             if (botIdChecked.length > 0) {
               botCreateID = notificationTrigger[0].botId;
@@ -385,7 +384,6 @@ export class NotificationService {
               headers: {},
             };
             const botres = await axios(configs);
-            console.log("log");
 
             const sendData = botres.data;
             // Notification Log
