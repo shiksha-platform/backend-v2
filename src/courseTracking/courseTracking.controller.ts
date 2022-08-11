@@ -45,6 +45,7 @@ export class CourseTrackingController {
   @ApiQuery({ name: "endTime", required: false })
   @ApiQuery({ name: "certificate", required: false })
   @ApiQuery({ name: "status", required: false })
+  @ApiQuery({ name: "source", required: false })
   public async createCourse(
     @Req() request: Request,
     @Query("progressDetail") progressDetail: string,
@@ -54,7 +55,8 @@ export class CourseTrackingController {
     @Query("startTime") startTime: string,
     @Query("endTime") endTime: string,
     @Query("certificate") certificate: string,
-    @Query("status") status: string
+    @Query("status") status: string,
+    @Query("source") source: string
   ) {
     return this.service.createCourseTracking(
       request,
@@ -65,7 +67,8 @@ export class CourseTrackingController {
       startTime,
       endTime,
       certificate,
-      status
+      status,
+      source
     );
   }
 
@@ -99,6 +102,7 @@ export class CourseTrackingController {
   @ApiQuery({ name: "endTime", required: false })
   @ApiQuery({ name: "certificate", required: false })
   @ApiQuery({ name: "status", required: false })
+  @ApiQuery({ name: "source", required: false })
   public async updateTracking(
     @Param("id") courseTrackingId: string,
     @Req() request: Request,
@@ -109,7 +113,8 @@ export class CourseTrackingController {
     @Query("startTime") startTime: string,
     @Query("endTime") endTime: string,
     @Query("certificate") certificate: string,
-    @Query("status") status: string
+    @Query("status") status: string,
+    @Query("source") source: string
   ) {
     return await this.service.updateCourseTracking(
       request,
@@ -121,7 +126,8 @@ export class CourseTrackingController {
       startTime,
       endTime,
       certificate,
-      status
+      status,
+      source
     );
   }
 
@@ -137,11 +143,15 @@ export class CourseTrackingController {
   @ApiQuery({ name: "courseId", required: false })
   @ApiQuery({ name: "userId", required: false })
   @ApiQuery({ name: "status", required: false })
+  @ApiQuery({ name: "page", required: false })
+  @ApiQuery({ name: "source", required: false })
   public async searchCourseTracking(
     @Query("limit") limit: string,
     @Query("courseId") courseId: string,
     @Query("userId") userId: string,
     @Query("status") status: string,
+    @Query("page") page: number,
+    @Query("source") source: string,
     @Req() request: Request
   ) {
     return await this.service.searchCourseTracking(
@@ -149,6 +159,8 @@ export class CourseTrackingController {
       courseId,
       userId,
       status,
+      page,
+      source,
       request
     );
   }

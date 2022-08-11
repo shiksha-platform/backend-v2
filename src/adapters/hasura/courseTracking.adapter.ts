@@ -24,6 +24,7 @@ export class CourseTrackingService {
         updated_at
         userId
         date
+        source
       }
     }`,
       variables: {
@@ -62,12 +63,13 @@ export class CourseTrackingService {
     startTime: string,
     endTime: string,
     certificate: string,
-    status: string
+    status: string,
+    source: string
   ) {
     var axios = require("axios");
     var data = {
-      query: `mutation CreateCourseTracking($contentIds: jsonb, $certificate: String, $courseId:String, $startTime: String, $endTime: String, $progressDetail: String, $status: String, $userId: String) {
-      insert_coursetracking_one(object:{contentIds: $contentIds, certificate: $certificate, courseId:$courseId, startTime: $startTime, endTime: $endTime, progressDetail: $progressDetail, status: $status, userId: $userId}) {
+      query: `mutation CreateCourseTracking($contentIds: jsonb, $certificate: String, $courseId:String, $startTime: String, $endTime: String, $progressDetail: String, $status: String, $userId: String,$source:String) {
+      insert_coursetracking_one(object:{contentIds: $contentIds, certificate: $certificate, courseId:$courseId, startTime: $startTime, endTime: $endTime, progressDetail: $progressDetail, status: $status, userId: $userId, source:$source}) {
         courseTrackingId
       }
     }`,
@@ -80,6 +82,7 @@ export class CourseTrackingService {
         startTime: startTime,
         status: status,
         userId: userId,
+        source: source,
       },
     };
 
@@ -112,7 +115,8 @@ export class CourseTrackingService {
     startTime: string,
     endTime: string,
     certificate: string,
-    status: string
+    status: string,
+    source: string
   ) {
     var axios = require("axios");
 
@@ -125,6 +129,7 @@ export class CourseTrackingService {
       startTime: startTime,
       status: status,
       userId: userId,
+      source: source,
     };
 
     let newDataObject = "";
@@ -173,14 +178,24 @@ export class CourseTrackingService {
     courseId: string,
     userId: string,
     status: string,
+    page: number,
+    source: string,
     request: any
   ) {
     var axios = require("axios");
+    let offset = 0;
+
+    if (page > 1) {
+      offset = parseInt(limit) * (page - 1);
+    }
+
     const searchData = {
       courseId,
       userId,
       status,
+      source,
     };
+
     let newDataObject = "";
     const newData = Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
@@ -189,8 +204,8 @@ export class CourseTrackingService {
     });
 
     var data = {
-      query: `query searchCourseTracking($limit:Int) {
-  coursetracking(limit: $limit, where: {${newDataObject}}) {
+      query: `query searchCourseTracking($offset:Int,$limit:Int) {
+  coursetracking(limit: $limit, offset: $offset, where: {${newDataObject}}) {
     contentIds
     certificate
     courseId
@@ -203,10 +218,12 @@ export class CourseTrackingService {
     updated_at
     userId
     date
+    source
   }
 }`,
       variables: {
         limit: parseInt(limit),
+        offset: offset,
       },
     };
 
@@ -221,10 +238,13 @@ export class CourseTrackingService {
     };
 
     const response = await axios(config);
+    let result = [];
 
-    let result = response.data.data.coursetracking.map(
-      (item: any) => new CourseTrackingDto(item)
-    );
+    if (response?.data?.data?.coursetracking) {
+      result = response.data.data.coursetracking.map(
+        (item: any) => new CourseTrackingDto(item)
+      );
+    }
 
     return new SuccessResponse({
       statusCode: 200,
