@@ -76,7 +76,7 @@ export class WorksheetDto {
     description: " learning outcome",
   })
   @Expose()
-  questions: any;
+  questions: [string];
 
   @ApiProperty({
     description: "Question Sets associated with the current set.",
@@ -161,7 +161,7 @@ export class WorksheetDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.worksheetId = obj?.osid ? `${obj.osid}` : "";
+    this.worksheetId = obj?.worksheetId ? `${obj.worksheetId}` : "";
     this.name = obj?.name ? `${obj.name}` : "";
     this.state = obj?.state ? `${obj.state}` : "";
     this.subject = obj?.subject ? `${obj.subject}` : "";
@@ -189,9 +189,7 @@ export class WorksheetDto {
     this.qumlVersion = obj?.qumlVersion ? `${obj.qumlVersion}` : "";
     this.topic = obj?.topic ? obj.topic : "";
     this.source = obj?.source ? `${obj.source}` : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }

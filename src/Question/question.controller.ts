@@ -1,5 +1,7 @@
 import {
   ApiBasicAuth,
+  ApiBody,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiQuery,
@@ -16,6 +18,10 @@ import {
   Req,
   Request,
   Inject,
+  Post,
+  SerializeOptions,
+  Body,
+  Put,
 } from "@nestjs/common";
 import {
   DikshaQuestionToken,
@@ -23,15 +29,19 @@ import {
 } from "src/adapters/diksha/quml.adapter";
 import { IServicelocator } from "src/adapters/questionservicelocator";
 import { KhanAcademyQuestionToken } from "src/adapters/khanAcademy/khanAcademy.adapter";
+import { QuestionDto } from "./dto/question.dto";
+import { HasuraQuestionToken } from "src/adapters/hasura/question.adapter";
 
 @ApiTags("Question")
 @Controller("question")
 export class QuestionController {
   constructor(
-    private service: QumlQuestionService, //private khanAcademyService: QumlQuestionService
     @Inject(DikshaQuestionToken) private dikshaProvider: IServicelocator,
     @Inject(KhanAcademyQuestionToken)
-    private khanacademyProvider: IServicelocator
+    private khanacademyProvider: IServicelocator,
+
+    @Inject(HasuraQuestionToken)
+    private hasuraProvider: IServicelocator
   ) {}
 
   @Get(":adapter/search")
@@ -163,6 +173,155 @@ export class QuestionController {
       return this.khanacademyProvider.getCompetenciesList(
         subject,
         limit,
+        request
+      );
+    }
+  }
+
+  @Get("/:id")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Question detail." })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
+  @ApiQuery({ name: "adapter" })
+  getQuestion(
+    @Param("id") questionId: string,
+    @Query("adapter") adapter: string,
+    @Req() request: Request
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.getQuestion(questionId, request);
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.getQuestion(questionId, request);
+    } else if (adapter === "hasura") {
+      return this.hasuraProvider.getQuestion(questionId, request);
+    }
+  }
+
+  @Post()
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Question has been created successfully.",
+  })
+  @ApiBody({ type: QuestionDto })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiQuery({ name: "adapter" })
+  public async createQuestion(
+    @Req() request: Request,
+    @Query("adapter") adapter: string,
+    @Body() questionDto: QuestionDto
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.createQuestion(request, questionDto);
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.createQuestion(request, questionDto);
+    } else if (adapter === "hasura") {
+      return this.hasuraProvider.createQuestion(request, questionDto);
+    }
+  }
+
+  @Put("/:id")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Question has been updated successfully.",
+  })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiQuery({ name: "adapter" })
+  public async updateQuestion(
+    @Param("id") questionId: string,
+    @Req() request: Request,
+    @Body() questionDto: QuestionDto,
+    @Query("adapter") adapter: string
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.updateQuestion(
+        questionId,
+        request,
+        questionDto
+      );
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.updateQuestion(
+        questionId,
+        request,
+        questionDto
+      );
+    } else if (adapter === "hasura") {
+      return this.hasuraProvider.updateQuestion(
+        questionId,
+        request,
+        questionDto
+      );
+    }
+  }
+
+  @Post("filter/:adapter")
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "limit", required: false })
+  @ApiQuery({ name: "body", required: false })
+  @ApiQuery({ name: "className", required: false })
+  @ApiQuery({ name: "maxScore", required: false })
+  @ApiQuery({ name: "questionId", required: false })
+  @ApiQuery({ name: "subject", required: false })
+  @ApiQuery({ name: "topic", required: false })
+  @ApiQuery({ name: "type", required: false })
+  @ApiQuery({ name: "page", required: false })
+  public async filterQuestion(
+    @Param("adapter") adapter: string,
+    @Query("limit") limit: string,
+    @Query("body") body: string,
+    @Query("className") className: string,
+    @Query("maxScore") maxScore: string,
+    @Query("questionId") questionId: string,
+    @Query("subject") subject: string,
+    @Query("topic") topic: string,
+    @Query("type") type: string,
+    @Query("page") page: number,
+    @Req() request: Request
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.filterQuestion(
+        limit,
+        body,
+        className,
+        maxScore,
+        questionId,
+        subject,
+        topic,
+        type,
+        page,
+        request
+      );
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.filterQuestion(
+        limit,
+        body,
+        className,
+        maxScore,
+        questionId,
+        subject,
+        topic,
+        type,
+        page,
+        request
+      );
+    } else if (adapter === "hasura") {
+      return this.hasuraProvider.filterQuestion(
+        limit,
+        body,
+        className,
+        maxScore,
+        questionId,
+        subject,
+        topic,
+        type,
+        page,
         request
       );
     }
