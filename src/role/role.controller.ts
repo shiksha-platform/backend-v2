@@ -78,8 +78,6 @@ export class RoleController {
   @ApiQuery({ name: "title", required: false })
   @ApiQuery({ name: "parentId", required: false })
   @ApiQuery({ name: "status", required: false })
-  @ApiQuery({ name: "scheduleVisitDate", required: false })
-  @ApiQuery({ name: "visitDate", required: false })
   public async searchRole(
     @Query("limit") limit: string,
     @Query("roleId") roleId: string,

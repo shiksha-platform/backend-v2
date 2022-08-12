@@ -92,26 +92,36 @@ export class MentorTrackingService {
   }
 
   public async updateMentorTracking(
-    mentorId: string,
+    mentorTrackingId: string,
     request: any,
     mentorTrackingDto: MentorTrackingDto
   ) {
+    const updateData = {
+      mentorId: mentorTrackingDto.mentorId,
+      teacherId: mentorTrackingDto.teacherId,
+      schoolId: mentorTrackingDto.schoolId,
+      scheduleVisitDate: mentorTrackingDto.scheduleVisitDate,
+      visitDate: mentorTrackingDto.visitDate,
+      status: mentorTrackingDto.status,
+      feedback: mentorTrackingDto.feedback,
+    };
+
+    let newDataObject = "";
+    const newData = Object.keys(updateData).forEach((e) => {
+      if (updateData[e] && updateData[e] != "") {
+        newDataObject += `${e}:"${updateData[e]}" `;
+      }
+    });
+
     var axios = require("axios");
     var data = {
-      query: `mutation updateMentorTracking($mentorTrackingId: uuid, $mentorId: String, $teacherId: String, $schoolId:String, $scheduleVisitDate: date, $visitDate: date, $status: String, $feedback: String) {
-  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {mentorId: $mentorId, teacherId: $teacherId, schoolId:$schoolId, status: $status, scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, feedback: $feedback}) {
+      query: `mutation updateMentorTracking($mentorTrackingId: uuid) {
+  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {${newDataObject}}) {
     affected_rows
   }
 }`,
       variables: {
-        mentorTrackingId: mentorId,
-        mentorId: mentorTrackingDto.mentorId,
-        teacherId: mentorTrackingDto.teacherId,
-        schoolId: mentorTrackingDto.schoolId,
-        scheduleVisitDate: mentorTrackingDto.scheduleVisitDate,
-        visitDate: mentorTrackingDto.visitDate,
-        status: mentorTrackingDto.status,
-        feedback: mentorTrackingDto.feedback,
+        mentorTrackingId: mentorTrackingId,
       },
     };
 
@@ -161,6 +171,7 @@ export class MentorTrackingService {
         newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
+
     var data = {
       query: `query searchMentorTracking($limit:Int) {
   mentortracking(limit: $limit, where: {${newDataObject}}) {

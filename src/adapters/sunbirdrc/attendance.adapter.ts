@@ -233,7 +233,7 @@ export class AttendanceService implements IServicelocator {
     const groupData = await axios.get(`${this.baseUrl}/Class/${groupId}`);
 
     const teacherData = await axios.get(
-      `${this.baseUrl}/Teacher/${groupData.data.teacherId}`
+      `${this.baseUrl}/User/${groupData.data.teacherId}`
     );
 
     const schoolData = await axios.get(

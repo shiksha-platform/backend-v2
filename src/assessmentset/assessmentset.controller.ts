@@ -22,7 +22,7 @@ import {
 } from "@nestjs/common";
 import { AssessmentSetSearchDto } from "./dto/assessmentset-search-dto";
 import { AssessmentsetDto } from "./dto/assessmentset.dto";
-import { AssessmentsetService } from "src/adapters/sunbirdrc/assessmentset.adapter";
+import { AssessmentsetService } from "src/adapters/hasura/assessmentset.adapter";
 
 @ApiTags("Assessmentset")
 @Controller("assessmentset")
