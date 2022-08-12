@@ -23,7 +23,7 @@ import {
   Request,
   ConsoleLogger,
 } from "@nestjs/common";
-import { WorksheetService } from "src/adapters/sunbirdrc/worksheet.adapter";
+import { WorksheetService } from "src/adapters/hasura/worksheet.adapter";
 import { WorksheetDto } from "./dto/worksheet.dto";
 import { WorksheetSearchDto } from "./dto/worksheet-search.dto";
 
