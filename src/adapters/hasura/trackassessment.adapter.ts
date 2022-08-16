@@ -223,13 +223,34 @@ export class TrackAssessmentService {
     toDate: string,
     groupId: string,
     subject: string,
+    teacherId: string,
+    studentId: string,
     request: any
   ) {
     var axios = require("axios");
+    const filterParams = {
+      groupId,
+      subject,
+      teacherId,
+      studentId,
+    };
+
+    // TODO: fix fromDate/toDate filters post confirmation
+    const filterVariables = {
+      fromDate: fromDate,
+      toDate: toDate,
+    };
+    let filterParamsString = "";
+    Object.keys(filterParams).forEach((e) => {
+      if (filterParams[e] && filterParams[e] != "") {
+        filterParamsString += `,${e}:{_eq:$${e}}`;
+        filterVariables[e] = filterParams[e];
+      }
+    });
 
     var data = {
-      query: `query AssessmentFilter($fromDate:date,$toDate:date,$groupId:String,$subject:String) {
-        trackassessment(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}},groupId: {_eq: $groupId},subject: {_eq: $subject}}) {
+      query: `query AssessmentFilter($fromDate:date,$toDate:date,$groupId:String,$subject:String, $teacherId:String, $studentId: String) {
+        trackassessment(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}} ${filterParamsString} }) {
           answersheet
           filter
           created_at
@@ -247,12 +268,7 @@ export class TrackAssessmentService {
           date    
         }
       }`,
-      variables: {
-        fromDate: fromDate,
-        toDate: toDate,
-        groupId: groupId,
-        subject: subject,
-      },
+      variables: filterVariables,
     };
 
     var config = {

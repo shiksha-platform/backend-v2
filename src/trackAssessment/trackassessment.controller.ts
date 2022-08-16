@@ -102,11 +102,15 @@ export class AssessmentController {
   @ApiQuery({ name: "toDate", required: false })
   @ApiQuery({ name: "groupId", required: false })
   @ApiQuery({ name: "subject", required: false })
+  @ApiQuery({ name: "teacherId", required: false })
+  @ApiQuery({ name: "studentId", required: false })
   public async trackassessmentFilter(
     @Query("fromDate") date: string,
     @Query("toDate") toDate: string,
     @Query("groupId") groupId: string,
     @Query("subject") subject: string,
+    @Query("teacherId") teacherId: string,
+    @Query("studentId") studentId: string,
     @Req() request: Request
   ) {
     return this.service.trackAssessmentFilter(
@@ -114,6 +118,8 @@ export class AssessmentController {
       toDate,
       groupId,
       subject,
+      teacherId,
+      studentId,
       request
     );
   }
