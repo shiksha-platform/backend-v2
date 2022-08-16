@@ -146,6 +146,7 @@ export class MonitorTrackingService {
     monitorTrackingId: string,
     monitorId: string,
     schoolId: string,
+    groupId: string,
     scheduleVisitDate: Date,
     visitDate: Date,
     request: any
@@ -156,6 +157,7 @@ export class MonitorTrackingService {
       monitorTrackingId,
       monitorId,
       schoolId,
+      groupId,
       scheduleVisitDate,
       visitDate,
     };
@@ -176,6 +178,7 @@ export class MonitorTrackingService {
               scheduleVisitDate
               status
               schoolId
+              groupId
               monitorId
               updated_at
               visitDate
