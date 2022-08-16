@@ -54,13 +54,14 @@ export class MonitorTrackingService {
   ) {
     var axios = require("axios");
     var data = {
-      query: `mutation CreateMonitorTracking($schoolId:String,$monitorId:String,$scheduleVisit:date,$visitDate:date, $feedback:String, $status:String) {
-        insert_monitortracking_one(object: {schoolId: $schoolId, monitorId:$monitorId,scheduleVisitDate: $scheduleVisit, visitDate:$visitDate, feedback: $feedback, status: $status}) {
+      query: `mutation CreateMonitorTracking($schoolId:String,$groupId:String,$monitorId:String,$scheduleVisit:date,$visitDate:date, $feedback:String, $status:String) {
+        insert_monitortracking_one(object: {schoolId: $schoolId, groupId: $groupId, monitorId:$monitorId,scheduleVisitDate: $scheduleVisit, visitDate:$visitDate, feedback: $feedback, status: $status}) {
           monitorTrackingId
         }
       }`,
       variables: {
         schoolId: monitorTrackingDto.schoolId,
+        groupId: monitorTrackingDto.groupId,
         monitorId: monitorTrackingDto.monitorId,
         scheduleVisit: monitorTrackingDto.scheduleVisitDate,
         visitDate: monitorTrackingDto.visitDate,
@@ -96,6 +97,7 @@ export class MonitorTrackingService {
     var axios = require("axios");
     const updateData = {
       schoolId: monitorTrackingDto.schoolId,
+      groupId: monitorTrackingDto.groupId,
       monitorId: monitorTrackingDto.monitorId,
       scheduleVisitDate: monitorTrackingDto.scheduleVisitDate,
       visitDate: monitorTrackingDto.visitDate,
