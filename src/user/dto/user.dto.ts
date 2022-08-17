@@ -258,6 +258,13 @@ export class UserDto {
   @Expose()
   role: string;
 
+  @ApiProperty({
+    type: String,
+    description: "employee code of user, teacher, mentor,monitor",
+  })
+  @Expose()
+  employeeCode: string;
+
   @Expose()
   createdAt: string;
 
@@ -317,6 +324,7 @@ export class UserDto {
     this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
     this.fcmToken = obj?.fcmToken ? `${obj.fcmToken}` : "";
     this.role = obj?.role ? `${obj.role}` : "";
+    this.employeeCode = obj?.employeeCode ? `${obj.employeeCode}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
     this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
     this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
