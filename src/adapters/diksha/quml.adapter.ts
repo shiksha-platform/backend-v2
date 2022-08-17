@@ -53,7 +53,7 @@ export class QumlQuestionService implements IServicelocator {
 
     let questionArray = [];
     for (let value of arrayIds) {
-      let questionData = this.getQuestion(value);
+      let questionData = this.getQuestions(value);
       questionArray.push(await questionData);
     }
 
@@ -64,7 +64,7 @@ export class QumlQuestionService implements IServicelocator {
     });
   }
 
-  public async getQuestion(value: any) {
+  public async getQuestions(value: any) {
     var axios = require("axios");
 
     let config = {
@@ -157,6 +157,8 @@ export class QumlQuestionService implements IServicelocator {
       avgRating: final.avgRating,
 
       totalRatings: final.totalRatings,
+
+      examQuestionId: final.examQuestionId,
     };
 
     let res = new QuestionDto(mappedResponse);
@@ -258,6 +260,8 @@ export class QumlQuestionService implements IServicelocator {
         avgRating: final.avgRating,
 
         totalRatings: final.totalRatings,
+
+        examQuestionId: final.examQuestionId,
       };
 
       let res = new QuestionDto(mappedResponse);
@@ -390,6 +394,8 @@ export class QumlQuestionService implements IServicelocator {
       avgRating: final.avgRating,
 
       totalRatings: final.totalRatings,
+
+      examQuestionId: final.examQuestionId,
     };
 
     let res = new QuestionDto(mappedResponse);
@@ -441,4 +447,20 @@ export class QumlQuestionService implements IServicelocator {
       return ` Competencies not found.`;
     }
   }
+
+  getQuestion(questionId: string, request: any) {}
+  createQuestion(request: any, questionDto: QuestionDto) {}
+  updateQuestion(questionId: string, request: any, questionDto: QuestionDto) {}
+  filterQuestion(
+    limit: string,
+    body: string,
+    className: string,
+    maxScore: string,
+    questionId: string,
+    subject: string,
+    topic: string,
+    type: string,
+    page: number,
+    request: any
+  ) {}
 }

@@ -23,7 +23,7 @@ import {
   Request,
   ConsoleLogger,
 } from "@nestjs/common";
-import { WorksheetService } from "src/adapters/sunbirdrc/worksheet.adapter";
+import { WorksheetService } from "src/adapters/hasura/worksheet.adapter";
 import { WorksheetDto } from "./dto/worksheet.dto";
 import { WorksheetSearchDto } from "./dto/worksheet-search.dto";
 
@@ -80,17 +80,41 @@ export class WorksheetController {
   @Post("/search")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({ description: "Worksheet list." })
-  @ApiBody({ type: WorksheetSearchDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({
-    strategy: "excludeAll",
-  })
+  @ApiQuery({ name: "limit", required: false })
+  @ApiQuery({ name: "source", required: false })
+  @ApiQuery({ name: "grade", required: false })
+  @ApiQuery({ name: "name", required: false })
+  @ApiQuery({ name: "level", required: false })
+  @ApiQuery({ name: "subject", required: false })
+  @ApiQuery({ name: "topic", required: false })
+  @ApiQuery({ name: "worksheetId", required: false })
+  @ApiQuery({ name: "page", required: false })
   public async searchWorksheet(
-    @Req() request: Request,
-    @Body() worksheetSearchDto: WorksheetSearchDto
+    @Query("limit") limit: string,
+    @Query("source") source: string,
+    @Query("grade") grade: string,
+    @Query("name") name: string,
+    @Query("level") level: string,
+    @Query("subject") subject: string,
+    @Query("topic") topic: string,
+    @Query("worksheetId") worksheetId: string,
+    @Query("page") page: number,
+    @Req() request: Request
   ) {
-    return await this.service.searchWorksheet(request, worksheetSearchDto);
+    return await this.service.searchWorksheet(
+      limit,
+      source,
+      grade,
+      name,
+      level,
+      subject,
+      topic,
+      worksheetId,
+      page,
+      request
+    );
   }
 
   @Post(":worksheet/pdf")

@@ -1,8 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 import { StudentDto } from "src/student/dto/student.dto";
 
 export class QuestionDto {
+  @Expose()
+  examQuestionId: string;
+
   @ApiProperty({
     description:
       "Body contains the text, graphics, media objects and interactions that describe the question’s content.",
@@ -21,7 +24,7 @@ export class QuestionDto {
     description: "Feedback shown to the students after response processing.",
   })
   @Expose()
-  feedback: [any];
+  feedback: [string];
 
   @ApiProperty({
     description:
@@ -47,35 +50,35 @@ export class QuestionDto {
       "Information about answer to the question, when it is correct and optionally, how it is scored.",
   })
   @Expose()
-  responseDeclaration: object;
+  responseDeclaration: [string];
 
   @ApiProperty({
     description:
       "Information about the outcome variables of the question, i.e the values that are output of a question session.",
   })
   @Expose()
-  outcomeDeclaration: object;
+  outcomeDeclaration: [string];
 
   @ApiProperty({
     description:
       "Declaration of template variables that are to used for the purposes of cloning questions, i.e. auto-generating different sets of values for variables in the question.",
   })
   @Expose()
-  templateDeclaration: object;
+  templateDeclaration: [string];
 
   @ApiProperty({
     description:
       "One or more template rules to assign values to the template variables.",
   })
   @Expose()
-  templateProcessing: object;
+  templateProcessing: [string];
 
   @ApiProperty({
     description:
       "Rules to assign values to outcome variables based on the student's reponses.",
   })
   @Expose()
-  responseProcessing: object;
+  responseProcessing: [string];
 
   @ApiProperty({
     description: "Cognitive processes involved to answer the question.",
@@ -204,19 +207,124 @@ export class QuestionDto {
   @Expose()
   totalRatings: number;
 
+  @ApiProperty({})
   @Expose()
   topic: string;
 
+  @ApiProperty({})
   @Expose()
   subject: string;
 
+  @ApiProperty({})
   @Expose()
   class: string;
 
+  @ApiProperty({})
   @Expose()
   questionId: string;
 
+  @ApiProperty({})
+  @Expose()
+  language: string;
+
+  @ApiProperty({})
+  @Expose()
+  compatibilityLevel: string;
+
+  @ApiProperty({})
+  @Expose()
+  learningOutcome: string;
+
+  @ApiProperty({})
+  @Expose()
+  source: string;
+
+  @ApiProperty({})
+  @Expose()
+  answer: string;
+
   constructor(obj: QuestionDto) {
-    Object.assign(this, obj);
+    this.examQuestionId = obj?.examQuestionId;
+    this.body = obj?.body;
+
+    this.instructions = obj?.instructions;
+
+    this.feedback = obj?.feedback;
+
+    this.topic = obj?.topic;
+
+    this.subject = obj?.subject;
+
+    this.class = obj?.class;
+
+    this.questionId = obj?.questionId;
+
+    this.hints = obj?.hints;
+
+    this.options = obj?.options;
+
+    this.options = obj?.options;
+
+    this.media = obj?.media;
+
+    this.responseDeclaration = obj?.responseDeclaration;
+
+    this.outcomeDeclaration = obj?.outcomeDeclaration;
+
+    this.templateDeclaration = obj?.templateDeclaration;
+
+    this.templateProcessing = obj?.templateProcessing;
+
+    this.responseProcessing = obj?.responseProcessing;
+
+    this.bloomsLevel = obj?.bloomsLevel;
+
+    this.qlevel = obj?.qlevel;
+
+    this.purpose = obj?.purpose;
+
+    this.expectedDuration = obj?.expectedDuration;
+
+    this.maxScore = obj?.maxScore;
+
+    this.type = obj?.type;
+
+    this.visibility = obj?.visibility;
+
+    this.isTemplate = obj?.isTemplate;
+
+    this.interactions = obj?.interactions;
+
+    this.solutionAvailable = obj?.solutionAvailable;
+
+    this.scoringMode = obj?.scoringMode;
+
+    this.qumlVersion = obj?.qumlVersion;
+
+    this.totalTimeSpent = obj?.totalTimeSpent;
+
+    this.avgTimeSpent = obj?.avgTimeSpent;
+
+    this.numAttempts = obj?.numAttempts;
+
+    this.numCorrectAttempts = obj?.numCorrectAttempts;
+
+    this.numInCorrectAttempts = obj?.numInCorrectAttempts;
+
+    this.numSkips = obj?.numSkips;
+
+    this.source = obj?.source;
+
+    this.answer = obj?.answer;
+
+    this.learningOutcome = obj?.learningOutcome;
+
+    this.compatibilityLevel = obj?.compatibilityLevel;
+
+    this.language = obj?.language;
+
+    this.avgRating = obj?.avgRating;
+
+    this.totalRatings = obj?.totalRatings;
   }
 }

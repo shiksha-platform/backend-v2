@@ -9,6 +9,10 @@ import {
   KhanAcademyQuestionService,
   KhanAcademyQuestionToken,
 } from "src/adapters/khanAcademy/khanAcademy.adapter";
+import {
+  HasuraQuestionToken,
+  QuestionService,
+} from "src/adapters/hasura/question.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -23,6 +27,7 @@ const ttl = process.env.TTL as never;
     KhanAcademyQuestionService,
     { provide: DikshaQuestionToken, useClass: QumlQuestionService },
     { provide: KhanAcademyQuestionToken, useClass: KhanAcademyQuestionService },
+    { provide: HasuraQuestionToken, useClass: QuestionService },
   ],
 })
 export class QuestionModule {}

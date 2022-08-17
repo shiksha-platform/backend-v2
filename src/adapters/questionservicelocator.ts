@@ -14,4 +14,19 @@ export interface IServicelocator {
   getSubjectList();
   getCompetenciesList(subject: string, limit: string, request: any);
   getOneQuestion(questionId: string, request: any);
+  getQuestion(questionId, request);
+  createQuestion(request, questionDto);
+  updateQuestion(questionId, request, questionDto);
+  filterQuestion(
+    limit: string,
+    body: string,
+    className: string,
+    maxScore: string,
+    questionId: string,
+    subject: string,
+    topic: string,
+    type: string,
+    page: number,
+    request: any
+  );
 }
