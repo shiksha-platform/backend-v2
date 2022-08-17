@@ -195,7 +195,7 @@ export class QuestionController {
       return this.dikshaProvider.getQuestion(questionId, request);
     } else if (adapter === "khanacademy") {
       return this.khanacademyProvider.getQuestion(questionId, request);
-    } else if (adapter === "hasura") {
+    } else if (adapter === "shiksha") {
       return this.hasuraProvider.getQuestion(questionId, request);
     }
   }
@@ -218,7 +218,7 @@ export class QuestionController {
       return this.dikshaProvider.createQuestion(request, questionDto);
     } else if (adapter === "khanacademy") {
       return this.khanacademyProvider.createQuestion(request, questionDto);
-    } else if (adapter === "hasura") {
+    } else if (adapter === "shiksha") {
       return this.hasuraProvider.createQuestion(request, questionDto);
     }
   }
@@ -249,7 +249,7 @@ export class QuestionController {
         request,
         questionDto
       );
-    } else if (adapter === "hasura") {
+    } else if (adapter === "shiksha") {
       return this.hasuraProvider.updateQuestion(
         questionId,
         request,
@@ -311,7 +311,7 @@ export class QuestionController {
         page,
         request
       );
-    } else if (adapter === "hasura") {
+    } else if (adapter === "shiksha") {
       return this.hasuraProvider.filterQuestion(
         limit,
         body,
@@ -324,6 +324,27 @@ export class QuestionController {
         page,
         request
       );
+    }
+  }
+
+  @Post(":adapter/bulkQuestion")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Bulk Question has been created successfully.",
+  })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async multipleQuestion(
+    @Param("adapter") adapter: string,
+    @Req() request: Request,
+    @Body() questionDto: [Object]
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.multipleQuestion(request, questionDto);
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.multipleQuestion(request, questionDto);
+    } else if (adapter === "shiksha") {
+      return this.hasuraProvider.multipleQuestion(request, questionDto);
     }
   }
 }

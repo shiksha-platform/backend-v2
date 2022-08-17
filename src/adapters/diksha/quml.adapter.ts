@@ -463,4 +463,5 @@ export class QumlQuestionService implements IServicelocator {
     page: number,
     request: any
   ) {}
+  multipleQuestion(request: any, questionDto: [Object]) {}
 }
