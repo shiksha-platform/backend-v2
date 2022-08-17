@@ -88,6 +88,7 @@ export class MentorTrackingController {
   @ApiQuery({ name: "schoolId", required: false })
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
+  @ApiQuery({ name: "page", required: false })
   public async searchMentorTracking(
     @Query("limit") limit: string,
     @Query("mentorTrackingId") mentorTrackingId: string,
@@ -96,6 +97,7 @@ export class MentorTrackingController {
     @Query("schoolId") schoolId: string,
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
+    @Query("page") page: number,
     @Req() request: Request
   ) {
     return this.service.searchMentorTracking(
@@ -106,6 +108,7 @@ export class MentorTrackingController {
       schoolId,
       scheduleVisitDate,
       visitDate,
+      page,
       request
     );
   }

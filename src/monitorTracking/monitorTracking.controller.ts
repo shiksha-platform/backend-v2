@@ -86,6 +86,7 @@ export class MonitorTrackingController {
   @ApiQuery({ name: "schoolId", required: false })
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
+  @ApiQuery({ name: "page", required: false })
   public async searchMonitorTracking(
     @Query("limit") limit: string,
     @Query("monitorTrackingId") monitorTrackingId: string,
@@ -93,6 +94,7 @@ export class MonitorTrackingController {
     @Query("schoolId") schoolId: string,
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
+    @Query("page") page: number,
     @Req() request: Request
   ) {
     return this.service.searchMonitorTracking(
@@ -102,6 +104,7 @@ export class MonitorTrackingController {
       schoolId,
       scheduleVisitDate,
       visitDate,
+      page,
       request
     );
   }
