@@ -235,10 +235,9 @@ export class TrackAssessmentService {
       studentId,
     };
 
-    // TODO: fix fromDate/toDate filters post confirmation
     const filterVariables = {
-      fromDate: fromDate,
-      toDate: toDate,
+      fromDate: fromDate, // as these are required fields, let's initialize them
+      toDate: toDate, // as these are required fields, let's initialize them
     };
     let filterParamsString = "";
     Object.keys(filterParams).forEach((e) => {

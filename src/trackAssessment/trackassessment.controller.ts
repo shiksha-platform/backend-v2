@@ -23,6 +23,7 @@ import {
 } from "@nestjs/common";
 import { TrackAssessmentService } from "src/adapters/hasura/trackassessment.adapter";
 import { TrackAssessmentDto } from "./dto/trackassessment.dto";
+import { isUUID } from "class-validator";
 
 @ApiTags("Track Assessment")
 @Controller("trackassessment")
@@ -98,8 +99,8 @@ export class AssessmentController {
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "fromDate", required: false })
-  @ApiQuery({ name: "toDate", required: false })
+  @ApiQuery({ name: "fromDate", required: true })
+  @ApiQuery({ name: "toDate", required: true })
   @ApiQuery({ name: "groupId", required: false })
   @ApiQuery({ name: "subject", required: false })
   @ApiQuery({ name: "teacherId", required: false })
