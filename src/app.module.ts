@@ -28,6 +28,8 @@ import { CourseModule } from "./course/course.module";
 import { CourseTrackingModule } from "./courseTracking/courseTracking.module";
 import { AnnouncementsModule } from "./announcements/announcements.module";
 import { RoleModule } from "./role/role.module";
+import { WorkHistoryModule } from "./adapters/workHistory/workHistory.module";
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -59,6 +61,7 @@ import { RoleModule } from "./role/role.module";
     CourseModule,
     CourseTrackingModule,
     AnnouncementsModule,
+    WorkHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
