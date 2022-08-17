@@ -20,6 +20,8 @@ import {
   Post,
   Body,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from "@nestjs/common";
 import { TrackAssessmentService } from "src/adapters/hasura/trackassessment.adapter";
 import { TrackAssessmentDto } from "./dto/trackassessment.dto";
@@ -38,6 +40,7 @@ export class AssessmentController {
   @ApiBody({ type: TrackAssessmentDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createAssessment(
     @Req() request: Request,
     @Body() assessmentDto: TrackAssessmentDto
