@@ -1,16 +1,90 @@
-import { Exclude, Expose } from "class-transformer";
-import {
-  MaxLength,
-  IsNotEmpty,
-  IsEmail,
-  IsString,
-  IsNumber,
-} from "class-validator";
+import { Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEmail } from "class-validator";
 
-export class UserDto {
+export class UserWorkHistoryDto {
+  @Expose()
+  workHistoryId: string;
+
+  @ApiProperty({
+    type: String,
+    description: "ID of the user for which posting info is stored",
+  })
   @Expose()
   userId: string;
+
+  @ApiProperty({
+    type: String,
+    description: "role of the user ",
+  })
+  @Expose()
+  role: string;
+
+  @ApiProperty({
+    type: String,
+    description: "Designation of the user at time of joining that posting",
+  })
+  @Expose()
+  joiningDesignation: string;
+
+  @ApiProperty({
+    type: String,
+    description: "Designation of the user while leaving that posting",
+  })
+  @Expose()
+  leavingDesignation: string;
+
+  @ApiProperty({
+    type: String,
+    description: "Date of joining in that posting",
+    default: new Date().toISOString().split("T")[0],
+  })
+  @Expose()
+  dateOfJoining: Date;
+
+  @ApiProperty({
+    type: String,
+    description: "Date of relieving from that posting",
+    default: new Date().toISOString().split("T")[0],
+  })
+  @Expose()
+  dateOfRelieving: Date;
+
+  @ApiProperty({
+    type: String,
+    description: "Reason of closure of that posting",
+  })
+  @Expose()
+  reason: string;
+
+  @ApiProperty({
+    type: String,
+    description: "any remark",
+  })
+  @Expose()
+  remark: string;
+
+  @ApiProperty({})
+  @Expose()
+  cadre: string;
+
+  @ApiProperty({})
+  @Expose()
+  transferOrderNumber: string;
+
+  @ApiProperty({})
+  @Expose()
+  placeOfPosting: string;
+
+  @ApiProperty({
+    default: new Date().toISOString().split("T")[0],
+  })
+  @Expose()
+  dateOfOrder: string;
+
+  @ApiProperty({})
+  @Expose()
+  modeOfPosting: string;
 
   @ApiProperty()
   @Expose()
@@ -91,13 +165,6 @@ export class UserDto {
   })
   @Expose()
   designation: string;
-
-  @ApiProperty({
-    type: String,
-    description: "The cadre of the user",
-  })
-  @Expose()
-  cadre: string;
 
   @ApiProperty({
     type: String,
@@ -239,6 +306,9 @@ export class UserDto {
   @Expose()
   deactivationReason: string;
 
+  @Expose()
+  workHistory: string;
+
   @ApiProperty()
   @Expose()
   reportsTo: string;
@@ -251,84 +321,34 @@ export class UserDto {
   @Expose()
   fcmToken: string;
 
-  @ApiProperty({
-    type: String,
-    description: "roleId of user, teacher, mentor,monitor",
-  })
-  @Expose()
-  role: string;
-
-  @ApiProperty({
-    type: String,
-    description: "employee code of user, teacher, mentor,monitor",
-  })
-  @Expose()
-  employeeCode: string;
-
   @Expose()
   createdAt: string;
 
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.userId = obj?.osid ? `${obj.osid}` : "";
-    this.refId1 = obj?.refId1 ? `${obj.refId1}` : "";
-    this.refId2 = obj?.refId2 ? `${obj.refId2}` : "";
-    this.refId3 = obj?.refId3 ? `${obj.refId3}` : "";
-
-    this.firstName = obj?.firstName ? `${obj.firstName}` : "";
-    this.middleName = obj?.middleName ? `${obj.middleName}` : "";
-    this.lastName = obj?.lastName ? `${obj.lastName}` : "";
-    this.phoneNumber = obj?.phoneNumber ? `${obj.phoneNumber}` : "";
-    this.email = obj?.email ? `${obj.email}` : "";
-    this.aadhaar = obj?.aadhaar ? `${obj.aadhaar}` : "";
-    this.gender = obj?.gender ? `${obj.gender}` : "";
-    this.socialCategory = obj?.socialCategory ? `${obj.socialCategory}` : "";
-    this.birthDate = obj?.birthDate ? `${obj.birthDate}` : "";
-    this.designation = obj?.designation ? `${obj.designation}` : "";
-    this.cadre = obj?.cadre ? `${obj.cadre}` : "";
-    this.profQualification = obj?.profQualification
-      ? `${obj.profQualification}`
-      : "";
-    this.joiningDate = obj?.joiningDate ? `${obj.joiningDate}` : "";
-    this.subjectIds = obj.subjectIds ? obj.subjectIds : [];
-    this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
-    this.maritalStatus = obj?.maritalStatus ? `${obj.maritalStatus}` : "";
-    this.compSkills = obj?.compSkills ? `${obj.compSkills}` : "";
-    this.disability = obj?.disability ? `${obj.disability}` : "";
-    this.religion = obj?.religion ? `${obj.religion}` : "";
-    this.homeDistance = obj?.homeDistance ? `${obj.homeDistance}` : "";
-    this.employmentType = obj?.employmentType ? `${obj.employmentType}` : "";
-    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.address = obj?.address ? `${obj.address}` : "";
-    this.village = obj?.village ? `${obj.village}` : "";
-    this.block = obj?.block ? `${obj.block}` : "";
-    this.district = obj?.district ? `${obj.district}` : "";
-    this.stateId = obj?.stateId ? `${obj.stateId}` : "";
-    this.pincode = obj?.pincode ? obj.pincode : "";
-    this.locationId = obj?.locationId ? `${obj.locationId}` : "";
-    this.image = obj?.image ? `${obj.image}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.deactivationReason = obj?.deactivationReason
-      ? `${obj.deactivationReason}`
-      : "";
-    this.reportsTo = obj?.reportsTo ? `${obj.reportsTo}` : "";
-    this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
-    this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
-    this.fcmToken = obj?.fcmToken ? `${obj.fcmToken}` : "";
+    this.workHistoryId = obj?.workHistoryId ? `${obj.workHistoryId}` : "";
+    this.userId = obj?.userId ? `${obj.userId}` : "";
     this.role = obj?.role ? `${obj.role}` : "";
-    this.employeeCode = obj?.employeeCode ? `${obj.employeeCode}` : "";
-    this.metaData = obj?.metaData ? obj.metaData : [];
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.joiningDesignation = obj?.joiningDesignation
+      ? `${obj.joiningDesignation}`
+      : "";
+    this.leavingDesignation = obj?.leavingDesignation
+      ? `${obj.leavingDesignation}`
+      : "";
+    this.dateOfJoining = obj?.dateOfJoining ? obj.dateOfJoining : "";
+    this.dateOfRelieving = obj?.dateOfRelieving ? obj.dateOfRelieving : "";
+    this.reason = obj?.reason ? `${obj.reason}` : "";
+    this.remark = obj?.remark ? `${obj.remark}` : "";
+    this.cadre = obj?.cadre ? `${obj.cadre}` : "";
+    this.transferOrderNumber = obj?.transferOrderNumber
+      ? `${obj.transferOrderNumber}`
+      : "";
+    this.placeOfPosting = obj?.placeOfPosting ? `${obj.placeOfPosting}` : "";
+    this.dateOfOrder = obj?.dateOfOrder ? obj.dateOfOrder : "";
+    this.modeOfPosting = obj?.modeOfPosting ? `${obj.modeOfPosting}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }
