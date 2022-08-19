@@ -16,16 +16,16 @@ export class ContentPagesEsamwadService implements IServicelocator {
   //to create a content page
   public async createContentPage(request: any, contentPageData: ContentPagesDto) {
     var axios = require("axios");
-    const blocksData = contentPageData.blocks.map(({ blockIndex, blockType, blockData }, idx) => ({ block_index: blockIndex, block_type: blockType, block_data: blockData, content_page_id: idx }));
+    const blocksData = contentPageData.blocks.map(({ blockType, blockData }, idx) => ({ block_index: idx, block_type: blockType, block_data: blockData }));
     var data = {
-      query: `mutation create_content_page($_slug: String, $_status: String,$_author: String, $_title: String, $_data: [blocks_insert_input!], $created_by: String, $modified_by: String) {
+      query: `mutation create_content_page($_slug: String, $_status: String,$_author: String, $_title: String, $_data: [blocks_insert_input!]!, $_created_by: String, $_modified_by: String) {
         insert_content_pages_one(object: {slug: $_slug, status: $_status, author: $_author, title: $_title, blocks: {data: $_data}, created_by: $_created_by, modified_by: $_modified_by}) {
           id
         }
       }
       `,
       variables: {
-        _slug: contentPageData?.slugUrl,
+        _slug: contentPageData?.urlSlug,
         _title: contentPageData?.title,
         _status: contentPageData?.status,
         _data: blocksData,
@@ -34,7 +34,6 @@ export class ContentPagesEsamwadService implements IServicelocator {
         _modified_by: "eyJhbGciOiJSUzI1NiIsInR5cCIgO"
       }
     };
-
     var config = {
       method: "post",
       url: this.baseURL,
@@ -70,9 +69,11 @@ export class ContentPagesEsamwadService implements IServicelocator {
                   slug
                   title
                   status
+                  author
                   id
-                  blocks(order_by: {block_index: desc}) {
+                  blocks(order_by: {block_index: asc}) {
                     block_data
+                    block_index
                     block_type
                     id
                   }
@@ -169,7 +170,7 @@ export class ContentPagesEsamwadService implements IServicelocator {
   ) {
     var axios = require("axios");
     const pageId = parseInt(contentPageId);
-    const blocksData = contentPageData.blocks.map(({ blockIndex, blockType, blockData }, idx) => ({ block_index: blockIndex, block_type: blockType, block_data: blockData, content_page_id: idx }));
+    const blocksData = contentPageData.blocks.map(({blockType, blockData }, idx) => ({ block_index: idx, block_type: blockType, block_data: blockData, content_page_id: contentPageId }));
 
     var updateData = {
       query: `mutation update_content_page_data($_id: Int!, $_author: String, $_modified_at: timestamptz, $_modified_by: String, $_slug: String, $_title: String, $_status: String, $_data: [blocks_insert_input!] = {}) {
@@ -187,11 +188,11 @@ export class ContentPagesEsamwadService implements IServicelocator {
       `,
       variables: {
         _id: pageId,
-        _slug: contentPageData?.slugUrl,
+        _slug: contentPageData?.urlSlug,
         _author: contentPageData?.author,
         _status: contentPageData?.status,
         _title: contentPageData?.title,
-        _modified_at: + new Date().toISOString(),
+        _modified_at: new Date().toISOString(),
         _modified_by: "329uinfnf84f4jf94f",
         _data: blocksData
       },

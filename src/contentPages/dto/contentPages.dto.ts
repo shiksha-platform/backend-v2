@@ -18,7 +18,7 @@ export class ContentPagesDto {
         default: "",
     })
     @Expose()
-    slugUrl: string;
+    urlSlug: string;
 
     @ApiProperty({
         type: String,
@@ -62,10 +62,11 @@ export class ContentPagesDto {
 
     constructor(obj: any) {
         this.contentPageId = obj?.id ?? "",
-            this.slugUrl = obj?.slug ?? "",
+        this.author = obj?.author ?? "",
+            this.urlSlug = obj?.slug ?? "",
             this.title = obj?.title ?? "",
             this.dateModified = obj?.modified_at ?? "",
             this.status = obj?.status ?? "",
-            this.blocks = obj?.blocks ?? []
+            this.blocks = obj?.blocks?.map((val:any) => (new BlockDto(val))) ?? []
     }
 }

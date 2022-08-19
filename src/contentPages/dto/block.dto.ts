@@ -30,7 +30,7 @@ export class BlockDto {
     @ApiProperty({
         type: Number,
         description: "Index of the block for relative ordering of blocks (higher index denotes lower position on the page",
-        default: {},
+        default: 0,
     })
     @Expose()
     blockIndex: number;
@@ -39,6 +39,6 @@ export class BlockDto {
         this.blockId = obj?.id ?? "";
         this.blockType = obj?.block_type ?? "";
         this.blockData = obj?.block_data ?? {};
-        this.blockIndex = obj?.block_index ?? 0;
+        this.blockIndex = obj?.block_index??0;
     }
 }
