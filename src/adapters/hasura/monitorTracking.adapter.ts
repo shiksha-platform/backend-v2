@@ -21,6 +21,7 @@ export class MonitorTrackingService {
           status
           updated_at
           visitDate
+          lastVisited
         }
       }`,
       variables: { monitorTrackingId: monitorId },
@@ -53,20 +54,20 @@ export class MonitorTrackingService {
     monitorTrackingDto: MonitorTrackingDto
   ) {
     var axios = require("axios");
+
+    let newDataObject = "";
+    const newData = Object.keys(monitorTrackingDto).forEach((e) => {
+      if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
+        newDataObject += `${e}: "${monitorTrackingDto[e]}", `;
+      }
+    });
     var data = {
-      query: `mutation CreateMonitorTracking($schoolId:String,$monitorId:String,$scheduleVisit:date,$visitDate:date, $feedback:String, $status:String) {
-        insert_monitortracking_one(object: {schoolId: $schoolId, monitorId:$monitorId,scheduleVisitDate: $scheduleVisit, visitDate:$visitDate, feedback: $feedback, status: $status}) {
+      query: `mutation CreateMonitorTracking {
+        insert_monitortracking_one(object: {${newDataObject}}) {
           monitorTrackingId
         }
       }`,
-      variables: {
-        schoolId: monitorTrackingDto.schoolId,
-        monitorId: monitorTrackingDto.monitorId,
-        scheduleVisit: monitorTrackingDto.scheduleVisitDate,
-        visitDate: monitorTrackingDto.visitDate,
-        feedback: monitorTrackingDto.feedback,
-        status: monitorTrackingDto.status,
-      },
+      variables: {},
     };
 
     var config = {
@@ -94,19 +95,11 @@ export class MonitorTrackingService {
     monitorTrackingDto: MonitorTrackingDto
   ) {
     var axios = require("axios");
-    const updateData = {
-      schoolId: monitorTrackingDto.schoolId,
-      monitorId: monitorTrackingDto.monitorId,
-      scheduleVisitDate: monitorTrackingDto.scheduleVisitDate,
-      visitDate: monitorTrackingDto.visitDate,
-      feedback: monitorTrackingDto.feedback,
-      status: monitorTrackingDto.status,
-    };
 
     let newDataObject = "";
-    const newData = Object.keys(updateData).forEach((e) => {
-      if (updateData[e] && updateData[e] != "") {
-        newDataObject += `${e}:"${updateData[e]}"`;
+    const newData = Object.keys(monitorTrackingDto).forEach((e) => {
+      if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
+        newDataObject += `${e}:"${monitorTrackingDto[e]}"`;
       }
     });
 
@@ -179,6 +172,7 @@ export class MonitorTrackingService {
               monitorId
               updated_at
               visitDate
+              lastVisited
             }
           }`,
       variables: { limit: parseInt(limit) },
