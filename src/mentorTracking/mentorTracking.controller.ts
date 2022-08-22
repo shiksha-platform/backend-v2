@@ -11,6 +11,8 @@ import {
   Req,
   CacheInterceptor,
   Query,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -50,6 +52,7 @@ export class MentorTrackingController {
   @ApiBody({ type: MentorTrackingDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createMentor(
     @Req() request: Request,
     @Body() mentorDto: MentorTrackingDto
@@ -64,6 +67,7 @@ export class MentorTrackingController {
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateMentor(
     @Param("id") mentorTrackingId: string,
     @Req() request: Request,
