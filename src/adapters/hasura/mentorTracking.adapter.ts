@@ -142,6 +142,7 @@ export class MentorTrackingService {
     schoolId: string,
     scheduleVisitDate: Date,
     visitDate: Date,
+    page: number,
     request: any
   ) {
     var axios = require("axios");
@@ -154,6 +155,11 @@ export class MentorTrackingService {
       scheduleVisitDate,
       visitDate,
     };
+    let offset = 0;
+
+    if (page > 1) {
+      offset = parseInt(limit) * (page - 1);
+    }
 
     let newDataObject = "";
     const newData = Object.keys(searchData).forEach((e) => {
@@ -163,8 +169,8 @@ export class MentorTrackingService {
     });
 
     var data = {
-      query: `query searchMentorTracking($limit:Int) {
-  mentortracking(limit: $limit, where: {${newDataObject}}) {
+      query: `query searchMentorTracking($offset:Int,$limit:Int) {
+  mentortracking(limit: $limit, offset: $offset, where: {${newDataObject}}) {
     mentorTrackingId
     created_at
     feedback
@@ -180,6 +186,7 @@ export class MentorTrackingService {
 }`,
       variables: {
         limit: parseInt(limit),
+        offset: offset,
       },
     };
 

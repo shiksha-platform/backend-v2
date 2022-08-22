@@ -141,10 +141,15 @@ export class MonitorTrackingService {
     schoolId: string,
     scheduleVisitDate: Date,
     visitDate: Date,
+    page: number,
     request: any
   ) {
     var axios = require("axios");
+    let offset = 0;
 
+    if (page > 1) {
+      offset = parseInt(limit) * (page - 1);
+    }
     const searchData = {
       monitorTrackingId,
       monitorId,
@@ -161,8 +166,8 @@ export class MonitorTrackingService {
     });
 
     var data = {
-      query: `query SearchMonitorTracking($limit:Int) {
-            monitortracking(where:{ ${newDataObject}}, limit: $limit) {
+      query: `query SearchMonitorTracking($offset:Int,$limit:Int) {
+            monitortracking(where:{ ${newDataObject}}, offset: $offset,limit: $limit) {
               created_at
               feedback
               monitorTrackingId
@@ -175,7 +180,7 @@ export class MonitorTrackingService {
               lastVisited
             }
           }`,
-      variables: { limit: parseInt(limit) },
+      variables: { limit: parseInt(limit), offset: offset },
     };
 
     var config = {
@@ -189,6 +194,7 @@ export class MonitorTrackingService {
     };
 
     const response = await axios(config);
+    console.log(response.data);
 
     let result = response.data.data.monitortracking.map(
       (item: any) => new MonitorTrackingDto(item)
