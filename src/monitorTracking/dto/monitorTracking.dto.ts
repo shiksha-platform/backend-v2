@@ -15,6 +15,10 @@ export class MonitorTrackingDto {
   @Expose()
   schoolId: string;
 
+  @ApiProperty({ description: "Group ID (class ID)" })
+  @Expose()
+  groupId: string;
+
   @ApiProperty({
     default: new Date().toISOString().split("T")[0],
   })
@@ -63,6 +67,7 @@ export class MonitorTrackingDto {
       : "";
     this.monitorId = obj?.monitorId ? `${obj.monitorId}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
     this.scheduleVisitDate = obj?.scheduleVisitDate
       ? `${obj.scheduleVisitDate}`
       : "";

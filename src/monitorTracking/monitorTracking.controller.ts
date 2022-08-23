@@ -88,6 +88,7 @@ export class MonitorTrackingController {
   @ApiQuery({ name: "monitorTrackingId", required: false })
   @ApiQuery({ name: "monitorId", required: false })
   @ApiQuery({ name: "schoolId", required: false })
+  @ApiQuery({ name: "groupId", required: false })
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
   @ApiQuery({ name: "page", required: false })
@@ -96,6 +97,7 @@ export class MonitorTrackingController {
     @Query("monitorTrackingId") monitorTrackingId: string,
     @Query("monitorId") monitorId: string,
     @Query("schoolId") schoolId: string,
+    @Query("groupId") groupId: string,
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
     @Query("page") page: number,
@@ -106,6 +108,7 @@ export class MonitorTrackingController {
       monitorTrackingId,
       monitorId,
       schoolId,
+      groupId,
       scheduleVisitDate,
       visitDate,
       page,

@@ -56,7 +56,7 @@ export class MonitorTrackingService {
     var axios = require("axios");
 
     let newDataObject = "";
-    const newData = Object.keys(monitorTrackingDto).forEach((e) => {
+    Object.keys(monitorTrackingDto).forEach((e) => {
       if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
         newDataObject += `${e}: "${monitorTrackingDto[e]}", `;
       }
@@ -97,7 +97,7 @@ export class MonitorTrackingService {
     var axios = require("axios");
 
     let newDataObject = "";
-    const newData = Object.keys(monitorTrackingDto).forEach((e) => {
+    Object.keys(monitorTrackingDto).forEach((e) => {
       if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
         newDataObject += `${e}:"${monitorTrackingDto[e]}"`;
       }
@@ -139,6 +139,7 @@ export class MonitorTrackingService {
     monitorTrackingId: string,
     monitorId: string,
     schoolId: string,
+    groupId: string,
     scheduleVisitDate: Date,
     visitDate: Date,
     page: number,
@@ -154,12 +155,13 @@ export class MonitorTrackingService {
       monitorTrackingId,
       monitorId,
       schoolId,
+      groupId,
       scheduleVisitDate,
       visitDate,
     };
 
     let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
+    Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
         newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
       }
@@ -174,6 +176,7 @@ export class MonitorTrackingService {
               scheduleVisitDate
               status
               schoolId
+              groupId
               monitorId
               updated_at
               visitDate

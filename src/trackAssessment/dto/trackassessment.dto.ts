@@ -1,5 +1,7 @@
-import { Exclude, Expose } from "class-transformer";
+import { Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsIn, IsNotEmpty, IsString } from "class-validator";
+import { StudentAssessmentStatus } from "../enums/statuses.enum";
 
 export class TrackAssessmentDto {
   @Expose()
@@ -69,6 +71,17 @@ export class TrackAssessmentDto {
   @Expose()
   date: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([StudentAssessmentStatus.COMPLETED, StudentAssessmentStatus.ABSENT])
+  @ApiProperty({
+    description:
+      "Student Assessment Status - whether student was absent or he has completed the assessment.",
+    enum: [StudentAssessmentStatus.COMPLETED, StudentAssessmentStatus.ABSENT],
+    required: true,
+  })
+  studentAssessmentStatus: string;
+
   @Expose()
   createdAt: string;
 
@@ -91,6 +104,9 @@ export class TrackAssessmentDto {
     this.groupId = obj?.groupId ? `${obj.groupId}` : "";
     this.subject = obj?.subject ? `${obj.subject}` : "";
     this.date = obj?.date ? `${obj.date}` : "";
+    this.studentAssessmentStatus = obj?.studentAssessmentStatus
+      ? `${obj.studentAssessmentStatus}`
+      : "";
     this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
     this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
