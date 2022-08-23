@@ -293,7 +293,7 @@ export class QuestionService implements IServicelocator {
     });
   }
 
-  public async multipleQuestion(request: any, questionDto: [Object]) {
+  public async bulkImport(request: any, questionDto: [Object]) {
     let axios = require("axios");
     const result = Promise.all(
       questionDto.map(async (data: any) => {

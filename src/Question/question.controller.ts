@@ -327,24 +327,24 @@ export class QuestionController {
     }
   }
 
-  @Post(":adapter/bulkQuestion")
+  @Post(":adapter/bulkImport")
   @ApiBasicAuth("access-token")
   @ApiCreatedResponse({
     description: "Bulk Question has been created successfully.",
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  public async multipleQuestion(
+  public async bulkImport(
     @Param("adapter") adapter: string,
     @Req() request: Request,
     @Body() questionDto: [Object]
   ) {
     if (adapter === "diksha") {
-      return this.dikshaProvider.multipleQuestion(request, questionDto);
+      return this.dikshaProvider.bulkImport(request, questionDto);
     } else if (adapter === "khanacademy") {
-      return this.khanacademyProvider.multipleQuestion(request, questionDto);
+      return this.khanacademyProvider.bulkImport(request, questionDto);
     } else if (adapter === "shiksha") {
-      return this.hasuraProvider.multipleQuestion(request, questionDto);
+      return this.hasuraProvider.bulkImport(request, questionDto);
     }
   }
 }

@@ -30,5 +30,5 @@ export interface IServicelocator {
     request: any
   );
 
-  multipleQuestion(request: any, questionDto: [Object]);
+  bulkImport(request: any, questionDto: [Object]);
 }
