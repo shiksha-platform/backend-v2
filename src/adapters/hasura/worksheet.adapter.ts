@@ -18,7 +18,7 @@ export class WorksheetService {
         if (Array.isArray(worksheetDto[e])) {
           newDataObject += `${e}: ${JSON.stringify(worksheetDto[e])}, `;
         } else {
-          newDataObject += `${e}: ${worksheetDto[e]}, `;
+          newDataObject += `${e}: "${worksheetDto[e]}", `;
         }
       }
     });

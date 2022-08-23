@@ -1,11 +1,8 @@
 import {
-  GroupService,
+  SunbirdGroupService,
   SunbirdGroupToken,
 } from "../adapters/sunbirdrc/group.adapter";
-import {
-  GroupMembershipService,
-  SunbirdGroupMembershipToken,
-} from "src/adapters/sunbirdrc/groupMembership.adapter";
+
 import {
   ApiTags,
   ApiBody,
@@ -37,26 +34,22 @@ import { GroupDto } from "./dto/group.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
 import { diskStorage } from "multer";
-import { IServicelocator } from "src/adapters/groupmembershipservicelocator";
-import { EsamwadGroupMembershipToken } from "src/adapters/esamwad/groupMembership.adapter";
 import { EsamwadGroupToken } from "src/adapters/esamwad/group.adapter";
+
+import { HasuraGroupToken } from "src/adapters/hasura/group.adapter";
 import { IServicelocatorgroup } from "src/adapters/groupservicelocator";
 
 @ApiTags("Group")
 @Controller("group")
 export class GroupController {
   constructor(
-    private service: GroupService,
-    private membershipService: GroupMembershipService,
-    @Inject(EsamwadGroupMembershipToken)
-    private eSamwadProvider: IServicelocator,
-    @Inject(SunbirdGroupMembershipToken)
-    private sunbirdProvider: IServicelocator,
-
+    private service: SunbirdGroupService,
     @Inject(EsamwadGroupToken)
     private eSamwadProvidergroup: IServicelocatorgroup,
     @Inject(SunbirdGroupToken)
-    private sunbirdProvidergroup: IServicelocatorgroup
+    private sunbirdProvidergroup: IServicelocatorgroup,
+    @Inject(HasuraGroupToken)
+    private hasuraProvider: IServicelocatorgroup
   ) {}
 
   @Get("/:id")
@@ -70,8 +63,10 @@ export class GroupController {
   public async getGroup(@Param("id") groupId: string, @Req() request: Request) {
     if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.sunbirdProvidergroup.getGroup(groupId, request);
-    } else {
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvidergroup.getGroup(groupId, request);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.getGroup(groupId, request);
     }
   }
 
@@ -100,7 +95,14 @@ export class GroupController {
       image: image?.filename,
     };
     Object.assign(groupDto, response);
-    return this.service.createGroup(request, groupDto);
+
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvidergroup.createGroup(request, groupDto);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
+      return this.eSamwadProvidergroup.createGroup(request, groupDto);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.createGroup(request, groupDto);
+    }
   }
 
   @Put("/:id")
@@ -129,7 +131,14 @@ export class GroupController {
       image: image?.filename,
     };
     Object.assign(groupDto, response);
-    return await this.service.updateGroup(groupId, request, groupDto);
+
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvidergroup.updateGroup(groupId, request, groupDto);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
+      return this.eSamwadProvidergroup.updateGroup(groupId, request, groupDto);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.updateGroup(groupId, request, groupDto);
+    }
   }
 
   @Post("/search")
@@ -145,7 +154,13 @@ export class GroupController {
     @Req() request: Request,
     @Body() groupSearchDto: GroupSearchDto
   ) {
-    return await this.service.searchGroup(request, groupSearchDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvidergroup.searchGroup(request, groupSearchDto);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
+      return this.eSamwadProvidergroup.searchGroup(request, groupSearchDto);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.searchGroup(request, groupSearchDto);
+    }
   }
 
   @Get(":groupId/participants")
@@ -159,9 +174,11 @@ export class GroupController {
     @Req() request: Request
   ) {
     if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.findMembersOfGroup(id, role, request);
-    } else {
-      return this.eSamwadProvider.findMembersOfGroup(id, role, request);
+      return this.sunbirdProvidergroup.findMembersOfGroup(id, role, request);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
+      return this.eSamwadProvidergroup.findMembersOfGroup(id, role, request);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.findMembersOfGroup(id, role, request);
     }
   }
 
@@ -176,9 +193,11 @@ export class GroupController {
     @Req() request: Request
   ) {
     if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.findGroupsByUserId(id, role, request);
-    } else {
-      return this.eSamwadProvider.findGroupsByUserId(id, role, request);
+      return this.sunbirdProvidergroup.findGroupsByUserId(id, role, request);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
+      return this.eSamwadProvidergroup.findGroupsByUserId(id, role, request);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.findGroupsByUserId(id, role, request);
     }
   }
 }

@@ -47,6 +47,13 @@ export class GroupDto {
   @Expose()
   status: string;
 
+  @ApiPropertyOptional({
+    type: String,
+    description: "Teacher Id of Group",
+  })
+  @Expose()
+  teacherId: string;
+
   @ApiPropertyOptional()
   @Expose()
   deactivationReason: string;
@@ -70,22 +77,22 @@ export class GroupDto {
   @Expose()
   option: [string];
 
+  @ApiPropertyOptional({
+    description: "Grade against group",
+  })
+  @Expose()
+  gradeLevel: string;
+
   @Expose()
   createdAt: string;
 
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.groupId = obj?.osid ? `${obj.osid}` : "";
+    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.name = obj?.className ? `${obj.className}` : "";
+    this.name = obj?.name ? `${obj.name}` : "";
     this.type = obj?.type ? `${obj.type}` : "";
     this.section = obj?.section ? `${obj.section}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
@@ -95,12 +102,12 @@ export class GroupDto {
     this.mediumOfInstruction = obj?.mediumOfInstruction
       ? `${obj.mediumOfInstruction}`
       : "";
+    this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
     this.image = obj?.image ? `${obj.image}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
     this.option = obj?.option ? obj.option : [];
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.gradeLevel = obj?.gradeLevel ? `${obj.gradeLevel}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }

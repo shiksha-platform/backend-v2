@@ -200,8 +200,6 @@ export class MonitorTrackingService {
     };
 
     const response = await axios(config);
-    console.log(response.data);
-
     let result = response.data.data.monitortracking.map(
       (item: any) => new MonitorTrackingDto(item)
     );

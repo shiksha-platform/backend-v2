@@ -116,6 +116,7 @@ export class WorkHistoryService {
           transferOrderNumber
           updated_at
           userId
+          organizationName
         }
       }
       `,
@@ -193,6 +194,7 @@ export class WorkHistoryService {
               transferOrderNumber
               updated_at
               userId
+              organizationName
             }
           }`,
       variables: {
