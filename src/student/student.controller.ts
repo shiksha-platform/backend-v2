@@ -58,9 +58,9 @@ export class StudentController {
     strategy: "excludeAll",
   })
   getStudent(@Param("id") studentId: string, @Req() request: Request) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
+    if (process.env.ADAPTER === "sunbird") {
       return this.sunbirdProvider.getStudent(studentId, request);
-    } else {
+    } else if (process.env.ADAPTER === "esamwad") {
       return this.eSamwadProvider.getStudent(studentId, request);
     }
   }
@@ -104,9 +104,9 @@ export class StudentController {
     @Req() request: Request,
     @Body() studentSearchDto: StudentSearchDto
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
+    if (process.env.ADAPTER === "sunbird") {
       return this.sunbirdProvider.searchStudent(request, studentSearchDto);
-    } else {
+    } else if (process.env.ADAPTER === "esamwad") {
       return this.eSamwadProvider.searchStudent(request, studentSearchDto);
     }
   }

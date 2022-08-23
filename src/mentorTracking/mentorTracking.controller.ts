@@ -11,6 +11,8 @@ import {
   Req,
   CacheInterceptor,
   Query,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -50,6 +52,7 @@ export class MentorTrackingController {
   @ApiBody({ type: MentorTrackingDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createMentor(
     @Req() request: Request,
     @Body() mentorDto: MentorTrackingDto
@@ -64,6 +67,7 @@ export class MentorTrackingController {
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateMentor(
     @Param("id") mentorTrackingId: string,
     @Req() request: Request,
@@ -88,6 +92,7 @@ export class MentorTrackingController {
   @ApiQuery({ name: "schoolId", required: false })
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
+  @ApiQuery({ name: "page", required: false })
   public async searchMentorTracking(
     @Query("limit") limit: string,
     @Query("mentorTrackingId") mentorTrackingId: string,
@@ -96,6 +101,7 @@ export class MentorTrackingController {
     @Query("schoolId") schoolId: string,
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
+    @Query("page") page: number,
     @Req() request: Request
   ) {
     return this.service.searchMentorTracking(
@@ -106,6 +112,7 @@ export class MentorTrackingController {
       schoolId,
       scheduleVisitDate,
       visitDate,
+      page,
       request
     );
   }

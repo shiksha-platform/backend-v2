@@ -9,7 +9,6 @@ import { GroupModule } from "./group/group.module";
 import { HolidayModule } from "./holiday/holiday.module";
 import { ConfigurationModule } from "./configs/configuration.module";
 import { ConfigModule } from "@nestjs/config";
-import { GroupMembershipModule } from "./groupMembership/groupMembership.module";
 import { NotificationModule } from "./notification/notification.module";
 import { TemplateModule } from "./template/template.module";
 import { WorksheetModule } from "./worksheet/worksheet.module";
@@ -44,7 +43,6 @@ import { WorkHistoryModule } from "./adapters/workHistory/workHistory.module";
     AttendanceModule,
     HolidayModule,
     ConfigurationModule,
-    GroupMembershipModule,
     TemplateModule,
     NotificationModule,
     WorksheetModule,

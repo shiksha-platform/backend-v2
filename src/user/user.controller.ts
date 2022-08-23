@@ -62,9 +62,9 @@ export class UserController {
     strategy: "excludeAll",
   })
   public async getUserByAuth(@Req() request: Request) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
+    if (process.env.ADAPTER === "sunbird") {
       return this.sunbirdProvider.getUserByAuth(request);
-    } else {
+    } else if (process.env.ADAPTER === "esamwad") {
       return this.eSamwadProvider.getUserByAuth(request);
     }
   }

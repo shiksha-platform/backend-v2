@@ -274,22 +274,28 @@ export class QumlQuestionService implements IServicelocator {
       data: questionArray,
     });
   }
-  public async getSubjectList() {
+
+  public async getSubjectList(gradeLevel: string) {
     try {
       var axios = require("axios");
+      let subjects = Array;
       var config = {
         method: "get",
-        url: "https://dev.diksha.gov.in/api/framework/v1/read/ekstep_ncert_k-12?categories=subject",
+        url: "https://diksha.gov.in/api/framework/v1/read/mh_k-12_1?categories=board,gradeLevel,medium,class,subject",
         headers: {
           "Content-Type": "application/json",
         },
       };
       const responseData = await axios(config);
-
-      const subjects =
-        responseData.data.result.framework.categories[0].terms.map((e: any) => {
-          return e.name;
-        });
+      const categories = responseData.data.result.framework.categories;
+      if (typeof categories !== "undefined" && categories.length > 0) {
+        const grades = categories.find((o) => o.code === "gradeLevel");
+        let terms = grades.terms;
+        if (typeof terms !== "undefined" && terms.length > 0) {
+          let associations = terms.find((o) => o.code === gradeLevel);
+          subjects = associations.associations;
+        }
+      }
 
       return new SuccessResponse({
         statusCode: 200,
@@ -300,7 +306,39 @@ export class QumlQuestionService implements IServicelocator {
       return `${e}`;
     }
   }
+  public async getTopicsList(subject: string) {
+    try {
+      var axios = require("axios");
+      let topics = Array;
+      var config = {
+        method: "get",
+        url: "https://diksha.gov.in/api/framework/v1/read/mh_k-12_1?categories=subject,topic",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const responseData = await axios(config);
+      const categories = responseData.data.result.framework.categories;
 
+      if (typeof categories !== "undefined" && categories.length > 0) {
+        const subjectList = categories.find((o) => o.code === "subject");
+
+        let terms = subjectList.terms;
+        if (typeof terms !== "undefined" && terms.length > 0) {
+          let associations = terms.find((o) => o.code === subject);
+          topics = associations.associations;
+        }
+      }
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok",
+        data: topics,
+      });
+    } catch (e) {
+      return `${e}`;
+    }
+  }
   public async getOneQuestion(questionId: string, request: any) {
     var axios = require("axios");
 

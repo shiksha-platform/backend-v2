@@ -73,6 +73,7 @@ export class AssessmentController {
   @ApiQuery({ name: "teacherId", required: false })
   @ApiQuery({ name: "groupId", required: false })
   @ApiQuery({ name: "subject", required: false })
+  @ApiQuery({ name: "page", required: false })
   public async searchAssessment(
     @Query("limit") limit: string,
     @Query("source") source: string,
@@ -80,6 +81,7 @@ export class AssessmentController {
     @Query("teacherId") teacherId: string,
     @Query("groupId") groupId: string,
     @Query("subject") subject: string,
+    @Query("page") page: number,
     @Req() request: Request
   ) {
     return await this.service.searchAssessment(
@@ -89,6 +91,7 @@ export class AssessmentController {
       teacherId,
       groupId,
       subject,
+      page,
       request
     );
   }
