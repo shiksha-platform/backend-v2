@@ -5,6 +5,7 @@ import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { TrackAssessmentDto } from "src/trackAssessment/dto/trackassessment.dto";
 import { ErrorResponse } from "src/error-response";
+import { StudentAssessmentStatus } from "../../trackAssessment/enums/statuses.enum";
 
 @Injectable()
 export class TrackAssessmentService {
@@ -32,6 +33,7 @@ export class TrackAssessmentService {
         groupId
         subject
         type
+        studentAssessmentStatus
       }
     }`,
         variables: {
@@ -68,50 +70,48 @@ export class TrackAssessmentService {
     request: any,
     assessmentDto: TrackAssessmentDto
   ) {
-    var axios = require("axios");
+    let variables: object;
     try {
-      let answer = JSON.stringify(assessmentDto.answersheet);
-      var jsonObj = JSON.parse(answer);
-      let params = JSON.parse(jsonObj);
+      const axios = require("axios");
+      if (
+        assessmentDto.studentAssessmentStatus ==
+        StudentAssessmentStatus.COMPLETED
+      ) {
+        const answer = JSON.stringify(assessmentDto.answersheet);
+        const jsonObj = JSON.parse(answer);
+        const params = JSON.parse(jsonObj);
 
-      let sum = 0;
+        let sum = 0;
+        params.children.map((e: any) => {
+          sum += e.score;
+          return sum;
+        });
+        assessmentDto.score = sum.toString();
 
-      params.children.map((e: any) => {
-        sum += e.score;
-        return sum;
-      });
-      assessmentDto.score = sum.toString();
+        const questionIds = assessmentDto.questions;
+        const totalScoreArray = [];
+        for (const value of questionIds) {
+          const config = {
+            method: "get",
+            url: `${this.url}/question/v1/read/${value}?fields=maxScore`,
+          };
+          const response = await axios(config);
+          const data = response?.data;
+          const final = data.result.question;
 
-      const questionIds = assessmentDto.questions;
-      let totalScoreArray = [];
-      for (let value of questionIds) {
-        let config = {
-          method: "get",
-          url: `${this.url}/question/v1/read/${value}?fields=maxScore`,
-        };
-        const response = await axios(config);
-        const data = response?.data;
-        const final = data.result.question;
+          const scoreResponse = {
+            maxScore: final.maxScore,
+          };
+          totalScoreArray.push(scoreResponse);
+        }
+        let totalScore = 0;
+        totalScoreArray.map((e: any) => {
+          totalScore += e.maxScore;
+          return totalScore;
+        });
+        assessmentDto.totalScore = totalScore.toString();
 
-        const scoreResponse = {
-          maxScore: final.maxScore,
-        };
-        totalScoreArray.push(scoreResponse);
-      }
-      let totalScore = 0;
-      totalScoreArray.map((e: any) => {
-        totalScore += e.maxScore;
-        return totalScore;
-      });
-      assessmentDto.totalScore = totalScore.toString();
-
-      var data = {
-        query: `mutation CreateTrackAssessment($filter: String, $score: String, $totalScore:String, $source: String, $questions: String, $studentId: String, $teacherId: String, $type: String, $answersheet: String,$groupId:String, $subject:String) {
-      insert_trackassessment_one(object:{filter: $filter, score: $score, totalScore:$totalScore, source: $source, questions: $questions, studentId: $studentId, teacherId: $teacherId, type: $type, answersheet: $answersheet,groupId:$groupId,subject:$subject}) {
-        trackAssessmentId
-      }
-    }`,
-        variables: {
+        variables = {
           filter: assessmentDto.filter,
           source: assessmentDto.source,
           questions: assessmentDto.questions.toString(),
@@ -123,10 +123,35 @@ export class TrackAssessmentService {
           totalScore: assessmentDto.totalScore,
           groupId: assessmentDto.groupId,
           subject: assessmentDto.subject,
-        },
+          studentAssessmentStatus: assessmentDto.studentAssessmentStatus,
+        };
+      } else {
+        variables = {
+          filter: null,
+          source: null,
+          questions: null,
+          studentId: assessmentDto.studentId,
+          teacherId: assessmentDto.teacherId,
+          type: assessmentDto.type,
+          answersheet: null,
+          score: null,
+          totalScore: null,
+          groupId: assessmentDto.groupId,
+          subject: null,
+          studentAssessmentStatus: assessmentDto.studentAssessmentStatus,
+        };
+      }
+
+      const data = {
+        query: `mutation CreateTrackAssessment($filter: String, $score: String, $totalScore:String, $source: String, $questions: String, $studentId: String, $teacherId: String, $type: String, $answersheet: String,$groupId:String, $subject:String, $studentAssessmentStatus: String) {
+          insert_trackassessment_one(object:{filter: $filter, score: $score, totalScore:$totalScore, source: $source, questions: $questions, studentId: $studentId, teacherId: $teacherId, type: $type, answersheet: $answersheet,groupId:$groupId,subject:$subject, studentAssessmentStatus: $studentAssessmentStatus}) {
+            trackAssessmentId
+          }
+        }`,
+        variables: variables,
       };
 
-      var config = {
+      const config = {
         method: "post",
         url: process.env.REGISTRYHASURA,
         headers: {
@@ -197,6 +222,7 @@ export class TrackAssessmentService {
     groupId
     subject
     type
+    studentAssessmentStatus
   }
 }`,
       variables: {
@@ -232,13 +258,33 @@ export class TrackAssessmentService {
     toDate: string,
     groupId: string,
     subject: string,
+    teacherId: string,
+    studentId: string,
     request: any
   ) {
     var axios = require("axios");
+    const filterParams = {
+      groupId,
+      subject,
+      teacherId,
+      studentId,
+    };
+
+    const filterVariables = {
+      fromDate: fromDate, // as these are required fields, let's initialize them
+      toDate: toDate, // as these are required fields, let's initialize them
+    };
+    let filterParamsString = "";
+    Object.keys(filterParams).forEach((e) => {
+      if (filterParams[e] && filterParams[e] != "") {
+        filterParamsString += `,${e}:{_eq:$${e}}`;
+        filterVariables[e] = filterParams[e];
+      }
+    });
 
     var data = {
-      query: `query AssessmentFilter($fromDate:date,$toDate:date,$groupId:String,$subject:String) {
-        trackassessment(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}},groupId: {_eq: $groupId},subject: {_eq: $subject}}) {
+      query: `query AssessmentFilter($fromDate:date,$toDate:date,$groupId:String,$subject:String, $teacherId:String, $studentId: String) {
+        trackassessment(where: {date: {_gte: $fromDate}, _and: {date: {_lte: $toDate}} ${filterParamsString} }) {
           answersheet
           filter
           created_at
@@ -254,14 +300,10 @@ export class TrackAssessmentService {
           subject
           type
           date    
+          studentAssessmentStatus
         }
       }`,
-      variables: {
-        fromDate: fromDate,
-        toDate: toDate,
-        groupId: groupId,
-        subject: subject,
-      },
+      variables: filterVariables,
     };
 
     var config = {

@@ -20,9 +20,12 @@ import {
   Post,
   Body,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from "@nestjs/common";
 import { TrackAssessmentService } from "src/adapters/hasura/trackassessment.adapter";
 import { TrackAssessmentDto } from "./dto/trackassessment.dto";
+import { isUUID } from "class-validator";
 
 @ApiTags("Track Assessment")
 @Controller("trackassessment")
@@ -37,6 +40,7 @@ export class AssessmentController {
   @ApiBody({ type: TrackAssessmentDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createAssessment(
     @Req() request: Request,
     @Body() assessmentDto: TrackAssessmentDto
@@ -101,15 +105,19 @@ export class AssessmentController {
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "fromDate", required: false })
-  @ApiQuery({ name: "toDate", required: false })
+  @ApiQuery({ name: "fromDate", required: true })
+  @ApiQuery({ name: "toDate", required: true })
   @ApiQuery({ name: "groupId", required: false })
   @ApiQuery({ name: "subject", required: false })
+  @ApiQuery({ name: "teacherId", required: false })
+  @ApiQuery({ name: "studentId", required: false })
   public async trackassessmentFilter(
     @Query("fromDate") date: string,
     @Query("toDate") toDate: string,
     @Query("groupId") groupId: string,
     @Query("subject") subject: string,
+    @Query("teacherId") teacherId: string,
+    @Query("studentId") studentId: string,
     @Req() request: Request
   ) {
     return this.service.trackAssessmentFilter(
@@ -117,6 +125,8 @@ export class AssessmentController {
       toDate,
       groupId,
       subject,
+      teacherId,
+      studentId,
       request
     );
   }
