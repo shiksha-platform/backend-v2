@@ -1,8 +1,4 @@
 import {
-  AttendanceService,
-  SunbirdAttendanceToken,
-} from "../adapters/sunbirdrc/attendance.adapter";
-import {
   ApiTags,
   ApiBody,
   ApiOkResponse,
@@ -42,13 +38,22 @@ import {
   EsamwadAttendanceToken,
 } from "src/adapters/esamwad/attendance.adapter";
 import { IServicelocator } from "src/adapters/attendanceservicelocator";
+import {
+  AttendanceHasuraService,
+  ShikshaAttendanceToken,
+} from "src/adapters/hasura/attendance.adapter";
+import {
+  AttendanceService,
+  SunbirdAttendanceToken,
+} from "src/adapters/sunbirdrc/attendance.adapter";
 @ApiTags("Attendance")
 @Controller("attendance")
 export class AttendanceController {
   constructor(
-    private service: AttendanceService,
+    private service: AttendanceHasuraService,
     private hasuraService: AttendanceEsamwadService,
     @Inject(EsamwadAttendanceToken) private eSamwadProvider: IServicelocator,
+    @Inject(ShikshaAttendanceToken) private hasuraProvider: IServicelocator,
     @Inject(SunbirdAttendanceToken) private sunbirdProvider: IServicelocator
   ) {}
 
@@ -64,9 +69,11 @@ export class AttendanceController {
     @Param("id") attendanceId: string,
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.getAttendance(attendanceId, request);
-    } else {
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.getAttendance(attendanceId, request);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
+      return this.eSamwadProvider.getAttendance(attendanceId, request);
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
       return this.eSamwadProvider.getAttendance(attendanceId, request);
     }
   }
@@ -100,10 +107,12 @@ export class AttendanceController {
 
     Object.assign(attendaceDto, response);
 
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.createAttendance(request, attendaceDto);
-    } else {
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.createAttendance(request, attendaceDto);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.createAttendance(request, attendaceDto);
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.createAttendance(request, attendaceDto);
     }
   }
 
@@ -136,14 +145,20 @@ export class AttendanceController {
     };
 
     Object.assign(attendanceDto, response);
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.updateAttendance(
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.updateAttendance(
         attendanceId,
         request,
         attendanceDto
       );
-    } else {
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.updateAttendance(
+        attendanceId,
+        request,
+        attendanceDto
+      );
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.updateAttendance(
         attendanceId,
         request,
         attendanceDto
@@ -164,10 +179,12 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() studentSearchDto: AttendanceSearchDto
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.searchAttendance(request, studentSearchDto);
-    } else {
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.searchAttendance(request, studentSearchDto);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.searchAttendance(request, studentSearchDto);
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.searchAttendance(request, studentSearchDto);
     }
   }
 
@@ -192,8 +209,8 @@ export class AttendanceController {
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
   @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "fromDate", required: false })
-  @ApiQuery({ name: "toDate", required: false })
+  @ApiQuery({ name: "fromDate" })
+  @ApiQuery({ name: "toDate" })
   @ApiQuery({ name: "userId", required: false })
   @ApiQuery({ name: "userType", required: false })
   @ApiQuery({ name: "attendance", required: false })
@@ -214,8 +231,8 @@ export class AttendanceController {
 
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.attendanceFilter(
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.attendanceFilter(
         date,
         toDate,
         userId,
@@ -227,8 +244,21 @@ export class AttendanceController {
         topicId,
         request
       );
-    } else {
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.attendanceFilter(
+        date,
+        toDate,
+        userId,
+        userType,
+        attendance,
+        groupId,
+        schoolId,
+        eventId,
+        topicId,
+        request
+      );
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.attendanceFilter(
         date,
         toDate,
         userId,
@@ -254,10 +284,12 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() attendanceDto: [Object]
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
-    } else {
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.multipleAttendance(request, attendanceDto);
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
     }
   }
 
@@ -273,14 +305,20 @@ export class AttendanceController {
 
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.studentAttendanceByGroup(
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.studentAttendanceByGroup(
         date,
         groupId,
         request
       );
-    } else {
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.studentAttendanceByGroup(
+        date,
+        groupId,
+        request
+      );
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.studentAttendanceByGroup(
         date,
         groupId,
         request
@@ -300,14 +338,20 @@ export class AttendanceController {
 
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.studentAttendanceByUserId(
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.studentAttendanceByUserId(
         date,
         userId,
         request
       );
-    } else {
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.studentAttendanceByUserId(
+        date,
+        userId,
+        request
+      );
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.studentAttendanceByUserId(
         date,
         userId,
         request

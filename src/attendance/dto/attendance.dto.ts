@@ -113,24 +113,18 @@ export class AttendanceDto {
   @Expose()
   metaData: [string];
 
+  @ApiPropertyOptional()
+  @Expose()
+  syncTime: string;
+
   @Expose()
   createdAt: string;
 
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  syncTime: string;
-
   constructor(obj: any) {
-    this.attendanceId = obj?.osid ? `${obj.osid}` : "";
+    this.attendanceId = obj?.attendanceId ? `${obj.attendanceId}` : "";
     this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
     this.userType = obj?.userType ? `${obj.userType}` : "";
     this.userId = obj?.userId ? `${obj.userId}` : "";
@@ -145,9 +139,7 @@ export class AttendanceDto {
     this.image = obj?.image ? `${obj.image}` : "";
     this.syncTime = obj?.syncTime ? `${obj.syncTime}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }

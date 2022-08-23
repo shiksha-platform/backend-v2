@@ -93,7 +93,7 @@ export class QuestionService implements IServicelocator {
         if (Array.isArray(questionDto[e])) {
           newDataObject += `${e}: ${JSON.stringify(questionDto[e])}, `;
         } else {
-          newDataObject += `${e}: ${questionDto[e]}, `;
+          newDataObject += `${e}: "${questionDto[e]}", `;
         }
       }
     });

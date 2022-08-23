@@ -8,6 +8,12 @@ export class GroupSearchDto {
   limit: string;
 
   @ApiProperty({
+    type: Number,
+    description: "number",
+  })
+  page: number;
+
+  @ApiProperty({
     type: Object,
     description: "Filters",
   })
