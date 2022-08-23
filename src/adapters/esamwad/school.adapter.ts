@@ -3,6 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 import { EsamwadSchoolDto } from "src/school/dto/esamwad-school.dto";
 import { IServicelocator } from "../schoolservicelocator";
+import { SchoolDto } from "src/school/dto/school.dto";
 export const EsamwadSchoolToken = "EsamwadSchool";
 @Injectable()
 export class EsamwadSchoolService implements IServicelocator {
@@ -29,4 +30,7 @@ export class EsamwadSchoolService implements IServicelocator {
       data: responsedata,
     });
   }
+  createSchool(request: any, schoolDto: SchoolDto) {}
+  updateSchool(id: string, request: any, schoolDto: SchoolDto) {}
+  getSchool(schoolId: any, request: any) {}
 }

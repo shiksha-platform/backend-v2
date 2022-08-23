@@ -23,7 +23,7 @@ import {
   Request,
 } from "@nestjs/common";
 
-import { WorkHistoryService } from "../hasura/workhistory.adapter";
+import { WorkHistoryService } from "../adapters/hasura/workhistory.adapter";
 import { WorkHistoryDto } from "./dto/work-history.dto";
 
 @ApiTags("Work History")
