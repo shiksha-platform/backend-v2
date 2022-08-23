@@ -77,10 +77,15 @@ export class AttendanceHasuraService implements IServicelocator {
     attendanceDto: AttendanceDto
   ) {
     var axios = require("axios");
+    const attendanceSchema = new AttendanceDto({});
 
     let newDataObject = "";
     const newData = Object.keys(attendanceDto).forEach((e) => {
-      if (attendanceDto[e] && attendanceDto[e] != "") {
+      if (
+        attendanceDto[e] &&
+        attendanceDto[e] != "" &&
+        Object.keys(attendanceSchema).includes(e)
+      ) {
         newDataObject += `${e}: "${attendanceDto[e]}", `;
       }
     });
@@ -344,9 +349,6 @@ export class AttendanceHasuraService implements IServicelocator {
 
     const response = await axios(config);
     let resData = response?.data?.data?.attendance;
-    // console.log(resData.data.attendance);
-
-    // return;
 
     let dateData = resData.map((e: any) => {
       return e.attendanceDate;
@@ -483,10 +485,15 @@ export class AttendanceHasuraService implements IServicelocator {
 
   public async createAttendance(request: any, attendanceDto: AttendanceDto) {
     let axios = require("axios");
+    const attendanceSchema = new AttendanceDto({});
 
     let dataObject = "";
     const newDataObj = Object.keys(attendanceDto).forEach((e) => {
-      if (attendanceDto[e] && attendanceDto[e] != "") {
+      if (
+        attendanceDto[e] &&
+        attendanceDto[e] != "" &&
+        Object.keys(attendanceSchema).includes(e)
+      ) {
         dataObject += `${e}:{_eq:"${attendanceDto[e]}"}`;
       }
     });
@@ -518,7 +525,11 @@ export class AttendanceHasuraService implements IServicelocator {
     if (resData.length > 0) {
       let newDataObject = "";
       const newData = Object.keys(attendanceDto).forEach((e) => {
-        if (attendanceDto[e] && attendanceDto[e] != "") {
+        if (
+          attendanceDto[e] &&
+          attendanceDto[e] != "" &&
+          Object.keys(attendanceSchema).includes(e)
+        ) {
           newDataObject += `${e}: "${attendanceDto[e]}", `;
         }
       });
@@ -556,7 +567,11 @@ export class AttendanceHasuraService implements IServicelocator {
     } else {
       let newDataObject = "";
       const newData = Object.keys(attendanceDto).forEach((e) => {
-        if (attendanceDto[e] && attendanceDto[e] != "") {
+        if (
+          attendanceDto[e] &&
+          attendanceDto[e] != "" &&
+          Object.keys(attendanceSchema).includes(e)
+        ) {
           newDataObject += `${e}: "${attendanceDto[e]}", `;
         }
       });

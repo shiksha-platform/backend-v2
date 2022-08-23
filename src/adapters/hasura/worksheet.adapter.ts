@@ -11,10 +11,14 @@ export class WorksheetService {
 
   public async createWorksheet(request: any, worksheetDto: WorksheetDto) {
     var axios = require("axios");
-
+    const worksheetSchema = new WorksheetDto({});
     let newDataObject = "";
     const newData = Object.keys(worksheetDto).forEach((e) => {
-      if (worksheetDto[e] && worksheetDto[e] != "") {
+      if (
+        worksheetDto[e] &&
+        worksheetDto[e] != "" &&
+        Object.keys(worksheetSchema).includes(e)
+      ) {
         if (Array.isArray(worksheetDto[e])) {
           newDataObject += `${e}: ${JSON.stringify(worksheetDto[e])}, `;
         } else {
@@ -60,10 +64,14 @@ export class WorksheetService {
     worksheetDto: WorksheetDto
   ) {
     var axios = require("axios");
-
+    const worksheetSchema = new WorksheetDto({});
     let newDataObject = "";
     const newData = Object.keys(worksheetDto).forEach((e) => {
-      if (worksheetDto[e] && worksheetDto[e] != "") {
+      if (
+        worksheetDto[e] &&
+        worksheetDto[e] != "" &&
+        Object.keys(worksheetSchema).includes(e)
+      ) {
         if (Array.isArray(worksheetDto[e])) {
           newDataObject += `${e}: ${JSON.stringify(worksheetDto[e])}, `;
         } else {
