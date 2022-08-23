@@ -26,8 +26,8 @@ export class HasuraGroupService implements IServicelocatorgroup {
     var axios = require("axios");
 
     var data = {
-      query: `query GetGroup($groupId:uuid) {
-     group(where: {groupId: {_eq: $groupId}}) {
+      query: `query GetGroup($groupId:uuid!) {
+        group_by_pk(groupId: $groupId) {
         groupId
         deactivationReason
         created_at
@@ -62,9 +62,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
 
     const response = await axios(config);
 
-    let result = response.data.data.group.map(
-      (item: any) => new GroupDto(item)
-    );
+    let result = new GroupDto(response?.data?.data?.group_by_pk);
 
     return new SuccessResponse({
       statusCode: 200,
