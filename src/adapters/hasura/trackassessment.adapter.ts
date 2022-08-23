@@ -180,9 +180,16 @@ export class TrackAssessmentService {
     teacherId: string,
     groupId: string,
     subject: string,
+    page: number,
     request: any
   ) {
     var axios = require("axios");
+
+    let offset = 0;
+
+    if (page > 1) {
+      offset = parseInt(limit) * (page - 1);
+    }
     const searchData = {
       source,
       studentId,
@@ -190,6 +197,7 @@ export class TrackAssessmentService {
       groupId,
       subject,
     };
+
     let newDataObject = "";
     const newData = Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
@@ -198,8 +206,8 @@ export class TrackAssessmentService {
     });
 
     var data = {
-      query: `query searchTrackAssessment($limit:Int) {
-  trackassessment(limit: $limit, where: {${newDataObject}}) {
+      query: `query searchTrackAssessment($offset:Int,$limit:Int) {
+  trackassessment(limit: $limit, offset: $offset, where: {${newDataObject}}) {
     answersheet
     filter
     created_at
@@ -219,6 +227,7 @@ export class TrackAssessmentService {
 }`,
       variables: {
         limit: parseInt(limit),
+        offset: offset,
       },
     };
 

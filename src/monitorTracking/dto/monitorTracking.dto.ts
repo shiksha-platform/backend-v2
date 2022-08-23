@@ -1,5 +1,7 @@
 import { Expose } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
+import { VisitStatus } from "./visitStatus.enum";
+import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
 
 export class MonitorTrackingDto {
   @Expose()
@@ -33,9 +35,19 @@ export class MonitorTrackingDto {
   @Expose()
   feedback: string;
 
-  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([VisitStatus.pending, VisitStatus.visited])
+  @IsEnum(VisitStatus)
+  @ApiProperty({
+    enum: [VisitStatus.pending, VisitStatus.visited],
+  })
   @Expose()
   status: string;
+
+  @ApiProperty({ default: new Date().toISOString().split("T")[0] })
+  @Expose()
+  lastVisited: string;
 
   @Expose()
   createdAt: string;
@@ -62,6 +74,8 @@ export class MonitorTrackingDto {
     this.visitDate = obj?.visitDate ? `${obj.visitDate}` : "";
     this.feedback = obj?.feedback ? `${obj.feedback}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
+
+    this.lastVisited = obj?.lastVisited ? `${obj.lastVisited}` : "";
     this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
     this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }

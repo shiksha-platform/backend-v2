@@ -21,6 +21,7 @@ export class MonitorTrackingService {
           status
           updated_at
           visitDate
+          lastVisited
         }
       }`,
       variables: { monitorTrackingId: monitorId },
@@ -53,21 +54,20 @@ export class MonitorTrackingService {
     monitorTrackingDto: MonitorTrackingDto
   ) {
     var axios = require("axios");
+
+    let newDataObject = "";
+    Object.keys(monitorTrackingDto).forEach((e) => {
+      if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
+        newDataObject += `${e}: "${monitorTrackingDto[e]}", `;
+      }
+    });
     var data = {
-      query: `mutation CreateMonitorTracking($schoolId:String,$groupId:String,$monitorId:String,$scheduleVisit:date,$visitDate:date, $feedback:String, $status:String) {
-        insert_monitortracking_one(object: {schoolId: $schoolId, groupId: $groupId, monitorId:$monitorId,scheduleVisitDate: $scheduleVisit, visitDate:$visitDate, feedback: $feedback, status: $status}) {
+      query: `mutation CreateMonitorTracking {
+        insert_monitortracking_one(object: {${newDataObject}}) {
           monitorTrackingId
         }
       }`,
-      variables: {
-        schoolId: monitorTrackingDto.schoolId,
-        groupId: monitorTrackingDto.groupId,
-        monitorId: monitorTrackingDto.monitorId,
-        scheduleVisit: monitorTrackingDto.scheduleVisitDate,
-        visitDate: monitorTrackingDto.visitDate,
-        feedback: monitorTrackingDto.feedback,
-        status: monitorTrackingDto.status,
-      },
+      variables: {},
     };
 
     var config = {
@@ -95,20 +95,11 @@ export class MonitorTrackingService {
     monitorTrackingDto: MonitorTrackingDto
   ) {
     var axios = require("axios");
-    const updateData = {
-      schoolId: monitorTrackingDto.schoolId,
-      groupId: monitorTrackingDto.groupId,
-      monitorId: monitorTrackingDto.monitorId,
-      scheduleVisitDate: monitorTrackingDto.scheduleVisitDate,
-      visitDate: monitorTrackingDto.visitDate,
-      feedback: monitorTrackingDto.feedback,
-      status: monitorTrackingDto.status,
-    };
 
     let newDataObject = "";
-    const newData = Object.keys(updateData).forEach((e) => {
-      if (updateData[e] && updateData[e] != "") {
-        newDataObject += `${e}:"${updateData[e]}"`;
+    Object.keys(monitorTrackingDto).forEach((e) => {
+      if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
+        newDataObject += `${e}:"${monitorTrackingDto[e]}"`;
       }
     });
 
@@ -151,10 +142,15 @@ export class MonitorTrackingService {
     groupId: string,
     scheduleVisitDate: Date,
     visitDate: Date,
+    page: number,
     request: any
   ) {
     var axios = require("axios");
+    let offset = 0;
 
+    if (page > 1) {
+      offset = parseInt(limit) * (page - 1);
+    }
     const searchData = {
       monitorTrackingId,
       monitorId,
@@ -165,15 +161,15 @@ export class MonitorTrackingService {
     };
 
     let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
+    Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
         newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
 
     var data = {
-      query: `query SearchMonitorTracking($limit:Int) {
-            monitortracking(where:{ ${newDataObject}}, limit: $limit) {
+      query: `query SearchMonitorTracking($offset:Int,$limit:Int) {
+            monitortracking(where:{ ${newDataObject}}, offset: $offset,limit: $limit) {
               created_at
               feedback
               monitorTrackingId
@@ -184,9 +180,10 @@ export class MonitorTrackingService {
               monitorId
               updated_at
               visitDate
+              lastVisited
             }
           }`,
-      variables: { limit: parseInt(limit) },
+      variables: { limit: parseInt(limit), offset: offset },
     };
 
     var config = {
@@ -200,6 +197,7 @@ export class MonitorTrackingService {
     };
 
     const response = await axios(config);
+    console.log(response.data);
 
     let result = response.data.data.monitortracking.map(
       (item: any) => new MonitorTrackingDto(item)
