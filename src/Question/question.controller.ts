@@ -122,17 +122,33 @@ export class QuestionController {
 
   @Get(":adapter/subjectlist")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all subject list" })
+  @ApiQuery({ name: "gradeLevel", required: true })
   @ApiForbiddenResponse({ description: "Forbidden" })
   public async getSubjectList(
     @Param("adapter") adapter: string,
-    @Req() request: Request
+    @Query("gradeLevel") gradeLevel: string
   ) {
     if (adapter === "diksha") {
-      return this.dikshaProvider.getSubjectList();
+      return this.dikshaProvider.getSubjectList(gradeLevel);
     } else if (adapter === "khanacademy") {
-      return this.khanacademyProvider.getSubjectList();
+      return this.khanacademyProvider.getSubjectList(gradeLevel);
+    }
+  }
+
+  @Get(":adapter/topicslist")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiOkResponse({ description: "Get all subject list" })
+  @ApiQuery({ name: "subject", required: true })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async getTopicsList(
+    @Param("adapter") adapter: string,
+    @Query("subject") subject: string
+  ) {
+    if (adapter === "diksha") {
+      return this.dikshaProvider.getTopicsList(subject);
+    } else if (adapter === "khanacademy") {
+      return this.khanacademyProvider.getTopicsList(subject);
     }
   }
 

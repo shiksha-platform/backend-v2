@@ -22,6 +22,7 @@ export class MentorTrackingService {
     schoolId
     updated_at
     visitDate
+    lastVisited
   }
 }`,
       variables: { mentorTrackingId: mentorId },
@@ -55,21 +56,20 @@ export class MentorTrackingService {
     mentorTrackingDto: MentorTrackingDto
   ) {
     var axios = require("axios");
+
+    let newDataObject = "";
+    const newData = Object.keys(mentorTrackingDto).forEach((e) => {
+      if (mentorTrackingDto[e] && mentorTrackingDto[e] != "") {
+        newDataObject += `${e}: "${mentorTrackingDto[e]}", `;
+      }
+    });
     var data = {
-      query: `mutation createMentorTracking($mentorId:String,$teacherId:String,$schoolId:String,$scheduleVisitDate:date,$visitDate:date,$status:String,$feedback:String) {
-  insert_mentortracking_one(object: {mentorId: $mentorId, teacherId:$teacherId, schoolId:$schoolId,scheduleVisitDate: $scheduleVisitDate, visitDate: $visitDate, status: $status, feedback:$feedback}) {
+      query: `mutation createMentorTracking {
+  insert_mentortracking_one(object: {${newDataObject}}) {
     mentorTrackingId
   }
 }`,
-      variables: {
-        mentorId: mentorTrackingDto.mentorId,
-        teacherId: mentorTrackingDto.teacherId,
-        schoolId: mentorTrackingDto.schoolId,
-        scheduleVisitDate: mentorTrackingDto.scheduleVisitDate,
-        visitDate: mentorTrackingDto.visitDate,
-        status: mentorTrackingDto.status,
-        feedback: mentorTrackingDto.feedback,
-      },
+      variables: {},
     };
 
     var config = {
@@ -96,20 +96,10 @@ export class MentorTrackingService {
     request: any,
     mentorTrackingDto: MentorTrackingDto
   ) {
-    const updateData = {
-      mentorId: mentorTrackingDto.mentorId,
-      teacherId: mentorTrackingDto.teacherId,
-      schoolId: mentorTrackingDto.schoolId,
-      scheduleVisitDate: mentorTrackingDto.scheduleVisitDate,
-      visitDate: mentorTrackingDto.visitDate,
-      status: mentorTrackingDto.status,
-      feedback: mentorTrackingDto.feedback,
-    };
-
     let newDataObject = "";
-    const newData = Object.keys(updateData).forEach((e) => {
-      if (updateData[e] && updateData[e] != "") {
-        newDataObject += `${e}:"${updateData[e]}" `;
+    const newData = Object.keys(mentorTrackingDto).forEach((e) => {
+      if (mentorTrackingDto[e] && mentorTrackingDto[e] != "") {
+        newDataObject += `${e}:"${mentorTrackingDto[e]}" `;
       }
     });
 
@@ -191,6 +181,7 @@ export class MentorTrackingService {
     schoolId
     updated_at
     visitDate
+    lastVisited
   }
 }`,
       variables: {

@@ -11,6 +11,8 @@ import {
   Req,
   CacheInterceptor,
   Query,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -49,6 +51,7 @@ export class MonitorTrackingController {
   @ApiBody({ type: MonitorTrackingDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createMonitor(
     @Req() request: Request,
     @Body() monitorDto: MonitorTrackingDto
@@ -63,6 +66,7 @@ export class MonitorTrackingController {
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateMonitor(
     @Param("id") monitorTrackingId: string,
     @Req() request: Request,

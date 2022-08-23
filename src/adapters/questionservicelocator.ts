@@ -11,7 +11,8 @@ export interface IServicelocator {
     request: any
   );
   getAllQuestionsByQuestionIds(questionIds: [string], request: any);
-  getSubjectList();
+  getSubjectList(gradeLevel: string);
+  getTopicsList(subject: string);
   getCompetenciesList(subject: string, limit: string, request: any);
   getOneQuestion(questionId: string, request: any);
   getQuestion(questionId, request);
