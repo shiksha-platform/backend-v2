@@ -293,6 +293,52 @@ export class QuestionService implements IServicelocator {
     });
   }
 
+  public async bulkImport(request: any, questionDto: [Object]) {
+    let axios = require("axios");
+    const result = Promise.all(
+      questionDto.map(async (data: any) => {
+        let newDataObject = "";
+        const newData = Object.keys(data).forEach((e) => {
+          if (data[e] && data[e] != "") {
+            if (Array.isArray(data[e])) {
+              newDataObject += `${e}: ${JSON.stringify(data[e])}, `;
+            } else {
+              newDataObject += `${e}: ${data[e]}, `;
+            }
+          }
+        });
+
+        var query = {
+          query: `mutation CreateQuestion {
+              insert_question_one(object: {${newDataObject}}) {
+                examQuestionId
+              }
+            }
+            `,
+          variables: {},
+        };
+        var config = {
+          method: "post",
+          url: process.env.REGISTRYHASURA,
+          headers: {
+            "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+            "Content-Type": "application/json",
+          },
+          data: query,
+        };
+
+        const response = await axios(config);
+        return await response.data;
+      })
+    );
+    const responseArray = await result;
+    return new SuccessResponse({
+      statusCode: 200,
+      message: " Ok.",
+      data: responseArray,
+    });
+  }
+
   public async getAllQuestions(
     questionType: string,
     subject: [string],
