@@ -72,8 +72,7 @@ export class TrackAssessmentDto {
   date: string;
 
   @IsString()
-  @IsNotEmpty()
-  @IsIn([Status.COMPLETED, Status.ABSENT])
+  @IsIn([Status.NONE, Status.COMPLETED, Status.ABSENT])
   @ApiProperty({
     description:
       "Assessment Status - whether student was absent or he has completed the assessment.",

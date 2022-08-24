@@ -73,10 +73,11 @@ export class TrackAssessmentService {
     let variables: object;
     try {
       const axios = require("axios");
-      if (
-        assessmentDto.status ==
-        Status.COMPLETED
-      ) {
+      if (!assessmentDto.status) {
+        // let's set it as "COMPLETED" by default
+        assessmentDto.status = Status.COMPLETED;
+      }
+      if (assessmentDto.status == Status.COMPLETED) {
         const answer = JSON.stringify(assessmentDto.answersheet);
         const jsonObj = JSON.parse(answer);
         const params = JSON.parse(jsonObj);
