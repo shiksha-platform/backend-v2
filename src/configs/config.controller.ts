@@ -1,4 +1,4 @@
-import { ConfigService } from "../adapters/sunbirdrc/config.adapter";
+import { SunbirdConfigToken } from "../adapters/sunbirdrc/config.adapter";
 import {
   ApiTags,
   ApiBody,
@@ -20,15 +20,21 @@ import {
   Req,
   Query,
   CacheInterceptor,
+  Inject,
 } from "@nestjs/common";
 import { ConfigSearchDto } from "./dto/config-search.dto";
 import { Request } from "@nestjs/common";
 import { ConfigDto } from "./dto/config.dto";
+import { IServicelocator } from "src/adapters/configservicelocator";
+import { HasuraConfigToken } from "src/adapters/hasura/config.adapter";
 
 @ApiTags("Config")
 @Controller("config")
 export class ConfigController {
-  constructor(private service: ConfigService) {}
+  constructor(
+    @Inject(HasuraConfigToken) private hasuraProvider: IServicelocator,
+    @Inject(SunbirdConfigToken) private sunbirdProvider: IServicelocator
+  ) {}
 
   @Get(":module/all")
   @ApiBasicAuth("access-token")
@@ -39,7 +45,11 @@ export class ConfigController {
     strategy: "excludeAll",
   })
   public async getConfig(@Req() request: Request) {
-    return this.service.getConfig(request);
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.getConfig(request);
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.getConfig(request);
+    }
   }
 
   @Post("")
@@ -52,7 +62,11 @@ export class ConfigController {
     @Req() request: Request,
     @Body() configDto: ConfigDto
   ) {
-    return this.service.createConfig(request, configDto);
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.createConfig(request, configDto);
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.createConfig(request, configDto);
+    }
   }
 
   @Post(":multipleConfigs")
@@ -64,6 +78,10 @@ export class ConfigController {
     @Req() request: Request,
     @Body() configDto: [Object]
   ) {
-    return this.service.createModuleConfigs(request, configDto);
+    if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.createModuleConfigs(request, configDto);
+    } else if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.createModuleConfigs(request, configDto);
+    }
   }
 }

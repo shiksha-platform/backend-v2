@@ -8,6 +8,12 @@ export class ConfigSearchDto {
   limit: string;
 
   @ApiProperty({
+    type: String,
+    description: "Page",
+  })
+  page: Number;
+
+  @ApiProperty({
     type: Object,
     description: "Filters",
   })
