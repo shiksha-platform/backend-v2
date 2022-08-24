@@ -1,4 +1,4 @@
-export enum StudentAssessmentStatus {
+export enum Status {
   COMPLETED = "COMPLETED",
   ABSENT = "ABSENT",
 }

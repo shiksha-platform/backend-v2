@@ -5,7 +5,7 @@ import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { TrackAssessmentDto } from "src/trackAssessment/dto/trackassessment.dto";
 import { ErrorResponse } from "src/error-response";
-import { StudentAssessmentStatus } from "../../trackAssessment/enums/statuses.enum";
+import { Status } from "../../trackAssessment/enums/statuses.enum";
 
 @Injectable()
 export class TrackAssessmentService {
@@ -33,7 +33,7 @@ export class TrackAssessmentService {
         groupId
         subject
         type
-        studentAssessmentStatus
+        status
       }
     }`,
         variables: {
@@ -74,8 +74,8 @@ export class TrackAssessmentService {
     try {
       const axios = require("axios");
       if (
-        assessmentDto.studentAssessmentStatus ==
-        StudentAssessmentStatus.COMPLETED
+        assessmentDto.status ==
+        Status.COMPLETED
       ) {
         const answer = JSON.stringify(assessmentDto.answersheet);
         const jsonObj = JSON.parse(answer);
@@ -123,7 +123,7 @@ export class TrackAssessmentService {
           totalScore: assessmentDto.totalScore,
           groupId: assessmentDto.groupId,
           subject: assessmentDto.subject,
-          studentAssessmentStatus: assessmentDto.studentAssessmentStatus,
+          status: assessmentDto.status,
         };
       } else {
         variables = {
@@ -138,13 +138,13 @@ export class TrackAssessmentService {
           totalScore: null,
           groupId: assessmentDto.groupId,
           subject: null,
-          studentAssessmentStatus: assessmentDto.studentAssessmentStatus,
+          status: assessmentDto.status,
         };
       }
 
       const data = {
-        query: `mutation CreateTrackAssessment($filter: String, $score: String, $totalScore:String, $source: String, $questions: String, $studentId: String, $teacherId: String, $type: String, $answersheet: String,$groupId:String, $subject:String, $studentAssessmentStatus: String) {
-          insert_trackassessment_one(object:{filter: $filter, score: $score, totalScore:$totalScore, source: $source, questions: $questions, studentId: $studentId, teacherId: $teacherId, type: $type, answersheet: $answersheet,groupId:$groupId,subject:$subject, studentAssessmentStatus: $studentAssessmentStatus}) {
+        query: `mutation CreateTrackAssessment($filter: String, $score: String, $totalScore:String, $source: String, $questions: String, $studentId: String, $teacherId: String, $type: String, $answersheet: String,$groupId:String, $subject:String, $status: String) {
+          insert_trackassessment_one(object:{filter: $filter, score: $score, totalScore:$totalScore, source: $source, questions: $questions, studentId: $studentId, teacherId: $teacherId, type: $type, answersheet: $answersheet,groupId:$groupId,subject:$subject, status: $status}) {
             trackAssessmentId
           }
         }`,
@@ -222,7 +222,7 @@ export class TrackAssessmentService {
     groupId
     subject
     type
-    studentAssessmentStatus
+    status
   }
 }`,
       variables: {
@@ -300,7 +300,7 @@ export class TrackAssessmentService {
           subject
           type
           date    
-          studentAssessmentStatus
+          status
         }
       }`,
       variables: filterVariables,
