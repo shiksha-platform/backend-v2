@@ -85,6 +85,10 @@ export class WorkHistoryDto {
   @Expose()
   modeOfPosting: string;
 
+  @ApiProperty({})
+  @Expose()
+  organizationName: string;
+
   @Expose()
   createdAt: string;
 
@@ -112,6 +116,9 @@ export class WorkHistoryDto {
     this.placeOfPosting = obj?.placeOfPosting ? `${obj.placeOfPosting}` : "";
     this.dateOfOrder = obj?.dateOfOrder ? obj.dateOfOrder : "";
     this.modeOfPosting = obj?.modeOfPosting ? `${obj.modeOfPosting}` : "";
+    this.organizationName = obj?.organizationName
+      ? `${obj.organizationName}`
+      : "";
     this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
     this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }

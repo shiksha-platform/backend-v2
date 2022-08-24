@@ -30,4 +30,6 @@ export interface IServicelocator {
     page: number,
     request: any
   );
+
+  bulkImport(request: any, questionDto: [Object]);
 }

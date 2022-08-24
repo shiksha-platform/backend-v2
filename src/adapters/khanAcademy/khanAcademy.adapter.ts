@@ -50,4 +50,5 @@ export class KhanAcademyQuestionService implements IServicelocator {
     page: number,
     request: any
   ) {}
+  bulkImport(request: any, questionDto: [Object]) {}
 }
