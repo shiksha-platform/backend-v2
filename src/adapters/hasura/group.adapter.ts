@@ -7,7 +7,6 @@ import { response } from "express";
 import { SuccessResponse } from "src/success-response";
 const resolvePath = require("object-resolve-path");
 import { GroupDto } from "src/group/dto/group.dto";
-import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { GroupSearchDto } from "src/group/dto/group-search.dto";
 import { IServicelocatorgroup } from "../groupservicelocator";
@@ -171,16 +170,19 @@ export class HasuraGroupService implements IServicelocatorgroup {
       offset = parseInt(groupSearchDto.limit) * (groupSearchDto.page - 1);
     }
 
-    let newDataObject = "";
-    const newData = Object.keys(groupSearchDto.filters).forEach((e) => {
-      if (groupSearchDto.filters[e] && groupSearchDto.filters[e] != "") {
-        newDataObject += `${e}:{_eq:"${groupSearchDto.filters[e]}"}`;
-      }
-    });
+    let filters = groupSearchDto.filters;
 
+    const newdata = Object.keys(groupSearchDto.filters).forEach((item) => {
+      Object.keys(groupSearchDto.filters[item]).forEach((e) => {
+        if (!e.startsWith("_")) {
+          filters[item][`_${e}`] = filters[item][e];
+          delete filters[item][e];
+        }
+      });
+    });
     var data = {
-      query: `query SearchGroup($limit:Int, $offset:Int) {
-           group(where:{ ${newDataObject}}, limit: $limit, offset: $offset,) {
+      query: `query SearchGroup($filters:group_bool_exp,$limit:Int, $offset:Int) {
+           group(where:$filters, limit: $limit, offset: $offset,) {
                 groupId
                 deactivationReason
                 created_at
@@ -201,6 +203,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
       variables: {
         limit: parseInt(groupSearchDto.limit),
         offset: offset,
+        filters: groupSearchDto.filters,
       },
     };
     var config = {
