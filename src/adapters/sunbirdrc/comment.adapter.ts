@@ -8,8 +8,10 @@ import { ErrorResponse } from "src/error-response";
 import { CommentDto } from "src/comment/dto/comment.dto";
 import { CommentSearchDto } from "src/comment/dto/comment-search.dto";
 import jwt_decode from "jwt-decode";
+import { IServicelocator } from "../commentservicelocator";
+export const SunbirdCommentToken = "SunbirdComment";
 @Injectable()
-export class CommentService {
+export class SunbirdCommentService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Comment`;
   userUrl = `${process.env.BASEAPIURL}/User`;
