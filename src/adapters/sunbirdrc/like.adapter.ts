@@ -8,8 +8,10 @@ import { ErrorResponse } from "src/error-response";
 import { LikeDto } from "src/like/dto/like.dto";
 import { LikeSearchDto } from "src/like/dto/like-search.dto";
 import jwt_decode from "jwt-decode";
+import { IServicelocator } from "../likeservicelocator";
+export const SunbirdLikeToken = "SunbirdLike";
 @Injectable()
-export class LikeService {
+export class SunbirdLikeService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Like`;
   userUrl = `${process.env.BASEAPIURL}/User`;

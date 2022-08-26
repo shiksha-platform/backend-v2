@@ -12,6 +12,7 @@ import {
   CacheInterceptor,
   Query,
   Delete,
+  Inject,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -23,13 +24,20 @@ import {
   ApiQuery,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
-import { LikeService } from "src/adapters/sunbirdrc/like.adapter";
+import { SunbirdLikeToken } from "src/adapters/sunbirdrc/like.adapter";
 import { LikeDto } from "./dto/like.dto";
 import { LikeSearchDto } from "./dto/like-search.dto";
+import { HasuraLikeToken } from "src/adapters/hasura/like.adapter";
+import { IServicelocator } from "src/adapters/likeservicelocator";
 @ApiTags("Like")
 @Controller("like")
 export class LikeController {
-  constructor(private readonly service: LikeService) {}
+  constructor(
+    @Inject(SunbirdLikeToken)
+    private sunbirdProvider: IServicelocator,
+    @Inject(HasuraLikeToken)
+    private hasuraProvider: IServicelocator
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -38,8 +46,12 @@ export class LikeController {
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  getLikes(@Param("id") likeId: string, @Req() request: Request) {
-    return this.service.getLike(likeId, request);
+  getLike(@Param("id") likeId: string, @Req() request: Request) {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.getLike(likeId, request);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.getLike(likeId, request);
+    }
   }
 
   @Post()
@@ -51,7 +63,11 @@ export class LikeController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async createLike(@Req() request: Request, @Body() likeDto: LikeDto) {
-    return this.service.createLike(request, likeDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.createLike(request, likeDto);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.createLike(request, likeDto);
+    }
   }
 
   @Put("/:id")
@@ -66,7 +82,11 @@ export class LikeController {
     @Req() request: Request,
     @Body() likeDto: LikeDto
   ) {
-    return await this.service.updateLike(likeId, request, likeDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.updateLike(likeId, request, likeDto);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.updateLike(likeId, request, likeDto);
+    }
   }
 
   @Post("/search")
@@ -82,7 +102,11 @@ export class LikeController {
     @Req() request: Request,
     @Body() likeSearchDto: LikeSearchDto
   ) {
-    return await this.service.searchLike(request, likeSearchDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.searchLike(request, likeSearchDto);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.searchLike(request, likeSearchDto);
+    }
   }
 
   @Post("/getAllLikes")
@@ -96,17 +120,33 @@ export class LikeController {
     @Query("context") context: string,
     @Req() request: Request
   ) {
-    return this.service.getCountLike(contextId, context, request);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.getCountLike(
+        contextId,
+        context,
+        request
+      );
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.getCountLike(
+        contextId,
+        context,
+        request
+      );
+    }
   }
 
   @Delete("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Delete like. " })
-  public async deleteLikes(
+  public async deleteLike(
     @Param("id") likeId: string,
     @Req() request: Request
   ) {
-    return this.service.deleteLike(likeId, request);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.deleteLike(likeId, request);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.deleteLike(likeId, request);
+    }
   }
 }

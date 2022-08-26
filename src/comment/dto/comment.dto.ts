@@ -38,14 +38,8 @@ export class CommentDto {
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.commentId = obj?.osid ? `${obj.osid}` : "";
+    this.commentId = obj?.commentId ? `${obj.commentId}` : "";
     this.contextId = obj?.contextId ? `${obj.contextId}` : "";
     this.context = obj?.context ? `${obj.context}` : "";
     this.userId = obj?.userId ? `${obj.userId}` : "";
@@ -53,9 +47,7 @@ export class CommentDto {
     this.privacy = obj?.privacy ? `${obj.privacy}` : "";
     this.parentId = obj?.parentId ? `${obj.parentId}` : "";
     this.status = obj?.status ? `${obj.status}` : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }
