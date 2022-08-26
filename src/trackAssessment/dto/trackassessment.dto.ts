@@ -79,6 +79,7 @@ export class TrackAssessmentDto {
     enum: [Status.COMPLETED, Status.ABSENT],
     required: true,
   })
+  @Expose()
   status: string;
 
   @Expose()
