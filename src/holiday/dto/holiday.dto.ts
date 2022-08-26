@@ -8,9 +8,10 @@ export class HolidayDto {
   @ApiProperty({
     type: String,
     description: "The date of the holiday",
+    default: `eg. ${new Date().toISOString().split("T")[0]}`,
   })
   @Expose()
-  date: string;
+  date: Date;
 
   @ApiProperty({
     type: String,
@@ -22,9 +23,10 @@ export class HolidayDto {
   @ApiProperty({
     type: String,
     description: "The year of the holiday",
+    default: `eg. ${new Date().toISOString().split("T")[0]}`,
   })
   @Expose()
-  year: string;
+  year: Date;
 
   @ApiProperty({
     type: String,
@@ -46,21 +48,14 @@ export class HolidayDto {
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
   constructor(obj: any) {
-    this.holidayId = obj?.osid ? `${obj.osid}` : "";
-    this.date = `${obj.date}`;
+    this.holidayId = obj?.holidayId ? `${obj.holidayId}` : "";
+    this.date = obj?.remark ? obj.remark : "";
     this.remark = obj?.remark ? `${obj.remark}` : "";
-    this.year = obj?.year ? `${obj.year}` : "";
+    this.year = obj?.year ? obj.year : "";
     this.context = obj?.context ? `${obj.context}` : "";
     this.contextId = obj?.contextId ? `${obj.contextId}` : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }
