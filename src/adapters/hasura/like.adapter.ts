@@ -35,24 +35,24 @@ export class HasuraLikeService implements IServicelocator {
     const resultData = resData.data[0];
     likeDto.userId = resultData.osid;
     const likeSchema = new LikeDto({});
-    let newDataObject = "";
-    const newData = Object.keys(likeDto).forEach((e) => {
+    let query = "";
+    Object.keys(likeDto).forEach((e) => {
       if (
         likeDto[e] &&
         likeDto[e] != "" &&
         Object.keys(likeSchema).includes(e)
       ) {
         if (Array.isArray(likeDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(likeDto[e])}, `;
+          query += `${e}: ${JSON.stringify(likeDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${likeDto[e]}", `;
+          query += `${e}: "${likeDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation CreateLike {
-        insert_like_one(object: {${newDataObject}}) {
+        insert_like_one(object: {${query}}) {
          likeId
         }
       }
@@ -104,24 +104,24 @@ export class HasuraLikeService implements IServicelocator {
     const resultData = userResponse.data[0];
     likeDto.userId = resultData.osid;
     const likeSchema = new LikeDto({});
-    let newDataObject = "";
-    const newData = Object.keys(likeDto).forEach((e) => {
+    let query = "";
+    Object.keys(likeDto).forEach((e) => {
       if (
         likeDto[e] &&
         likeDto[e] != "" &&
         Object.keys(likeSchema).includes(e)
       ) {
         if (Array.isArray(likeDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(likeDto[e])}, `;
+          query += `${e}: ${JSON.stringify(likeDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${likeDto[e]}", `;
+          query += `${e}: "${likeDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation UpdateLike($likeId:uuid) {
-          update_like(where: {likeId: {_eq: $likeId}}, _set: {${newDataObject}}) {
+          update_like(where: {likeId: {_eq: $likeId}}, _set: {${query}}) {
           affected_rows
         }}`,
       variables: {
@@ -198,7 +198,7 @@ export class HasuraLikeService implements IServicelocator {
 
     let filters = likeSearchDto.filters;
 
-    const newdata = Object.keys(likeSearchDto.filters).forEach((item) => {
+    Object.keys(likeSearchDto.filters).forEach((item) => {
       Object.keys(likeSearchDto.filters[item]).forEach((e) => {
         if (!e.startsWith("_")) {
           filters[item][`_${e}`] = filters[item][e];

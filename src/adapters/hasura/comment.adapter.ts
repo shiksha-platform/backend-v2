@@ -35,24 +35,24 @@ export class HasuraCommentService implements IServicelocator {
     const res = resData.data[0];
     commentDto.userId = res.osid;
     const commentSchema = new CommentDto({});
-    let newDataObject = "";
-    const newData = Object.keys(commentDto).forEach((e) => {
+    let query = "";
+    Object.keys(commentDto).forEach((e) => {
       if (
         commentDto[e] &&
         commentDto[e] != "" &&
         Object.keys(commentSchema).includes(e)
       ) {
         if (Array.isArray(commentDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(commentDto[e])}, `;
+          query += `${e}: ${JSON.stringify(commentDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${commentDto[e]}", `;
+          query += `${e}: "${commentDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation CreateComment {
-        insert_comment_one(object: {${newDataObject}}) {
+        insert_comment_one(object: {${query}}) {
          commentId
         }
       }
@@ -105,24 +105,24 @@ export class HasuraCommentService implements IServicelocator {
     const resultData = userResponse.data[0];
     commentDto.userId = resultData.osid;
     const commentSchema = new CommentDto({});
-    let newDataObject = "";
-    const newData = Object.keys(commentDto).forEach((e) => {
+    let query = "";
+    Object.keys(commentDto).forEach((e) => {
       if (
         commentDto[e] &&
         commentDto[e] != "" &&
         Object.keys(commentSchema).includes(e)
       ) {
         if (Array.isArray(commentDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(commentDto[e])}, `;
+          query += `${e}: ${JSON.stringify(commentDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${commentDto[e]}", `;
+          query += `${e}: "${commentDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation UpdateComment($commentId:uuid) {
-          update_comment(where: {commentId: {_eq: $commentId}}, _set: {${newDataObject}}) {
+          update_comment(where: {commentId: {_eq: $commentId}}, _set: {${query}}) {
           affected_rows
         }}`,
       variables: {
@@ -203,7 +203,7 @@ export class HasuraCommentService implements IServicelocator {
 
     let filters = commentSearchDto.filters;
 
-    const newdata = Object.keys(commentSearchDto.filters).forEach((item) => {
+    Object.keys(commentSearchDto.filters).forEach((item) => {
       Object.keys(commentSearchDto.filters[item]).forEach((e) => {
         if (!e.startsWith("_")) {
           filters[item][`_${e}`] = filters[item][e];
