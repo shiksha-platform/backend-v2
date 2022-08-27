@@ -3,7 +3,7 @@ import { GroupInterface } from "../../group/interfaces/group.interface";
 import { HttpService } from "@nestjs/axios";
 import { AxiosResponse } from "axios";
 import { first, map, Observable } from "rxjs";
-import { response } from "express";
+import e, { response } from "express";
 import { SuccessResponse } from "src/success-response";
 const resolvePath = require("object-resolve-path");
 import { GroupDto } from "src/group/dto/group.dto";
@@ -12,6 +12,7 @@ import { GroupSearchDto } from "src/group/dto/group-search.dto";
 import { IServicelocatorgroup } from "../groupservicelocator";
 import { UserDto } from "src/user/dto/user.dto";
 import { StudentDto } from "src/student/dto/student.dto";
+import { isArray } from "class-validator";
 export const HasuraGroupToken = "HasuraGroup";
 @Injectable()
 export class HasuraGroupService implements IServicelocatorgroup {
@@ -229,98 +230,74 @@ export class HasuraGroupService implements IServicelocatorgroup {
     });
   }
 
-  public async findMembersOfGroup(id: string, role: string, request: any) {
+  public async findMembersOfGroup(groupId: string, role: string, request: any) {
     let axios = require("axios");
-    if (role == "Student") {
-      let data = {
-        filters: {
-          groupId: {
-            eq: `${id}`,
-          },
-        },
-      };
-
-      let config = {
-        method: "post",
-        url: `${this.url}/Student/search`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-        data: data,
-      };
-
-      const response = await axios(config);
-      let result =
-        response?.data &&
-        response.data.map((item: any) => new StudentDto(item));
-
-      return new SuccessResponse({
-        statusCode: 200,
-        message: "ok",
-        data: result,
-      });
-    } else if (role == "Teacher") {
-      var data = {
-        query: `query GetGroup($groupId:uuid) {
-       group(where: {groupId: {_eq: $groupId}}) {
-          groupId
-          deactivationReason
-          created_at
-          image
-          mediumOfInstruction
-          metaData
-          name
-          option
-          schoolId
-          section
-          status
-          type
-          teacherId
-          gradeLevel
-          updated_at
+    let userData = [];
+    var findMember = {
+      query: `query GetGroupMembership($groupId:uuid,$role:String) {
+       groupmembership(where: {groupId: {_eq: $groupId}, role: {_eq: $role}}) {
+        userId
+        role
         }
       }`,
-        variables: {
-          groupId: id,
-        },
-      };
+      variables: {
+        groupId: groupId,
+        role: role,
+      },
+    };
 
-      var config = {
-        method: "post",
-        url: process.env.REGISTRYHASURA,
-        headers: {
-          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-          "Content-Type": "application/json",
-        },
-        data: data,
-      };
+    var getMemberData = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: findMember,
+    };
 
-      const response = await axios(config);
+    const response = await axios(getMemberData);
+    let result = response.data.data.groupmembership;
+    if (Array.isArray(result)) {
+      let userIds = result.map((e: any) => {
+        return e.userId;
+      });
+      if (result[0].role == "Student") {
+        for (let value of userIds) {
+          let studentSearch = {
+            method: "get",
+            url: `${this.url}/Student/${value}`,
+            headers: {
+              Authorization: request.headers.authorization,
+            },
+          };
 
-      let result = response?.data?.data?.group.map(
-        (item: any) => new GroupDto(item)
-      );
+          const response = await axios(studentSearch);
+          let studentData = new StudentDto(response.data);
 
-      let resData = [];
-      if (result[0]?.teacherId) {
-        let classFinal = {
-          method: "get",
-          url: `${this.url}/User/${result[0].teacherId}`,
-          headers: {
-            Authorization: request.headers.authorization,
-          },
-        };
+          userData.push(studentData);
+        }
+      } else {
+        for (let value of userIds) {
+          let classFinal = {
+            method: "get",
+            url: `${this.url}/User/${value}`,
+            headers: {
+              Authorization: request.headers.authorization,
+            },
+          };
 
-        const responseData = await axios(classFinal);
+          const responseData = await axios(classFinal);
 
-        const teacherDetailDto = new UserDto(responseData.data);
-
-        resData = [teacherDetailDto];
+          const teacherDetailDto = new UserDto(responseData.data);
+          userData.push(teacherDetailDto);
+        }
       }
+
       return new SuccessResponse({
         statusCode: 200,
         message: "ok",
-        data: resData,
+        data: userData,
       });
     } else {
       return new SuccessResponse({
@@ -331,106 +308,50 @@ export class HasuraGroupService implements IServicelocatorgroup {
     }
   }
 
-  public async findGroupsByUserId(id: string, role: string, request: any) {
+  public async findGroupsByUserId(userId: string, role: string, request: any) {
     let axios = require("axios");
-    let responseData = [];
-
-    if (role === "Teacher") {
-      var data = {
-        query: `query GetGroup($teacherId:String) {
-           group(where: {teacherId: {_eq: $teacherId}}) {
-              groupId
-              deactivationReason
-              created_at
-              image
-              mediumOfInstruction
-              metaData
-              name
-              option
-              schoolId
-              section
-              status
-              type
-              teacherId
-              gradeLevel
-              updated_at
-            }
-          }`,
-        variables: {
-          teacherId: id,
-        },
-      };
-
-      var config = {
-        method: "post",
-        url: process.env.REGISTRYHASURA,
-        headers: {
-          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-          "Content-Type": "application/json",
-        },
-        data: data,
-      };
-
-      const response = await axios(config);
-
-      responseData = response.data.data.group;
-    } else if (role === "Student") {
-      const config = {
-        method: "get",
-        url: `${this.url}/Student/${id}`,
-        headers: {
-          Authorization: request.headers.authorization,
-        },
-      };
-
-      const response = await axios(config);
-
-      let studentObj = response?.data;
-
-      if (studentObj?.groupId) {
-        var queryData = {
-          query: `query GetGroup($groupId:uuid) {
-           group(where: {groupId: {_eq: $groupId}}) {
-              groupId
-              deactivationReason
-              created_at
-              image
-              mediumOfInstruction
-              metaData
-              name
-              option
-              schoolId
-              section
-              teacherId
-              gradeLevel
-              status
-              type
-              updated_at
-            }
-          }`,
-          variables: {
-            groupId: studentObj.groupId,
-          },
-        };
-
-        var groupCall = {
-          method: "post",
-          url: process.env.REGISTRYHASURA,
-          headers: {
-            "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-            "Content-Type": "application/json",
-          },
-          data: queryData,
-        };
-
-        const resData = await axios(groupCall);
-
-        responseData = resData?.data?.data?.group[0]
-          ? [resData.data.data.group[0]]
-          : [];
+    var findMember = {
+      query: `query GetGroup($userId:String,$role:String) {
+        groupmembership(where: {userId: {_eq: $userId}, role: {_eq: $role}}) {
+          group {
+            created_at
+            deactivationReason
+            gradeLevel
+            groupId
+            image
+            mediumOfInstruction
+            metaData
+            name
+            option
+            schoolId
+            section
+            status
+            teacherId
+            type
+            updated_at
+          }
+        }
       }
-    }
-    let result = responseData.map((item: any) => new GroupDto(item));
+      `,
+      variables: {
+        userId: userId,
+        role: role,
+      },
+    };
+
+    var getMemberData = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: findMember,
+    };
+    const response = await axios(getMemberData);
+    let groupData = response.data.data.groupmembership;
+    let result = groupData.map((item: any) => new GroupDto(item.group));
+
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
