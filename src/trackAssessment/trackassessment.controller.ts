@@ -71,6 +71,8 @@ export class AssessmentController {
   @SerializeOptions({
     strategy: "excludeAll",
   })
+  @ApiQuery({ name: "fromDate", required: false })
+  @ApiQuery({ name: "toDate", required: false })
   @ApiQuery({ name: "limit", required: false })
   @ApiQuery({ name: "source", required: false })
   @ApiQuery({ name: "studentId", required: false })
@@ -79,6 +81,8 @@ export class AssessmentController {
   @ApiQuery({ name: "subject", required: false })
   @ApiQuery({ name: "page", required: false })
   public async searchAssessment(
+    @Query("fromDate") date: string,
+    @Query("toDate") toDate: string,
     @Query("limit") limit: string,
     @Query("source") source: string,
     @Query("studentId") studentId: string,
@@ -89,6 +93,8 @@ export class AssessmentController {
     @Req() request: Request
   ) {
     return await this.service.searchAssessment(
+      date,
+      toDate,
       limit,
       source,
       studentId,
@@ -96,37 +102,6 @@ export class AssessmentController {
       groupId,
       subject,
       page,
-      request
-    );
-  }
-
-  @Get("")
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: " Ok." })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "fromDate", required: true })
-  @ApiQuery({ name: "toDate", required: true })
-  @ApiQuery({ name: "groupId", required: false })
-  @ApiQuery({ name: "subject", required: false })
-  @ApiQuery({ name: "teacherId", required: false })
-  @ApiQuery({ name: "studentId", required: false })
-  public async trackassessmentFilter(
-    @Query("fromDate") date: string,
-    @Query("toDate") toDate: string,
-    @Query("groupId") groupId: string,
-    @Query("subject") subject: string,
-    @Query("teacherId") teacherId: string,
-    @Query("studentId") studentId: string,
-    @Req() request: Request
-  ) {
-    return this.service.trackAssessmentFilter(
-      date,
-      toDate,
-      groupId,
-      subject,
-      teacherId,
-      studentId,
       request
     );
   }

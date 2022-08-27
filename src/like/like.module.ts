@@ -1,6 +1,13 @@
 import { HttpModule } from "@nestjs/axios";
 import { CacheModule, Module } from "@nestjs/common";
-import { LikeService } from "src/adapters/sunbirdrc/like.adapter";
+import {
+  HasuraLikeService,
+  HasuraLikeToken,
+} from "src/adapters/hasura/like.adapter";
+import {
+  SunbirdLikeService,
+  SunbirdLikeToken,
+} from "src/adapters/sunbirdrc/like.adapter";
 import { LikeController } from "./like.controller";
 const ttl = process.env.TTL as never;
 @Module({
@@ -11,6 +18,9 @@ const ttl = process.env.TTL as never;
     }),
   ],
   controllers: [LikeController],
-  providers: [LikeService],
+  providers: [
+    { provide: SunbirdLikeToken, useClass: SunbirdLikeService },
+    { provide: HasuraLikeToken, useClass: HasuraLikeService },
+  ],
 })
 export class LikeModule {}

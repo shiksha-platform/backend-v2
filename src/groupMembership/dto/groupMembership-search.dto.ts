@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class CommentSearchDto {
+export class GroupMembershipSearchDto {
   @ApiProperty({
     type: String,
     description: "Limit",
@@ -20,7 +20,7 @@ export class CommentSearchDto {
   @ApiPropertyOptional()
   filters: object;
 
-  constructor(partial: Partial<CommentSearchDto>) {
+  constructor(partial: Partial<GroupMembershipSearchDto>) {
     Object.assign(this, partial);
   }
 }
