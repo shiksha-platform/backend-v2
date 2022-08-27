@@ -135,6 +135,7 @@ export class SchoolHasuraService implements IServicelocator {
             pincode
             village
             website
+            cluster
         }
       }
       `,
@@ -203,6 +204,7 @@ export class SchoolHasuraService implements IServicelocator {
                 pincode
                 village
                 website
+                cluster
             }
           }`,
       variables: {
