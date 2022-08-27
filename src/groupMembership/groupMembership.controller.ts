@@ -72,7 +72,7 @@ export class GroupMembershipController {
     @Req() request: Request,
     @Body() groupMembersipDto: GroupMembershipDto
   ) {
-    return this.service.updateGroup(
+    return this.service.updateGroupMembership(
       groupMembershipId,
       request,
       groupMembersipDto
@@ -88,10 +88,13 @@ export class GroupMembershipController {
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async searchStudent(
+  public async searchGroupMembership(
     @Req() request: Request,
     @Body() groupMembershipSearchDto: GroupMembershipSearchDto
   ) {
-    return this.service.searchGroup(request, groupMembershipSearchDto);
+    return this.service.searchGroupMembership(
+      request,
+      groupMembershipSearchDto
+    );
   }
 }
