@@ -1,17 +1,7 @@
-import { Injectable, HttpException } from "@nestjs/common";
-import { GroupInterface } from "../../group/interfaces/group.interface";
+import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { AxiosResponse } from "axios";
-import { first, map, Observable } from "rxjs";
-import { response } from "express";
 import { SuccessResponse } from "src/success-response";
 const resolvePath = require("object-resolve-path");
-import { GroupDto } from "src/group/dto/group.dto";
-import { ErrorResponse } from "src/error-response";
-import { GroupSearchDto } from "src/group/dto/group-search.dto";
-import { IServicelocatorgroup } from "../groupservicelocator";
-import { UserDto } from "src/user/dto/user.dto";
-import { StudentDto } from "src/student/dto/student.dto";
 import { GroupMembershipDto } from "src/groupMembership/dto/groupMembership.dto";
 import { GroupMembershipSearchDto } from "src/groupMembership/dto/groupMembership-search.dto";
 
@@ -114,7 +104,7 @@ export class GroupMembershipService {
     });
   }
 
-  public async updateGroup(
+  public async updateGroupMembership(
     groupMembershipId: string,
     request: any,
     groupMembershipDto: GroupMembershipDto
@@ -164,7 +154,7 @@ export class GroupMembershipService {
     });
   }
 
-  public async searchGroup(
+  public async searchGroupMembership(
     request: any,
     groupMembershipSearchDto: GroupMembershipSearchDto
   ) {

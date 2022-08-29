@@ -1,6 +1,6 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { HttpModule } from "@nestjs/axios";
-import { WorkHistoryService } from "../hasura/workhistory.adapter";
+import { WorkHistoryService } from "../adapters/hasura/workhistory.adapter";
 import { WorkHistoryController } from "./workHistory.controller";
 
 const ttl = process.env.TTL as never;
