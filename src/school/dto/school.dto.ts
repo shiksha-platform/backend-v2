@@ -72,6 +72,20 @@ export class SchoolDto {
 
   @ApiProperty({
     type: String,
+    description: "The Head master of the school",
+  })
+  @Expose()
+  headMaster: string;
+
+  @ApiProperty({
+    type: String,
+    description: "The Board of the school",
+  })
+  @Expose()
+  board: string;
+
+  @ApiProperty({
+    type: String,
     description: "The village of the school",
   })
   @Expose()
@@ -173,6 +187,8 @@ export class SchoolDto {
     this.address = obj?.address ? obj.address : "";
     this.schoolType = obj?.schoolType ? `${obj.schoolType}` : "";
     this.website = obj?.website ? `${obj.website}` : "";
+    this.headMaster = obj?.headMaster ? `${obj.headMaster}` : "";
+    this.board = obj?.board ? `${obj.board}` : "";
     this.village = obj?.village ? `${obj.village}` : "";
     this.block = obj?.block ? `${obj.block}` : "";
     this.district = obj?.district ? `${obj.district}` : "";
