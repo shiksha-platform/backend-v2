@@ -136,6 +136,8 @@ export class SchoolHasuraService implements IServicelocator {
             village
             website
             cluster
+            headMaster
+            board
         }
       }
       `,
@@ -205,6 +207,8 @@ export class SchoolHasuraService implements IServicelocator {
                 village
                 website
                 cluster
+                headMaster
+                 board
             }
           }`,
       variables: {
