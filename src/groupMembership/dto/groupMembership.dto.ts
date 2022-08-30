@@ -21,11 +21,21 @@ export class GroupMembershipDto {
   @Expose()
   role: string;
 
+  @Expose()
+  created_at: string;
+
+  @Expose()
+  updated_at: string;
+
   constructor(obj: any) {
-    this.groupMembershipId = `${obj.osid}`;
-    this.groupId = `${obj.groupId}`;
-    this.schoolId = `${obj.schoolId}`;
-    this.userId = `${obj.userId}`;
-    this.role = `${obj.role}`;
+    this.groupMembershipId = obj?.groupMembership
+      ? `${obj.groupMembershipId}`
+      : "";
+    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
+    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
+    this.userId = obj?.userId ? `${obj.userId}` : "";
+    this.role = obj?.role ? `${obj.role}` : "";
+    this.created_at = obj?.created_at ? `${obj.created_at}` : "";
+    this.updated_at = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }

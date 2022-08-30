@@ -15,16 +15,14 @@ export class GroupMembershipService {
     var axios = require("axios");
 
     var data = {
-      query: `query GetGroupMembership($groupmembershipId:uuid!) {
-        groupmembership_by_pk(groupmembershipId: $groupmembershipId) {
+      query: `query GetGroupMembership($groupMembershipId:uuid!) {
+        groupmembership_by_pk(groupMembershipId: $groupMembershipId) {
             created_at
-            created_by
             groupId
             groupMembershipId
             schoolId
             role
             updated_at
-            updated_by
             userId
       }
     }`,
@@ -181,13 +179,11 @@ export class GroupMembershipService {
       query: `query SearchGroupMembership($filters:groupmembership_bool_exp,$limit:Int, $offset:Int) {
            groupmembership(where:$filters, limit: $limit, offset: $offset,) {
             created_at
-            created_by
             groupId
             groupMembershipId
             schoolId
             role
             updated_at
-            updated_by
             userId
             }
           }`,
