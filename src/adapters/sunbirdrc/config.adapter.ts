@@ -7,8 +7,10 @@ import { first, map, Observable } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import jwt_decode from "jwt-decode";
 import { UserDto } from "../../user/dto/user.dto";
+import { IServicelocator } from "../configservicelocator";
+export const SunbirdConfigToken = "SunbirdConfig";
 @Injectable()
-export class ConfigService {
+export class SunbirdConfigService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}config`;
 

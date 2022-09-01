@@ -22,6 +22,7 @@ export class AttendanceHasuraService implements IServicelocator {
   baseUrl = process.env.BASEAPIURL;
   public async getAttendance(attendanceId: any, request: any) {
     var axios = require("axios");
+    console.log("Hasura Adapter");
 
     var data = {
       query: `query GetAttendance($attendanceId:uuid) {
@@ -48,6 +49,7 @@ export class AttendanceHasuraService implements IServicelocator {
       `,
       variables: { attendanceId: attendanceId },
     };
+    console.log("52");
 
     var config = {
       method: "post",
@@ -60,9 +62,12 @@ export class AttendanceHasuraService implements IServicelocator {
     };
 
     const response = await axios(config);
+    console.log(response.data.data.attendance);
+
     let result = response?.data?.data?.attendance.map(
       (item: any) => new AttendanceDto(item)
     );
+    console.log(result);
 
     return new SuccessResponse({
       statusCode: 200,

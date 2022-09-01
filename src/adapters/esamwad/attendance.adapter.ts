@@ -382,4 +382,10 @@ export class AttendanceEsamwadService implements IServicelocator {
   ) {}
 
   studentAttendanceByUserId(date: string, userId: string, request: any) {}
+  userSegment(
+    groupId: string,
+    attendance: string,
+    date: string,
+    request: any
+  ) {}
 }

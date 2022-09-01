@@ -28,7 +28,7 @@ export class GroupMembershipDto {
   updated_at: string;
 
   constructor(obj: any) {
-    this.groupMembershipId = obj?.groupMembership
+    this.groupMembershipId = obj?.groupMembershipId
       ? `${obj.groupMembershipId}`
       : "";
     this.groupId = obj?.groupId ? `${obj.groupId}` : "";
