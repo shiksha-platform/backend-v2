@@ -59,11 +59,11 @@ export class ConfigDto {
   canOverride: boolean;
 
   @ApiProperty({
-    type: [String],
+    type: String,
     description: "List of roles that are allowed to update this config",
   })
   @Expose()
-  overrideBy: any;
+  overrideBy: string;
 
   @ApiProperty({
     type: Boolean,
@@ -79,14 +79,8 @@ export class ConfigDto {
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.configId = obj?.osid ? `${obj.osid}` : "";
+    this.configId = obj?.configId ? `${obj.configId}` : "";
     this.module = obj?.module ? `${obj.module}` : "";
     this.key = obj?.key ? `${obj.key}` : "";
     this.value = obj?.value;
@@ -95,9 +89,7 @@ export class ConfigDto {
     this.canOverride = obj?.canOverride;
     this.overrideBy = obj?.overrideBy ? `${obj.overrideBy}` : "";
     this.isPublic = obj?.isPublic;
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }

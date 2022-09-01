@@ -76,7 +76,7 @@ export class AttendanceController {
     } else if (process.env.ADAPTERSOURCE === "esamwad") {
       return this.eSamwadProvider.getAttendance(attendanceId, request);
     } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.eSamwadProvider.getAttendance(attendanceId, request);
+      return this.sunbirdProvider.getAttendance(attendanceId, request);
     }
   }
 

@@ -70,6 +70,13 @@ export class GroupDto {
   @Expose()
   teacherId: string;
 
+  @ApiPropertyOptional({
+    type: String,
+    description: "Parent Id of Group",
+  })
+  @Expose()
+  parentId: string;
+
   @ApiPropertyOptional()
   @Expose()
   deactivationReason: string;
@@ -124,6 +131,7 @@ export class GroupDto {
       ? `${obj.mediumOfInstruction}`
       : "";
     this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
+    this.parentId = obj?.parentId ? `${obj.parentId}` : "";
     this.image = obj?.image ? `${obj.image}` : "";
     this.metaData = obj?.metaData ? obj.metaData : [];
     this.option = obj?.option ? obj.option : [];

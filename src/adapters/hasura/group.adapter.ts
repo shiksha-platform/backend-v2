@@ -43,6 +43,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
         status
         type
         updated_at
+        parentId
       }
     }`,
       variables: {
@@ -199,6 +200,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
                 gradeLevel
                 type
                 updated_at
+                parentId
             }
           }`,
       variables: {
@@ -329,6 +331,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
             teacherId
             type
             updated_at
+            parentId
           }
         }
       }

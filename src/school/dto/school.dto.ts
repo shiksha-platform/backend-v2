@@ -23,6 +23,7 @@ export class SchoolDto {
     type: String,
     description: "The email of the school",
   })
+  @IsEmail()
   @Expose()
   email: string;
 
@@ -71,6 +72,20 @@ export class SchoolDto {
 
   @ApiProperty({
     type: String,
+    description: "The Head master of the school",
+  })
+  @Expose()
+  headMaster: string;
+
+  @ApiProperty({
+    type: String,
+    description: "The Board of the school",
+  })
+  @Expose()
+  board: string;
+
+  @ApiProperty({
+    type: String,
     description: "The village of the school",
   })
   @Expose()
@@ -103,6 +118,13 @@ export class SchoolDto {
   })
   @Expose()
   pincode: Number;
+
+  @ApiProperty({
+    type: String,
+    description: "The cluster of the school",
+  })
+  @Expose()
+  cluster: string;
 
   @ApiProperty({
     type: String,
@@ -153,14 +175,8 @@ export class SchoolDto {
   @Expose()
   updatedAt: string;
 
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
-
   constructor(obj: any) {
-    this.schoolId = obj?.osid ? `${obj.osid}` : "";
+    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
     this.schoolName = obj?.schoolName ? `${obj.schoolName}` : "";
     this.email = obj?.email ? `${obj.email}` : "";
     this.udise = obj?.udise ? `${obj.udise}` : "";
@@ -171,10 +187,13 @@ export class SchoolDto {
     this.address = obj?.address ? obj.address : "";
     this.schoolType = obj?.schoolType ? `${obj.schoolType}` : "";
     this.website = obj?.website ? `${obj.website}` : "";
+    this.headMaster = obj?.headMaster ? `${obj.headMaster}` : "";
+    this.board = obj?.board ? `${obj.board}` : "";
     this.village = obj?.village ? `${obj.village}` : "";
     this.block = obj?.block ? `${obj.block}` : "";
     this.district = obj?.district ? `${obj.district}` : "";
     this.stateId = obj?.stateId ? `${obj.stateId}` : "";
+    this.cluster = obj?.cluster ? `${obj.cluster}` : "";
     this.pincode = obj?.pincode ? obj.pincode : "";
     this.locationId = obj?.locationId ? `${obj.locationId}` : "";
     this.enrollCount = obj?.enrollCount ? `${obj.enrollCount}` : "";
@@ -185,9 +204,7 @@ export class SchoolDto {
     this.deactivationReason = obj?.deactivationReason
       ? `${obj.deactivationReason}`
       : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
+    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
   }
 }

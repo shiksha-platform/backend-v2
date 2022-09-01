@@ -154,7 +154,7 @@ export class GroupController {
   @SerializeOptions({
     strategy: "excludeAll",
   })
-  public async searchStudent(
+  public async searchGroup(
     @Req() request: Request,
     @Body() groupSearchDto: GroupSearchDto
   ) {

@@ -9,6 +9,10 @@ import {
   EsamwadSchoolService,
   EsamwadSchoolToken,
 } from "src/adapters/esamwad/school.adapter";
+import {
+  HasuraSchoolToken,
+  SchoolHasuraService,
+} from "src/adapters/hasura/school.adapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
@@ -22,6 +26,7 @@ const ttl = process.env.TTL as never;
     SchoolService,
     EsamwadSchoolService,
     { provide: SunbirdSchoolToken, useClass: SchoolService },
+    { provide: HasuraSchoolToken, useClass: SchoolHasuraService },
     { provide: EsamwadSchoolToken, useClass: EsamwadSchoolService },
   ],
 })

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
-import { WorkHistoryDto } from "../workHistory/dto/work-history.dto";
+import { WorkHistoryDto } from "../../workHistory/dto/work-history.dto";
 
 @Injectable()
 export class WorkHistoryService {
