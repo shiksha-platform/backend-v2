@@ -213,6 +213,7 @@ export class WorkHistoryService {
     };
 
     const response = await axios(config);
+
     let result = response.data.data.workhistory.map(
       (item: any) => new WorkHistoryDto(item)
     );
