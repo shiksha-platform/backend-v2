@@ -1,5 +1,12 @@
 import { Exclude, Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
+import {
+  attendance,
+  remark,
+  subjectList,
+  userType,
+} from "../enums/attendance.enums";
 
 export class AttendanceDto {
   @Expose()
@@ -14,10 +21,20 @@ export class AttendanceDto {
   @ApiPropertyOptional()
   schoolId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([userType.student, userType.teacher, userType.mentor, userType.monitor])
+  @IsEnum(userType)
   @ApiPropertyOptional({
     type: String,
     description: "The userType of the attendance",
     default: "",
+    enum: [
+      userType.student,
+      userType.teacher,
+      userType.mentor,
+      userType.monitor,
+    ],
   })
   @Expose()
   userType: string;
@@ -38,13 +55,94 @@ export class AttendanceDto {
   @Expose()
   groupId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    subjectList.hindi,
+    subjectList.english,
+    subjectList.bengali,
+    subjectList.marathi,
+    subjectList.science,
+    subjectList.sanskrit,
+    subjectList.geography,
+    subjectList.spanish,
+    subjectList.tamil,
+    subjectList.telugu,
+    subjectList.kannada,
+    subjectList.arabicbidaytularebia,
+    subjectList.balbharatikannada,
+    subjectList.cocurricular,
+    subjectList.evs,
+    subjectList.evspart1,
+    subjectList.evspart2,
+    subjectList.gujarati,
+    subjectList.defencestudies,
+    subjectList.gulhaafarsi,
+    subjectList.history,
+    subjectList.historyandcivics,
+    subjectList.historyandpoliticalscience,
+    subjectList.khelekaresikhe,
+    subjectList.khelokarusikhu,
+    subjectList.khelukarushiku,
+    subjectList.kumarbharatikannada,
+    subjectList.marathishikshaksanhita,
+    subjectList.mathematics,
+    subjectList.playdolearn,
+    subjectList.scholarshipenglish,
+    subjectList.scholarshipintelligencetest,
+    subjectList.scholarshipmarathi,
+    subjectList.scholarshipmathematics,
+    subjectList.secretarialpracticesp,
+    subjectList.selfdevelopment,
+    subjectList.urdu,
+  ])
+  @IsEnum(subjectList)
   @ApiProperty({
     type: String,
     description: "The topicid of the attendance",
     default: "",
+    enum: [
+      subjectList.hindi,
+      subjectList.english,
+      subjectList.bengali,
+      subjectList.marathi,
+      subjectList.science,
+      subjectList.sanskrit,
+      subjectList.geography,
+      subjectList.spanish,
+      subjectList.tamil,
+      subjectList.telugu,
+      subjectList.kannada,
+      subjectList.arabicbidaytularebia,
+      subjectList.balbharatikannada,
+      subjectList.cocurricular,
+      subjectList.evs,
+      subjectList.evspart1,
+      subjectList.evspart2,
+      subjectList.gujarati,
+      subjectList.defencestudies,
+      subjectList.gulhaafarsi,
+      subjectList.history,
+      subjectList.historyandcivics,
+      subjectList.historyandpoliticalscience,
+      subjectList.khelekaresikhe,
+      subjectList.khelokarusikhu,
+      subjectList.khelukarushiku,
+      subjectList.kumarbharatikannada,
+      subjectList.marathishikshaksanhita,
+      subjectList.mathematics,
+      subjectList.playdolearn,
+      subjectList.scholarshipenglish,
+      subjectList.scholarshipintelligencetest,
+      subjectList.scholarshipmarathi,
+      subjectList.scholarshipmathematics,
+      subjectList.secretarialpracticesp,
+      subjectList.selfdevelopment,
+      subjectList.urdu,
+    ],
   })
-  @Expose()
   @ApiPropertyOptional()
+  @Expose()
   topicId: string;
 
   @ApiProperty({
@@ -64,18 +162,52 @@ export class AttendanceDto {
   @Expose()
   attendanceDate: string;
 
-  @ApiProperty({
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    attendance.present,
+    attendance.absent,
+    attendance.unmarked,
+    attendance.specialDuty,
+    attendance.onleave,
+  ])
+  @IsEnum(attendance)
+  @ApiPropertyOptional({
     type: String,
     description: "The attendance of the attendance",
     default: "",
+    enum: [
+      attendance.present,
+      attendance.absent,
+      attendance.unmarked,
+      attendance.specialDuty,
+      attendance.onleave,
+    ],
   })
   @Expose()
   attendance: string;
 
-  @ApiProperty({
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    remark.present,
+    remark.absent,
+    remark.unmarked,
+    remark.specialDuty,
+    remark.onleave,
+  ])
+  @IsEnum(remark)
+  @ApiPropertyOptional({
     type: String,
     description: "The remark of the attendance",
     default: "",
+    enum: [
+      remark.present,
+      remark.absent,
+      remark.unmarked,
+      remark.specialDuty,
+      remark.onleave,
+    ],
   })
   @Expose()
   @ApiPropertyOptional()

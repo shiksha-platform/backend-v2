@@ -27,6 +27,8 @@ import {
   CacheInterceptor,
   UploadedFile,
   Inject,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 import { GroupSearchDto } from "./dto/group-search.dto";
 import { Request } from "@nestjs/common";
@@ -86,6 +88,7 @@ export class GroupController {
   @ApiBody({ type: GroupDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createGroup(
     @Req() request: Request,
     @Body() groupDto: GroupDto,
@@ -121,6 +124,7 @@ export class GroupController {
   @ApiBody({ type: GroupDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateGroup(
     @Param("id") groupId: string,
     @Req() request: Request,

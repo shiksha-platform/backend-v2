@@ -1,5 +1,7 @@
 import { Expose } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
+import { modeOfPosting, roleEnum } from "../enums/workHistory.enum";
 
 export class WorkHistoryDto {
   @Expose()
@@ -12,9 +14,14 @@ export class WorkHistoryDto {
   @Expose()
   userId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([roleEnum.teacher, roleEnum.mentor, roleEnum.monitor])
+  @IsEnum(roleEnum)
   @ApiProperty({
+    enum: [roleEnum.teacher, roleEnum.mentor, roleEnum.monitor],
     type: String,
-    description: "role of the user ",
+    description: "roleId of user, teacher, mentor,monitor",
   })
   @Expose()
   role: string;
@@ -81,7 +88,15 @@ export class WorkHistoryDto {
   @Expose()
   dateOfOrder: string;
 
-  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([modeOfPosting.permanant, modeOfPosting.temporary])
+  @IsEnum(modeOfPosting)
+  @ApiProperty({
+    enum: [modeOfPosting.permanant, modeOfPosting.temporary],
+    type: String,
+    description: "",
+  })
   @Expose()
   modeOfPosting: string;
 

@@ -1,7 +1,12 @@
 import { Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsIn, IsNotEmpty, IsString } from "class-validator";
-import { Status } from "../enums/statuses.enum";
+import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
+import {
+  source,
+  Status,
+  subjectList,
+  trackAssessmentType,
+} from "../enums/trackAssessment.enum";
 
 export class TrackAssessmentDto {
   @Expose()
@@ -13,8 +18,13 @@ export class TrackAssessmentDto {
   @Expose()
   filter: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([trackAssessmentType.oral, trackAssessmentType.written])
+  @IsEnum(trackAssessmentType)
   @ApiProperty({
     description: "Assessment type, spot assessment or exam",
+    enum: [trackAssessmentType.oral, trackAssessmentType.written],
   })
   @Expose()
   type: string;
@@ -25,8 +35,13 @@ export class TrackAssessmentDto {
   @Expose()
   questions: [string];
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([source.diksha, source.khanAcademy])
+  @IsEnum(source)
   @ApiPropertyOptional({
     description: "Assessment questions source",
+    enum: [source.diksha, source.khanAcademy],
   })
   @Expose()
   source: string;
@@ -59,8 +74,89 @@ export class TrackAssessmentDto {
   @Expose()
   groupId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    subjectList.hindi,
+    subjectList.english,
+    subjectList.bengali,
+    subjectList.marathi,
+    subjectList.science,
+    subjectList.sanskrit,
+    subjectList.geography,
+    subjectList.spanish,
+    subjectList.tamil,
+    subjectList.telugu,
+    subjectList.kannada,
+    subjectList.arabicbidaytularebia,
+    subjectList.balbharatikannada,
+    subjectList.cocurricular,
+    subjectList.evs,
+    subjectList.evspart1,
+    subjectList.evspart2,
+    subjectList.gujarati,
+    subjectList.defencestudies,
+    subjectList.gulhaafarsi,
+    subjectList.history,
+    subjectList.historyandcivics,
+    subjectList.historyandpoliticalscience,
+    subjectList.khelekaresikhe,
+    subjectList.khelokarusikhu,
+    subjectList.khelukarushiku,
+    subjectList.kumarbharatikannada,
+    subjectList.marathishikshaksanhita,
+    subjectList.mathematics,
+    subjectList.playdolearn,
+    subjectList.scholarshipenglish,
+    subjectList.scholarshipintelligencetest,
+    subjectList.scholarshipmarathi,
+    subjectList.scholarshipmathematics,
+    subjectList.secretarialpracticesp,
+    subjectList.selfdevelopment,
+    subjectList.urdu,
+  ])
+  @IsEnum(subjectList)
   @ApiProperty({
     description: "subject",
+    enum: [
+      subjectList.hindi,
+      subjectList.english,
+      subjectList.bengali,
+      subjectList.marathi,
+      subjectList.science,
+      subjectList.sanskrit,
+      subjectList.geography,
+      subjectList.spanish,
+      subjectList.tamil,
+      subjectList.telugu,
+      subjectList.kannada,
+      subjectList.arabicbidaytularebia,
+      subjectList.balbharatikannada,
+      subjectList.cocurricular,
+      subjectList.evs,
+      subjectList.evspart1,
+      subjectList.evspart2,
+      subjectList.gujarati,
+      subjectList.defencestudies,
+      subjectList.gulhaafarsi,
+      subjectList.history,
+      subjectList.historyandcivics,
+      subjectList.historyandpoliticalscience,
+      subjectList.khelekaresikhe,
+      subjectList.khelokarusikhu,
+      subjectList.khelukarushiku,
+      subjectList.kumarbharatikannada,
+      subjectList.marathishikshaksanhita,
+      subjectList.mathematics,
+      subjectList.playdolearn,
+      subjectList.scholarshipenglish,
+      subjectList.scholarshipintelligencetest,
+      subjectList.scholarshipmarathi,
+      subjectList.scholarshipmathematics,
+      subjectList.secretarialpracticesp,
+      subjectList.selfdevelopment,
+      subjectList.urdu,
+    ],
   })
   @Expose()
   subject: string;

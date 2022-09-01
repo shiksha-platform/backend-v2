@@ -1,5 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
+import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
+import {
+  classList,
+  enumOption,
+  source,
+  subjectList,
+  visibility,
+} from "../enums/worksheet.enums";
 
 export class WorksheetDto {
   @Expose()
@@ -13,27 +21,144 @@ export class WorksheetDto {
   name: string;
 
   @ApiProperty({
-    description: "Worksheet Title",
-  })
-  @Expose()
-  state: string;
-  @ApiProperty({
     description: "Worksheet state",
   })
   @Expose()
-  subject: string;
+  state: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    subjectList.hindi,
+    subjectList.english,
+    subjectList.bengali,
+    subjectList.marathi,
+    subjectList.science,
+    subjectList.sanskrit,
+    subjectList.geography,
+    subjectList.spanish,
+    subjectList.tamil,
+    subjectList.telugu,
+    subjectList.kannada,
+    subjectList.arabicbidaytularebia,
+    subjectList.balbharatikannada,
+    subjectList.cocurricular,
+    subjectList.evs,
+    subjectList.evspart1,
+    subjectList.evspart2,
+    subjectList.gujarati,
+    subjectList.defencestudies,
+    subjectList.gulhaafarsi,
+    subjectList.history,
+    subjectList.historyandcivics,
+    subjectList.historyandpoliticalscience,
+    subjectList.khelekaresikhe,
+    subjectList.khelokarusikhu,
+    subjectList.khelukarushiku,
+    subjectList.kumarbharatikannada,
+    subjectList.marathishikshaksanhita,
+    subjectList.mathematics,
+    subjectList.playdolearn,
+    subjectList.scholarshipenglish,
+    subjectList.scholarshipintelligencetest,
+    subjectList.scholarshipmarathi,
+    subjectList.scholarshipmathematics,
+    subjectList.secretarialpracticesp,
+    subjectList.selfdevelopment,
+    subjectList.urdu,
+  ])
+  @IsEnum(subjectList)
   @ApiProperty({
+    type: String,
     description: "Worksheet subject",
+    enum: [
+      subjectList.hindi,
+      subjectList.english,
+      subjectList.bengali,
+      subjectList.marathi,
+      subjectList.science,
+      subjectList.sanskrit,
+      subjectList.geography,
+      subjectList.spanish,
+      subjectList.tamil,
+      subjectList.telugu,
+      subjectList.kannada,
+      subjectList.arabicbidaytularebia,
+      subjectList.balbharatikannada,
+      subjectList.cocurricular,
+      subjectList.evs,
+      subjectList.evspart1,
+      subjectList.evspart2,
+      subjectList.gujarati,
+      subjectList.defencestudies,
+      subjectList.gulhaafarsi,
+      subjectList.history,
+      subjectList.historyandcivics,
+      subjectList.historyandpoliticalscience,
+      subjectList.khelekaresikhe,
+      subjectList.khelokarusikhu,
+      subjectList.khelukarushiku,
+      subjectList.kumarbharatikannada,
+      subjectList.marathishikshaksanhita,
+      subjectList.mathematics,
+      subjectList.playdolearn,
+      subjectList.scholarshipenglish,
+      subjectList.scholarshipintelligencetest,
+      subjectList.scholarshipmarathi,
+      subjectList.scholarshipmathematics,
+      subjectList.secretarialpracticesp,
+      subjectList.selfdevelopment,
+      subjectList.urdu,
+    ],
+  })
+  @Expose()
+  subject: string;
+
+  @ApiProperty({
+    description: "Worksheet grade",
   })
   @Expose()
   grade: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    classList.class1,
+    classList.class2,
+    classList.class3,
+    classList.class4,
+    classList.class5,
+    classList.class6,
+    classList.class7,
+    classList.class8,
+    classList.class9,
+    classList.class10,
+    classList.class11,
+    classList.class12,
+  ])
+  @IsEnum(classList)
   @ApiProperty({
     description: "Worksheet grade level",
+    enum: [
+      classList.class1,
+      classList.class2,
+      classList.class3,
+      classList.class4,
+      classList.class5,
+      classList.class6,
+      classList.class7,
+      classList.class8,
+      classList.class9,
+      classList.class10,
+      classList.class11,
+      classList.class12,
+    ],
   })
   @Expose()
   level: string;
+
   @ApiProperty({
-    description: "Worksheet level",
+    description: "Worksheet instructions",
   })
   @Expose()
   instructions: string;
@@ -65,9 +190,16 @@ export class WorksheetDto {
   @Expose()
   timeLimits: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([enumOption.yes, enumOption.no])
+  @IsEnum(enumOption)
   @ApiProperty({
+    type: String,
     description:
       "Configuration to enable/disable hints for the student while using the question set.",
+    default: "",
+    enum: [enumOption.yes, enumOption.no],
   })
   @Expose()
   showHints: string;
@@ -123,8 +255,15 @@ export class WorksheetDto {
   @Expose()
   purpose: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([visibility.private, visibility.public])
+  @IsEnum(visibility)
   @ApiProperty({
+    type: String,
     description: "Visibility of the question set.",
+    default: "",
+    enum: [visibility.private, visibility.public],
   })
   @Expose()
   visibility: string;
@@ -142,8 +281,13 @@ export class WorksheetDto {
   @Expose()
   topic: [string];
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([source.diksha, source.khanAcademy])
+  @IsEnum(source)
   @ApiProperty({
     description: "source of worksheet",
+    enum: [source.diksha, source.khanAcademy],
   })
   @Expose()
   source: string;
@@ -153,12 +297,6 @@ export class WorksheetDto {
 
   @Expose()
   updatedAt: string;
-
-  @Expose()
-  createdBy: string;
-
-  @Expose()
-  updatedBy: string;
 
   constructor(obj: any) {
     this.worksheetId = obj?.worksheetId ? `${obj.worksheetId}` : "";

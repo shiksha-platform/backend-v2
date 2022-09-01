@@ -1,6 +1,6 @@
 import { Expose } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
-import { VisitStatus } from "./visitStatus.enum";
+import { VisitStatus } from "../enums/monitor.enum";
 import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
 
 export class MonitorTrackingDto {
@@ -37,10 +37,10 @@ export class MonitorTrackingDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsIn([VisitStatus.pending, VisitStatus.visited])
+  @IsIn([VisitStatus.pending, VisitStatus.visited, VisitStatus.failed])
   @IsEnum(VisitStatus)
   @ApiProperty({
-    enum: [VisitStatus.pending, VisitStatus.visited],
+    enum: [VisitStatus.pending, VisitStatus.visited, VisitStatus.failed],
   })
   @Expose()
   status: string;

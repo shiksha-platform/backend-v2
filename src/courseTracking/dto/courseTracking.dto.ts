@@ -1,5 +1,7 @@
 import { Exclude, Expose } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
+import { source, status } from "../enums/courseTracking.enum";
 
 export class CourseTrackingDto {
   @Expose()
@@ -33,11 +35,27 @@ export class CourseTrackingDto {
   @Expose()
   certificate: string;
 
-  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([status.complete, status.inprogress, status.pending])
+  @IsEnum(status)
+  @ApiProperty({
+    type: String,
+
+    default: "",
+    enum: [status.complete, status.inprogress, status.pending],
+  })
   @Expose()
   status: string;
 
-  @ApiProperty({})
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([source.diksha, source.khanAcademy])
+  @IsEnum(source)
+  @ApiProperty({
+    description: "source of course",
+    enum: [source.diksha, source.khanAcademy],
+  })
   @Expose()
   source: string;
 
