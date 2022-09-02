@@ -43,3 +43,9 @@ export enum roleEnum {
   mentor = "mentor",
   monitor = "monitor",
 }
+
+export enum socialCategory {
+  general = "general",
+  obc = "OBC",
+  st = "ST",
+}

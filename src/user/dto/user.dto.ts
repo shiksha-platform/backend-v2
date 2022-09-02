@@ -16,9 +16,10 @@ import {
   maritalStatusEnum,
   religionEnumValue,
   roleEnum,
+  socialCategory,
   statusEnum,
   workingStatus,
-} from "../enums/teacher-value.enum";
+} from "../enums/user-value.enum";
 
 export class UserDto {
   @Expose()
@@ -88,7 +89,12 @@ export class UserDto {
   @Expose()
   gender: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([socialCategory.general, socialCategory.obc, socialCategory.st])
+  @IsEnum(socialCategory)
   @ApiProperty({
+    enum: [socialCategory.general, socialCategory.obc, socialCategory.st],
     type: String,
     description: "The socialCategory of the user",
   })

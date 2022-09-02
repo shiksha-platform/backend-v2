@@ -21,3 +21,8 @@ export enum statusEnum {
   droppedOut = "Dropped Out",
   transferred = "Transferred",
 }
+export enum socialCategory {
+  general = "general",
+  obc = "OBC",
+  st = "ST",
+}

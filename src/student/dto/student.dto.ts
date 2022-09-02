@@ -5,6 +5,7 @@ import {
   enumOption,
   GenderEnumValue,
   religionEnumValue,
+  socialCategory,
 } from "../enums/student-value.enum";
 
 export class StudentDto {
@@ -61,7 +62,13 @@ export class StudentDto {
   @Expose()
   groupId: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([socialCategory.general, socialCategory.obc, socialCategory.st])
+  @IsEnum(socialCategory)
+  @ApiPropertyOptional({
+    enum: [socialCategory.general, socialCategory.obc, socialCategory.st],
+  })
   @Expose()
   socialCategory: string;
 
