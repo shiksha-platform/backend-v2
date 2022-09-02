@@ -31,6 +31,7 @@ import { IServicelocator } from "src/adapters/questionservicelocator";
 import { KhanAcademyQuestionToken } from "src/adapters/khanAcademy/khanAcademy.adapter";
 import { QuestionDto } from "./dto/question.dto";
 import { HasuraQuestionToken } from "src/adapters/hasura/question.adapter";
+import { classList } from "./enums/question.enum";
 
 @ApiTags("Question")
 @Controller("question")
@@ -123,7 +124,24 @@ export class QuestionController {
   @Get(":adapter/subjectlist")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   @ApiOkResponse({ description: "Get all subject list" })
-  @ApiQuery({ name: "gradeLevel", required: true })
+  @ApiQuery({
+    name: "gradeLevel",
+    enum: [
+      classList.class1,
+      classList.class2,
+      classList.class3,
+      classList.class4,
+      classList.class5,
+      classList.class6,
+      classList.class7,
+      classList.class8,
+      classList.class9,
+      classList.class10,
+      classList.class11,
+      classList.class12,
+    ],
+    required: true,
+  })
   @ApiForbiddenResponse({ description: "Forbidden" })
   public async getSubjectList(
     @Param("adapter") adapter: string,

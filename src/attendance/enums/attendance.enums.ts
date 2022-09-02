@@ -1,7 +1,8 @@
 export enum userType {
-  student = "teacher",
+  teacher = "teacher",
   mentor = "mentor",
   monitor = "monitor",
+  student = "student",
 }
 
 export enum attendance {
