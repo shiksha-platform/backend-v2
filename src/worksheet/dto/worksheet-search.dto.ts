@@ -8,6 +8,11 @@ export class WorksheetSearchDto {
   limit: string;
 
   @ApiProperty({
+    type: Number,
+    description: "Page",
+  })
+  page: number;
+  @ApiProperty({
     type: Object,
     description: "Filters",
   })

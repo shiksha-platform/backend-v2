@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 import { WorksheetDto } from "src/worksheet/dto/worksheet.dto";
+import { WorksheetSearchDto } from "src/worksheet/dto/worksheet-search.dto";
 
 @Injectable()
 export class WorksheetService {
@@ -172,46 +173,33 @@ export class WorksheetService {
       data: result,
     });
   }
+
   public async searchWorksheet(
-    limit: string,
-    source: string,
-    grade: string,
-    name: string,
-    level: string,
-    subject: string,
-    topic: string,
-    worksheetId: string,
-    page: number,
+    worksheetSearchDto: WorksheetSearchDto,
     request: any
   ) {
     var axios = require("axios");
 
     let offset = 0;
-
-    if (page > 1) {
-      offset = parseInt(limit) * (page - 1);
+    if (worksheetSearchDto.page > 1) {
+      offset =
+        parseInt(worksheetSearchDto.limit) * (worksheetSearchDto.page - 1);
     }
 
-    const searchData = {
-      source: source,
-      grade: grade,
-      name: name,
-      level: level,
-      subject: subject,
-      topic: topic,
-      worksheetId: worksheetId,
-    };
+    let filters = worksheetSearchDto.filters;
 
-    let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
-      if (searchData[e] && searchData[e] != "") {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
-      }
+    Object.keys(worksheetSearchDto.filters).forEach((item) => {
+      Object.keys(worksheetSearchDto.filters[item]).forEach((e) => {
+        if (!e.startsWith("_")) {
+          filters[item][`_${e}`] = filters[item][e];
+          delete filters[item][e];
+        }
+      });
     });
 
     var data = {
-      query: `query SearchWorksheet($limit:Int, $offset:Int) {
-            worksheet(where:{ ${newDataObject}}, limit: $limit, offset: $offset,) {
+      query: `query SearchWorksheet($filters:worksheet_bool_exp,$limit:Int, $offset:Int) {
+            worksheet(where:$filters, limit: $limit, offset: $offset,) {
               created_at
               feedback
               criteria
@@ -241,8 +229,9 @@ export class WorksheetService {
             }
           }`,
       variables: {
-        limit: parseInt(limit),
+        limit: parseInt(worksheetSearchDto.limit),
         offset: offset,
+        filters: worksheetSearchDto.filters,
       },
     };
     var config = {
