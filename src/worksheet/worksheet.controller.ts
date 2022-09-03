@@ -82,39 +82,14 @@ export class WorksheetController {
   @ApiCreatedResponse({ description: "Worksheet list." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  @ApiQuery({ name: "limit", required: false })
-  @ApiQuery({ name: "source", required: false })
-  @ApiQuery({ name: "grade", required: false })
-  @ApiQuery({ name: "name", required: false })
-  @ApiQuery({ name: "level", required: false })
-  @ApiQuery({ name: "subject", required: false })
-  @ApiQuery({ name: "topic", required: false })
-  @ApiQuery({ name: "worksheetId", required: false })
-  @ApiQuery({ name: "page", required: false })
+  @SerializeOptions({
+    strategy: "excludeAll",
+  })
   public async searchWorksheet(
-    @Query("limit") limit: string,
-    @Query("source") source: string,
-    @Query("grade") grade: string,
-    @Query("name") name: string,
-    @Query("level") level: string,
-    @Query("subject") subject: string,
-    @Query("topic") topic: string,
-    @Query("worksheetId") worksheetId: string,
-    @Query("page") page: number,
+    @Body() worksheetSearchDto: WorksheetSearchDto,
     @Req() request: Request
   ) {
-    return await this.service.searchWorksheet(
-      limit,
-      source,
-      grade,
-      name,
-      level,
-      subject,
-      topic,
-      worksheetId,
-      page,
-      request
-    );
+    return await this.service.searchWorksheet(worksheetSearchDto, request);
   }
 
   @Post(":worksheet/pdf")
