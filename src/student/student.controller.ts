@@ -38,6 +38,7 @@ import {
   EsamwadStudentToken,
 } from "src/adapters/esamwad/student.adapter";
 import { IServicelocator } from "src/adapters/studentservicelocator";
+import { StudentAdapter } from "./studentadapter";
 @ApiTags("Student")
 @Controller("student")
 export class StudentController {
@@ -45,8 +46,8 @@ export class StudentController {
     private service: StudentService,
     private esamwadService: EsamwadStudentService,
     @Inject(CACHE_MANAGER) private cacheManager,
-    @Inject(EsamwadStudentToken) private eSamwadProvider: IServicelocator,
-    @Inject(SunbirdStudentToken) private sunbirdProvider: IServicelocator
+
+    private studentAdapter: StudentAdapter
   ) {}
 
   @Get("/:id")
@@ -58,11 +59,9 @@ export class StudentController {
     strategy: "excludeAll",
   })
   getStudent(@Param("id") studentId: string, @Req() request: Request) {
-    if (process.env.ADAPTER === "sunbird") {
-      return this.sunbirdProvider.getStudent(studentId, request);
-    } else if (process.env.ADAPTER === "esamwad") {
-      return this.eSamwadProvider.getStudent(studentId, request);
-    }
+    return this.studentAdapter
+      .buildStudentAdapter()
+      .getStudent(studentId, request);
   }
 
   @Post()
@@ -75,7 +74,9 @@ export class StudentController {
     @Req() request: Request,
     @Body() studentDto: StudentDto
   ) {
-    return this.service.createStudent(request, studentDto);
+    return this.studentAdapter
+      .buildStudentAdapter()
+      .createStudent(request, studentDto);
   }
 
   @Put("/:id")
@@ -88,7 +89,9 @@ export class StudentController {
     @Req() request: Request,
     @Body() studentDto: StudentDto
   ) {
-    return await this.service.updateStudent(id, request, studentDto);
+    return await this.studentAdapter
+      .buildStudentAdapter()
+      .updateStudent(id, request, studentDto);
   }
 
   @Post("/search")
@@ -104,10 +107,8 @@ export class StudentController {
     @Req() request: Request,
     @Body() studentSearchDto: StudentSearchDto
   ) {
-    if (process.env.ADAPTER === "sunbird") {
-      return this.sunbirdProvider.searchStudent(request, studentSearchDto);
-    } else if (process.env.ADAPTER === "esamwad") {
-      return this.eSamwadProvider.searchStudent(request, studentSearchDto);
-    }
+    return this.studentAdapter
+      .buildStudentAdapter()
+      .searchStudent(request, studentSearchDto);
   }
 }

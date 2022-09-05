@@ -1,26 +1,20 @@
 import { HttpModule } from "@nestjs/axios";
 import { CacheModule, Module } from "@nestjs/common";
-import {
-  HasuraCommentService,
-  HasuraCommentToken,
-} from "src/adapters/hasura/comment.adapter";
-import {
-  SunbirdCommentService,
-  SunbirdCommentToken,
-} from "src/adapters/sunbirdrc/comment.adapter";
+import { HasuraModule } from "src/adapters/hasura/hasura.module";
+import { SunbirdModule } from "src/adapters/sunbirdrc/subnbird.module";
 import { CommentController } from "./comment.controller";
+import { CommentAdapter } from "./commentadapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
+    SunbirdModule,
+    HasuraModule,
     HttpModule,
     CacheModule.register({
       ttl: ttl,
     }),
   ],
   controllers: [CommentController],
-  providers: [
-    { provide: SunbirdCommentToken, useClass: SunbirdCommentService },
-    { provide: HasuraCommentToken, useClass: HasuraCommentService },
-  ],
+  providers: [CommentAdapter],
 })
 export class CommentModule {}

@@ -8,6 +8,7 @@ import { ErrorResponse } from "src/error-response";
 import { IServicelocator } from "../studentservicelocator";
 import { StudentSearchDto } from "src/student/dto/student-search.dto";
 import { StudentGroupMembershipDto } from "src/group/dto/studentGroupMembership.dto";
+import { StudentDto } from "src/student/dto/student.dto";
 export const EsamwadStudentToken = "EsamwadStudent";
 @Injectable()
 export class EsamwadStudentService implements IServicelocator {
@@ -122,4 +123,7 @@ export class EsamwadStudentService implements IServicelocator {
       data: responsedata[0],
     });
   }
+
+  createStudent(request: any, studentDto: StudentDto) {}
+  updateStudent(id: string, request: any, studentDto: StudentDto) {}
 }

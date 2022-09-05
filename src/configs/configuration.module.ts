@@ -9,19 +9,20 @@ import {
   HasuraConfigService,
   HasuraConfigToken,
 } from "src/adapters/hasura/config.adapter";
+import { ConfigsAdapter } from "./configsadapter";
+import { HasuraModule } from "src/adapters/hasura/hasura.module";
+import { SunbirdModule } from "src/adapters/sunbirdrc/subnbird.module";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
+    SunbirdModule,
+    HasuraModule,
     HttpModule,
     CacheModule.register({
       ttl: ttl,
     }),
   ],
   controllers: [ConfigController],
-  providers: [
-    SunbirdConfigService,
-    { provide: HasuraConfigToken, useClass: HasuraConfigService },
-    { provide: SunbirdConfigToken, useClass: SunbirdConfigService },
-  ],
+  providers: [ConfigsAdapter],
 })
 export class ConfigurationModule {}
