@@ -200,4 +200,31 @@ export class GroupController {
       return this.hasuraProvider.findGroupsByUserId(id, role, request);
     }
   }
+
+  @Get(":groupId/child")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: "Group detail." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  public async findMembersOfChildGroup(
+    @Param("groupId") id: string,
+    @Query("role") role: string,
+    @Req() request: Request
+  ) {
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvidergroup.findMembersOfChildGroup(
+        id,
+        role,
+        request
+      );
+    } else if (process.env.ADAPTERSOURCE === "esamwad") {
+      return this.eSamwadProvidergroup.findMembersOfChildGroup(
+        id,
+        role,
+        request
+      );
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.findMembersOfChildGroup(id, role, request);
+    }
+  }
 }

@@ -361,4 +361,100 @@ export class HasuraGroupService implements IServicelocatorgroup {
       data: result,
     });
   }
+
+  public async findMembersOfChildGroup(
+    parentId: string,
+    role: string,
+    request: any
+  ) {
+    let axios = require("axios");
+    let userData = [];
+
+    var findParentId = {
+      query: `query GetGroupParentId($parentId:String) {
+       group(where: {parentId: {_eq: $parentId}}) {
+        groupId
+        }
+      }`,
+      variables: {
+        parentId: parentId,
+      },
+    };
+
+    var getParentId = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: findParentId,
+    };
+
+    const groupResponse = await axios(getParentId);
+
+    let groupIds = groupResponse.data.data.group.map((e: any) => {
+      return e.groupId;
+    });
+
+    for (let groupId of groupIds) {
+      var findMember = {
+        query: `query GetGroupMembership($groupId:uuid,$role:String) {
+       groupmembership(where: {groupId: {_eq: $groupId}, role: {_eq: $role}}) {
+        userId
+        role
+        }
+      }`,
+        variables: {
+          groupId: groupId,
+          role: role,
+        },
+      };
+
+      var getMemberData = {
+        method: "post",
+        url: process.env.REGISTRYHASURA,
+        headers: {
+          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+          "Content-Type": "application/json",
+        },
+        data: findMember,
+      };
+
+      const response = await axios(getMemberData);
+      let result = response.data.data.groupmembership[0];
+
+      if (result.role == "Student") {
+        let studentSearch = {
+          method: "get",
+          url: `${this.url}/Student/${result.userId}`,
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+        };
+
+        const response = await axios(studentSearch);
+        let studentData = new StudentDto(response.data);
+
+        userData.push(studentData);
+      } else {
+        let classFinal = {
+          method: "get",
+          url: `${this.url}/User/${result.userId}`,
+          headers: {
+            Authorization: request.headers.authorization,
+          },
+        };
+
+        const responseData = await axios(classFinal);
+        const teacherDetailDto = new UserDto(responseData.data);
+        userData.push(teacherDetailDto);
+      }
+    }
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: userData,
+    });
+  }
 }
