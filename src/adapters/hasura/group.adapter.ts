@@ -387,43 +387,39 @@ export class HasuraGroupService implements IServicelocatorgroup {
     };
 
     const groupResponse = await axios(getParentId);
-
     let groupIds = groupResponse.data.data.group.map((e: any) => {
       return e.groupId;
     });
 
-    for (let groupId of groupIds) {
-      var findMember = {
-        query: `query GetGroupMembership($groupId:uuid,$role:String) {
-       groupmembership(where: {groupId: {_eq: $groupId}, role: {_eq: $role}}) {
-        userId
-        role
-        }
-      }`,
-        variables: {
-          groupId: groupId,
-          role: role,
-        },
-      };
+    var findMember = {
+      query: `query GetGroupMembership($groupIds:[uuid!],$role:String) {
+          groupmembership(where: {groupId: {_in:$groupIds},role: {_eq:$role }}) {
+              userId
+            role
+          }
+        }`,
+      variables: {
+        groupIds,
+        role: role,
+      },
+    };
 
-      var getMemberData = {
-        method: "post",
-        url: process.env.REGISTRYHASURA,
-        headers: {
-          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-          "Content-Type": "application/json",
-        },
-        data: findMember,
-      };
+    var getMemberData = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: findMember,
+    };
 
-      const response = await axios(getMemberData);
-      let result = await response.data.data.groupmembership;
+    const response = await axios(getMemberData);
+    let result = await response.data.data.groupmembership;
 
-      result.map((e: any) => {
-        return userIds.push(e.userId);
-      });
-    }
-
+    result.map((e: any) => {
+      return userIds.push(e.userId);
+    });
     for (let userId of userIds) {
       if (role == "Student") {
         let studentSearch = {
