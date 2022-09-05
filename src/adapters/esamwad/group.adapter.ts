@@ -248,4 +248,9 @@ export class EsamwadGroupService implements IServicelocatorgroup {
   public async createGroup(request: any, groupDto: GroupDto) {}
   public async updateGroup(groupId: string, request: any, groupDto: GroupDto) {}
   public async searchGroup(request: any, groupSearchDto: GroupSearchDto) {}
+  public async findMembersOfChildGroup(
+    groupId: string,
+    role: string,
+    request: any
+  ) {}
 }

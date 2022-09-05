@@ -244,4 +244,9 @@ export class SunbirdGroupService implements IServicelocatorgroup {
       data: result,
     });
   }
+  public async findMembersOfChildGroup(
+    groupId: string,
+    role: string,
+    request: any
+  ) {}
 }

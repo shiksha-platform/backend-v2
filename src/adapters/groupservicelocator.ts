@@ -8,4 +8,5 @@ export interface IServicelocatorgroup {
   searchGroup(request: any, groupSearchDto: GroupSearchDto);
   findMembersOfGroup(id, role, request);
   findGroupsByUserId(id, role, request);
+  findMembersOfChildGroup(groupId: string, role: string, request: any);
 }
