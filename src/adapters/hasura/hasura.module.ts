@@ -4,6 +4,7 @@ import { AttendanceHasuraService } from "./attendance.adapter";
 import { HasuraCommentService } from "./comment.adapter";
 import { HasuraConfigService } from "./config.adapter";
 import { HasuraGroupService } from "./group.adapter";
+import { HasuraHolidayService } from "./holiday.adapter";
 import { HasuraLikeService } from "./like.adapter";
 import { SchoolHasuraService } from "./school.adapter";
 
@@ -16,6 +17,7 @@ import { SchoolHasuraService } from "./school.adapter";
     HasuraCommentService,
     HasuraConfigService,
     HasuraLikeService,
+    HasuraHolidayService,
   ],
   exports: [
     AttendanceHasuraService,
@@ -24,6 +26,7 @@ import { SchoolHasuraService } from "./school.adapter";
     HasuraCommentService,
     HasuraConfigService,
     HasuraLikeService,
+    HasuraHolidayService,
   ],
 })
 export class HasuraModule {}

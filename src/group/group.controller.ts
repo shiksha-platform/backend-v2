@@ -167,20 +167,8 @@ export class GroupController {
     @Query("role") role: string,
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvidergroup.findMembersOfChildGroup(
-        id,
-        role,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvidergroup.findMembersOfChildGroup(
-        id,
-        role,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.findMembersOfChildGroup(id, role, request);
-    }
+    return this.groupAdapter
+      .buildGroupAdapter()
+      .findMembersOfChildGroup(id, role, request);
   }
 }
