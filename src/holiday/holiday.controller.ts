@@ -11,6 +11,7 @@ import {
   Req,
   CacheInterceptor,
   Query,
+  Inject,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -21,14 +22,21 @@ import {
   ApiBasicAuth,
   ApiQuery,
 } from "@nestjs/swagger";
-import { HolidayService } from "src/adapters/sunbirdrc/holiday.adapter";
+import { SunbirdHolidayToken } from "src/adapters/sunbirdrc/holiday.adapter";
 import { HolidayDto } from "./dto/holiday.dto";
 import { HolidaySearchDto } from "./dto/holiday-search.dto";
 import { Request } from "@nestjs/common";
+import { IServicelocator } from "src/adapters/holidayservicelocator";
+import { HasuraHolidayToken } from "src/adapters/hasura/holiday.adapter";
 @ApiTags("Holiday")
 @Controller("holiday")
 export class HolidayController {
-  constructor(private readonly service: HolidayService) {}
+  constructor(
+    @Inject(SunbirdHolidayToken)
+    private sunbirdProvider: IServicelocator,
+    @Inject(HasuraHolidayToken)
+    private hasuraProvider: IServicelocator
+  ) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -38,7 +46,11 @@ export class HolidayController {
     strategy: "excludeAll",
   })
   getHolidays(@Param("id") holidayId: string, @Req() request: Request) {
-    return this.service.getHoliday(holidayId, request);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return this.sunbirdProvider.getHoliday(holidayId, request);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return this.hasuraProvider.getHoliday(holidayId, request);
+    }
   }
 
   @Post()
@@ -51,7 +63,11 @@ export class HolidayController {
     @Req() request: Request,
     @Body() holidayDto: HolidayDto
   ) {
-    return this.service.createHoliday(request, holidayDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.createHoliday(request, holidayDto);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.createHoliday(request, holidayDto);
+    }
   }
 
   @Put("/:id")
@@ -64,7 +80,19 @@ export class HolidayController {
     @Req() request: Request,
     @Body() holidayDto: HolidayDto
   ) {
-    return await this.service.updateHoliday(holidayId, request, holidayDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.updateHoliday(
+        holidayId,
+        request,
+        holidayDto
+      );
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.updateHoliday(
+        holidayId,
+        request,
+        holidayDto
+      );
+    }
   }
 
   @Post("/search")
@@ -80,7 +108,14 @@ export class HolidayController {
     @Req() request: Request,
     @Body() holidaySearchDto: HolidaySearchDto
   ) {
-    return await this.service.searchHoliday(request, holidaySearchDto);
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.searchHoliday(
+        request,
+        holidaySearchDto
+      );
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.searchHoliday(request, holidaySearchDto);
+    }
   }
 
   @Get("")
@@ -95,11 +130,10 @@ export class HolidayController {
     @Query("toDate") toDate: string,
     @Req() request: Request
   ) {
-    return await this.service.holidayFilter(
-      date,
-      toDate,
-
-      request
-    );
+    if (process.env.ADAPTERSOURCE === "sunbird") {
+      return await this.sunbirdProvider.holidayFilter(date, toDate, request);
+    } else if (process.env.ADAPTERSOURCE === "hasura") {
+      return await this.hasuraProvider.holidayFilter(date, toDate, request);
+    }
   }
 }

@@ -8,8 +8,10 @@ import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { HolidaySearchDto } from "src/holiday/dto/holiday-search.dto";
+import { IServicelocator } from "../holidayservicelocator";
+export const SunbirdHolidayToken = "SunbirdHoliday";
 @Injectable()
-export class HolidayService {
+export class SunbirdHolidayService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Holiday`;
 
