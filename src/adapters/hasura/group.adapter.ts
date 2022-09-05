@@ -1,18 +1,13 @@
-import { Injectable, HttpException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { GroupInterface } from "../../group/interfaces/group.interface";
 import { HttpService } from "@nestjs/axios";
-import { AxiosResponse } from "axios";
-import { first, map, Observable } from "rxjs";
-import e, { response } from "express";
 import { SuccessResponse } from "src/success-response";
 const resolvePath = require("object-resolve-path");
 import { GroupDto } from "src/group/dto/group.dto";
-import { ErrorResponse } from "src/error-response";
 import { GroupSearchDto } from "src/group/dto/group-search.dto";
 import { IServicelocatorgroup } from "../groupservicelocator";
 import { UserDto } from "src/user/dto/user.dto";
 import { StudentDto } from "src/student/dto/student.dto";
-import { isArray } from "class-validator";
 export const HasuraGroupToken = "HasuraGroup";
 @Injectable()
 export class HasuraGroupService implements IServicelocatorgroup {
@@ -369,7 +364,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
   ) {
     let axios = require("axios");
     let userData = [];
-
+    let userIds = [];
     var findParentId = {
       query: `query GetGroupParentId($parentId:String) {
        group(where: {parentId: {_eq: $parentId}}) {
@@ -392,42 +387,44 @@ export class HasuraGroupService implements IServicelocatorgroup {
     };
 
     const groupResponse = await axios(getParentId);
-
     let groupIds = groupResponse.data.data.group.map((e: any) => {
       return e.groupId;
     });
 
-    for (let groupId of groupIds) {
-      var findMember = {
-        query: `query GetGroupMembership($groupId:uuid,$role:String) {
-       groupmembership(where: {groupId: {_eq: $groupId}, role: {_eq: $role}}) {
-        userId
-        role
-        }
-      }`,
-        variables: {
-          groupId: groupId,
-          role: role,
-        },
-      };
+    var findMember = {
+      query: `query GetGroupMembership($groupIds:[uuid!],$role:String) {
+          groupmembership(where: {groupId: {_in:$groupIds},role: {_eq:$role }}) {
+              userId
+            role
+          }
+        }`,
+      variables: {
+        groupIds,
+        role: role,
+      },
+    };
 
-      var getMemberData = {
-        method: "post",
-        url: process.env.REGISTRYHASURA,
-        headers: {
-          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-          "Content-Type": "application/json",
-        },
-        data: findMember,
-      };
+    var getMemberData = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: findMember,
+    };
 
-      const response = await axios(getMemberData);
-      let result = response.data.data.groupmembership[0];
+    const response = await axios(getMemberData);
+    let result = await response.data.data.groupmembership;
 
-      if (result.role == "Student") {
+    result.map((e: any) => {
+      return userIds.push(e.userId);
+    });
+    for (let userId of userIds) {
+      if (role == "Student") {
         let studentSearch = {
           method: "get",
-          url: `${this.url}/Student/${result.userId}`,
+          url: `${this.url}/Student/${userId}`,
           headers: {
             Authorization: request.headers.authorization,
           },
@@ -440,7 +437,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
       } else {
         let classFinal = {
           method: "get",
-          url: `${this.url}/User/${result.userId}`,
+          url: `${this.url}/User/${userId}`,
           headers: {
             Authorization: request.headers.authorization,
           },
@@ -448,9 +445,11 @@ export class HasuraGroupService implements IServicelocatorgroup {
 
         const responseData = await axios(classFinal);
         const teacherDetailDto = new UserDto(responseData.data);
+
         userData.push(teacherDetailDto);
       }
     }
+
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
