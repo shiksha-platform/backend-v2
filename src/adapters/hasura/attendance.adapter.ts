@@ -22,7 +22,6 @@ export class AttendanceHasuraService implements IServicelocator {
   baseUrl = process.env.BASEAPIURL;
   public async getAttendance(attendanceId: any, request: any) {
     var axios = require("axios");
-
     var data = {
       query: `query GetAttendance($attendanceId:uuid) {
         attendance(where: {attendanceId: {_eq: $attendanceId}}) {
@@ -60,6 +59,7 @@ export class AttendanceHasuraService implements IServicelocator {
     };
 
     const response = await axios(config);
+
     let result = response?.data?.data?.attendance.map(
       (item: any) => new AttendanceDto(item)
     );

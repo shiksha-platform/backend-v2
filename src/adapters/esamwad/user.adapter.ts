@@ -70,4 +70,9 @@ export class EsamwadUserService implements IServicelocator {
       data: result,
     });
   }
+  getUser(id: any, request: any) {}
+  createUser(request: any, teacherDto: UserDto) {}
+  updateUser(id: string, request: any, teacherDto: UserDto) {}
+  searchUser(request: any, teacherSearchDto: UserSearchDto) {}
+  teacherSegment(schoolId: string, templateId: string, request: any) {}
 }

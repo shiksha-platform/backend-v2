@@ -1,26 +1,20 @@
 import { HttpModule } from "@nestjs/axios";
 import { CacheModule, Module } from "@nestjs/common";
-import {
-  HasuraHolidayService,
-  HasuraHolidayToken,
-} from "src/adapters/hasura/holiday.adapter";
-import {
-  SunbirdHolidayService,
-  SunbirdHolidayToken,
-} from "src/adapters/sunbirdrc/holiday.adapter";
+import { HasuraModule } from "src/adapters/hasura/hasura.module";
+import { SunbirdModule } from "src/adapters/sunbirdrc/subnbird.module";
 import { HolidayController } from "./holiday.controller";
+import { HolidayAdapter } from "./holidayadapter";
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
+    SunbirdModule,
+    HasuraModule,
     HttpModule,
     CacheModule.register({
       ttl: ttl,
     }),
   ],
   controllers: [HolidayController],
-  providers: [
-    { provide: SunbirdHolidayToken, useClass: SunbirdHolidayService },
-    { provide: HasuraHolidayToken, useClass: HasuraHolidayService },
-  ],
+  providers: [HolidayAdapter],
 })
 export class HolidayModule {}

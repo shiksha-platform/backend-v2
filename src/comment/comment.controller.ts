@@ -10,7 +10,6 @@ import {
   SerializeOptions,
   Req,
   CacheInterceptor,
-  Inject,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -23,21 +22,12 @@ import {
 import { Request } from "@nestjs/common";
 import { CommentDto } from "./dto/comment.dto";
 import { CommentSearchDto } from "./dto/comment-search.dto";
-import {
-  SunbirdCommentService,
-  SunbirdCommentToken,
-} from "src/adapters/sunbirdrc/comment.adapter";
-import { HasuraCommentToken } from "src/adapters/hasura/comment.adapter";
 import { IServicelocator } from "src/adapters/commentservicelocator";
+import { CommentAdapter } from "./commentadapter";
 @ApiTags("Comment")
 @Controller("comment")
 export class CommentController implements IServicelocator {
-  constructor(
-    @Inject(SunbirdCommentToken)
-    private sunbirdProvider: IServicelocator,
-    @Inject(HasuraCommentToken)
-    private hasuraProvider: IServicelocator
-  ) {}
+  constructor(private commentAdapter: CommentAdapter) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -47,11 +37,9 @@ export class CommentController implements IServicelocator {
     strategy: "excludeAll",
   })
   getComment(@Param("id") commentId: string, @Req() request: Request) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.getComment(commentId, request);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.getComment(commentId, request);
-    }
+    return this.commentAdapter
+      .buildCommentAdapter()
+      .getComment(commentId, request);
   }
 
   @Post()
@@ -66,11 +54,9 @@ export class CommentController implements IServicelocator {
     @Req() request: Request,
     @Body() commentDto: CommentDto
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.createComment(request, commentDto);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.createComment(request, commentDto);
-    }
+    return this.commentAdapter
+      .buildCommentAdapter()
+      .createComment(request, commentDto);
   }
 
   @Put("/:id")
@@ -85,11 +71,9 @@ export class CommentController implements IServicelocator {
     @Req() request: Request,
     @Body() commentDto: CommentDto
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.updateComment(commentId, request, commentDto);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.updateComment(commentId, request, commentDto);
-    }
+    return this.commentAdapter
+      .buildCommentAdapter()
+      .updateComment(commentId, request, commentDto);
   }
 
   @Post("/search")
@@ -105,10 +89,8 @@ export class CommentController implements IServicelocator {
     @Req() request: Request,
     @Body() CommentSearchDto: CommentSearchDto
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.searchComment(request, CommentSearchDto);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.searchComment(request, CommentSearchDto);
-    }
+    return this.commentAdapter
+      .buildCommentAdapter()
+      .searchComment(request, CommentSearchDto);
   }
 }

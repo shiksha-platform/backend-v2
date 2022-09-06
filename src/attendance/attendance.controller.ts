@@ -14,7 +14,6 @@ import {
   Post,
   Body,
   Put,
-  Patch,
   Param,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -24,37 +23,21 @@ import {
   UploadedFile,
   CacheInterceptor,
   Query,
-  Inject,
-  CACHE_MANAGER,
 } from "@nestjs/common";
 import { AttendanceDto } from "./dto/attendance.dto";
-import { request } from "http";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
 import { AttendanceSearchDto } from "./dto/attendance-search.dto";
-import {
-  AttendanceEsamwadService,
-  EsamwadAttendanceToken,
-} from "src/adapters/esamwad/attendance.adapter";
-import { IServicelocator } from "src/adapters/attendanceservicelocator";
-import {
-  AttendanceHasuraService,
-  ShikshaAttendanceToken,
-} from "src/adapters/hasura/attendance.adapter";
-import {
-  AttendanceService,
-  SunbirdAttendanceToken,
-} from "src/adapters/sunbirdrc/attendance.adapter";
+import { AttendanceHasuraService } from "src/adapters/hasura/attendance.adapter";
+import { AttendaceAdapter } from "./attendanceadapter";
+
 @ApiTags("Attendance")
 @Controller("attendance")
 export class AttendanceController {
   constructor(
     private service: AttendanceHasuraService,
-    private hasuraService: AttendanceEsamwadService,
-    @Inject(EsamwadAttendanceToken) private eSamwadProvider: IServicelocator,
-    @Inject(ShikshaAttendanceToken) private hasuraProvider: IServicelocator,
-    @Inject(SunbirdAttendanceToken) private sunbirdProvider: IServicelocator
+    private attendaceAdapter: AttendaceAdapter
   ) {}
 
   @Get("/:id")
@@ -69,13 +52,9 @@ export class AttendanceController {
     @Param("id") attendanceId: string,
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.getAttendance(attendanceId, request);
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.getAttendance(attendanceId, request);
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.getAttendance(attendanceId, request);
-    }
+    return await this.attendaceAdapter
+      .buildAttenceAdapter()
+      .getAttendance(attendanceId, request);
   }
 
   @Post()
@@ -104,16 +83,10 @@ export class AttendanceController {
     const response = {
       image: image?.filename,
     };
-
     Object.assign(attendaceDto, response);
-
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.createAttendance(request, attendaceDto);
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.createAttendance(request, attendaceDto);
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.createAttendance(request, attendaceDto);
-    }
+    return this.attendaceAdapter
+      .buildAttenceAdapter()
+      .createAttendance(request, attendaceDto);
   }
 
   @Put("/:id")
@@ -143,27 +116,10 @@ export class AttendanceController {
     const response = {
       image: image?.filename,
     };
-
     Object.assign(attendanceDto, response);
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.updateAttendance(
-        attendanceId,
-        request,
-        attendanceDto
-      );
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.updateAttendance(
-        attendanceId,
-        request,
-        attendanceDto
-      );
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.updateAttendance(
-        attendanceId,
-        request,
-        attendanceDto
-      );
-    }
+    return this.attendaceAdapter
+      .buildAttenceAdapter()
+      .updateAttendance(attendanceId, request, attendanceDto);
   }
 
   @Post("/search")
@@ -179,13 +135,9 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() studentSearchDto: AttendanceSearchDto
   ) {
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.searchAttendance(request, studentSearchDto);
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.searchAttendance(request, studentSearchDto);
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.searchAttendance(request, studentSearchDto);
-    }
+    return this.attendaceAdapter
+      .buildAttenceAdapter()
+      .searchAttendance(request, studentSearchDto);
   }
 
   @Get("usersegment/:attendance")
@@ -228,11 +180,11 @@ export class AttendanceController {
     @Query("schoolId") schoolId: string,
     @Query("eventId") eventId: string,
     @Query("topicId") topicId: string,
-
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.attendanceFilter(
+    return this.attendaceAdapter
+      .buildAttenceAdapter()
+      .attendanceFilter(
         date,
         toDate,
         userId,
@@ -244,33 +196,6 @@ export class AttendanceController {
         topicId,
         request
       );
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.attendanceFilter(
-        date,
-        toDate,
-        userId,
-        userType,
-        attendance,
-        groupId,
-        schoolId,
-        eventId,
-        topicId,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.attendanceFilter(
-        date,
-        toDate,
-        userId,
-        userType,
-        attendance,
-        groupId,
-        schoolId,
-        eventId,
-        topicId,
-        request
-      );
-    }
   }
 
   @Post("bulkAttendance")
@@ -284,13 +209,9 @@ export class AttendanceController {
     @Req() request: Request,
     @Body() attendanceDto: [Object]
   ) {
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.multipleAttendance(request, attendanceDto);
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.multipleAttendance(request, attendanceDto);
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.multipleAttendance(request, attendanceDto);
-    }
+    return this.attendaceAdapter
+      .buildAttenceAdapter()
+      .multipleAttendance(request, attendanceDto);
   }
 
   @Post(":groupId/studentdetails")
@@ -302,28 +223,11 @@ export class AttendanceController {
   public async studentAttendanceByGroup(
     @Query("date") date: string,
     @Param("groupId") groupId: string,
-
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.studentAttendanceByGroup(
-        date,
-        groupId,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.studentAttendanceByGroup(
-        date,
-        groupId,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.studentAttendanceByGroup(
-        date,
-        groupId,
-        request
-      );
-    }
+    return this.attendaceAdapter
+      .buildAttenceAdapter()
+      .studentAttendanceByGroup(date, groupId, request);
   }
 
   @Post("studentdetail/:userId")
@@ -335,27 +239,10 @@ export class AttendanceController {
   public async studentAttendanceByUserId(
     @Query("date") date: string,
     @Param("userId") userId: string,
-
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.studentAttendanceByUserId(
-        date,
-        userId,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "esamwad") {
-      return this.eSamwadProvider.studentAttendanceByUserId(
-        date,
-        userId,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.studentAttendanceByUserId(
-        date,
-        userId,
-        request
-      );
-    }
+    return this.attendaceAdapter
+      .buildAttenceAdapter()
+      .studentAttendanceByUserId(date, userId, request);
   }
 }
