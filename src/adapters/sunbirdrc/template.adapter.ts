@@ -86,7 +86,6 @@ export class TemplateService {
     });
   }
   public async getTemplateByTag(tag: string, request: any) {
-    console.log(tag);
     var axios = require("axios");
 
     let config = {
