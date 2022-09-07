@@ -44,7 +44,7 @@ export class QuestionController {
     private hasuraProvider: IServicelocator
   ) {}
 
-  @Post(":adapter/search")
+  @Get(":adapter/search")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
   //@ApiBasicAuth("access-token")
   @ApiOkResponse({ description: "Get all Questions detail." })
