@@ -79,8 +79,6 @@ export class TemplateController {
     @Query("tag") tag: string,
     @Req() request: Request
   ) {
-    console.log(tag);
-
     return this.service.getTemplateByTag(tag, request);
   }
 }

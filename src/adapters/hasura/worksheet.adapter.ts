@@ -117,8 +117,8 @@ export class WorksheetService {
     var axios = require("axios");
 
     var data = {
-      query: `query GetWorksheet($worksheetId:uuid) {
-        worksheet(where: {worksheetId: {_eq: $worksheetId}}) {
+      query: `query GetWorksheet($worksheetId:uuid!) {
+        worksheet_by_pk(worksheetId:  $worksheetId) {
           created_at
           feedback
           criteria
@@ -163,14 +163,13 @@ export class WorksheetService {
 
     const response = await axios(config);
 
-    let result = response.data.data.worksheet.map(
-      (item: any) => new WorksheetDto(item)
-    );
+    let result = response.data.data.worksheet_by_pk;
+    const workSheetResponse = new WorksheetDto(result);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: workSheetResponse,
     });
   }
 
