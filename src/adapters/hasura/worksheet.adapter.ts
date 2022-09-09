@@ -12,25 +12,25 @@ export class WorksheetService {
 
   public async createWorksheet(request: any, worksheetDto: WorksheetDto) {
     var axios = require("axios");
-    const worksheetSchema = new WorksheetDto({});
-    let newDataObject = "";
-    const newData = Object.keys(worksheetDto).forEach((e) => {
+    const worksheetSchema = new WorksheetDto(worksheetDto);
+    let query = "";
+    Object.keys(worksheetDto).forEach((e) => {
       if (
         worksheetDto[e] &&
         worksheetDto[e] != "" &&
         Object.keys(worksheetSchema).includes(e)
       ) {
         if (Array.isArray(worksheetDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(worksheetDto[e])}, `;
+          query += `${e}: ${JSON.stringify(worksheetDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${worksheetDto[e]}", `;
+          query += `${e}: "${worksheetDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation CreateWorksheet {
-        insert_worksheet_one(object: {${newDataObject}}) {
+        insert_worksheet_one(object: {${query}}) {
           worksheetId
         }
       }
@@ -65,25 +65,25 @@ export class WorksheetService {
     worksheetDto: WorksheetDto
   ) {
     var axios = require("axios");
-    const worksheetSchema = new WorksheetDto({});
-    let newDataObject = "";
-    const newData = Object.keys(worksheetDto).forEach((e) => {
+    const worksheetSchema = new WorksheetDto(worksheetDto);
+    let query = "";
+    Object.keys(worksheetDto).forEach((e) => {
       if (
         worksheetDto[e] &&
         worksheetDto[e] != "" &&
         Object.keys(worksheetSchema).includes(e)
       ) {
         if (Array.isArray(worksheetDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(worksheetDto[e])}, `;
+          query += `${e}: ${JSON.stringify(worksheetDto[e])}, `;
         } else {
-          newDataObject += `${e}: ${worksheetDto[e]}, `;
+          query += `${e}: ${worksheetDto[e]}, `;
         }
       }
     });
 
     var data = {
       query: `mutation UpdateWorksheet($worksheetId:uuid) {
-          update_worksheet(where: {worksheetId: {_eq: $worksheetId}}, _set: {${newDataObject}}) {
+          update_worksheet(where: {worksheetId: {_eq: $worksheetId}}, _set: {${query}}) {
           affected_rows
         }
 }`,
@@ -103,7 +103,6 @@ export class WorksheetService {
     };
 
     const response = await axios(config);
-
     const result = response.data.data;
 
     return new SuccessResponse({
@@ -117,8 +116,8 @@ export class WorksheetService {
     var axios = require("axios");
 
     var data = {
-      query: `query GetWorksheet($worksheetId:uuid) {
-        worksheet(where: {worksheetId: {_eq: $worksheetId}}) {
+      query: `query GetWorksheet($worksheetId:uuid!) {
+        worksheet_by_pk(worksheetId: $worksheetId) {
           created_at
           feedback
           criteria
@@ -163,14 +162,12 @@ export class WorksheetService {
 
     const response = await axios(config);
 
-    let result = response.data.data.worksheet.map(
-      (item: any) => new WorksheetDto(item)
-    );
-
+    let result = [response.data.data.worksheet_by_pk];
+    const worksheetResponse = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: worksheetResponse[0],
     });
   }
 
@@ -246,16 +243,15 @@ export class WorksheetService {
 
     const response = await axios(config);
 
-    let result = response.data.data.worksheet.map(
-      (item: any) => new WorksheetDto(item)
-    );
-
+    let result = response.data.data.worksheet;
+    const worksheetResponse = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: worksheetResponse,
     });
   }
+
   public async downloadWorksheet(
     worksheetId: any,
     templateId: any,
@@ -377,5 +373,45 @@ export class WorksheetService {
       message: "ok",
       data: pdfUrl,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const worksheetResponse = result.map((item: any) => {
+      const worksheetMapping = {
+        worksheetId: item?.worksheetId ? `${item.worksheetId}` : "",
+        name: item?.name ? `${item.name}` : "",
+        state: item?.state ? `${item.state}` : "",
+        subject: item?.subject ? `${item.subject}` : "",
+        grade: item?.grade ? `${item.grade}` : "",
+        level: item?.level ? `${item.level}` : "",
+        instructions: item?.instructions ? `${item.instructions}` : "",
+        feedback: item?.feedback ? `${item.feedback}` : "",
+        hints: item?.hints ? `${item.hints}` : "",
+        navigationMode: item?.navigationMode ? `${item.navigationMode}` : "",
+        timeLimits: item?.timeLimits ? `${item.timeLimits}` : "",
+        showHints: item?.showHints ? item.showHints : "",
+        questions: item?.questions ? item.questions : "",
+        questionSets: item?.questionSets ? `${item.questionSets}` : "",
+        outcomeDeclaration: item?.outcomeDeclaration
+          ? `${item.outcomeDeclaration}`
+          : "",
+        outcomeProcessing: item?.outcomeProcessing
+          ? `${item.outcomeProcessing}`
+          : "",
+        questionSetType: item?.questionSetType ? `${item.questionSetType}` : "",
+        criteria: item?.criteria ? `${item.criteria}` : "",
+        usedFor: item?.usedFor ? `${item.usedFor}` : "",
+        purpose: item?.purpose ? `${item.purpose}` : "",
+        visibility: item?.visibility ? `${item.visibility}` : "",
+        qumlVersion: item?.qumlVersion ? `${item.qumlVersion}` : "",
+        topic: item?.topic ? item.topic : "",
+        source: item?.source ? `${item.source}` : "",
+        createdAt: item?.created_at ? `${item.created_at}` : "",
+        updatedAt: item?.updated_at ? `${item.updated_at}` : "",
+      };
+      return new WorksheetDto(worksheetMapping);
+    });
+
+    return worksheetResponse;
   }
 }

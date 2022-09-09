@@ -176,35 +176,6 @@ export class SchoolDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.schoolName = obj?.schoolName ? `${obj.schoolName}` : "";
-    this.email = obj?.email ? `${obj.email}` : "";
-    this.udise = obj?.udise ? `${obj.udise}` : "";
-    this.mediumOfInstruction = obj?.mediumOfInstruction
-      ? obj.mediumOfInstruction
-      : "";
-    this.phoneNumber = obj?.phoneNumber ? obj.phoneNumber : "";
-    this.address = obj?.address ? obj.address : "";
-    this.schoolType = obj?.schoolType ? `${obj.schoolType}` : "";
-    this.website = obj?.website ? `${obj.website}` : "";
-    this.headMaster = obj?.headMaster ? `${obj.headMaster}` : "";
-    this.board = obj?.board ? `${obj.board}` : "";
-    this.village = obj?.village ? `${obj.village}` : "";
-    this.block = obj?.block ? `${obj.block}` : "";
-    this.district = obj?.district ? `${obj.district}` : "";
-    this.stateId = obj?.stateId ? `${obj.stateId}` : "";
-    this.cluster = obj?.cluster ? `${obj.cluster}` : "";
-    this.pincode = obj?.pincode ? obj.pincode : "";
-    this.locationId = obj?.locationId ? `${obj.locationId}` : "";
-    this.enrollCount = obj?.enrollCount ? `${obj.enrollCount}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.latitude = obj?.latitude ? obj.latitude : "";
-    this.longitude = obj?.longitude ? obj.longitude : "";
-    this.metaData = obj?.metaData ? obj.metaData : [];
-    this.deactivationReason = obj?.deactivationReason
-      ? `${obj.deactivationReason}`
-      : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

@@ -176,6 +176,7 @@ export class QumlQuestionService implements IServicelocator {
         method: "get",
         url: `${this.url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks,maxScore,bloomsLevel,compatibilityLevel,language,source`,
       };
+
       const response = await axios(config);
       const data = response?.data;
       const final = data.result.question;
@@ -350,6 +351,7 @@ export class QumlQuestionService implements IServicelocator {
     const response = await axios(config);
 
     const data = response?.data;
+
     const final = data.result.question;
 
     const mappedResponse = {

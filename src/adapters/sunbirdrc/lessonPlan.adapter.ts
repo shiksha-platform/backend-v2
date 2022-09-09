@@ -21,14 +21,13 @@ export class LessonPlanService {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let data = axiosResponse.data;
-
-          const lessonPlanDto = new LessonPlanDto(data);
+        map(async (axiosResponse: AxiosResponse) => {
+          let data = [axiosResponse.data];
+          const lessonPlanDto = await this.mappedResponse(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: lessonPlanDto,
+            data: lessonPlanDto[0],
           });
         }),
         catchError((e) => {
@@ -100,10 +99,8 @@ export class LessonPlanService {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new LessonPlanDto(item)
-          );
+        map(async (response) => {
+          const responsedata = await this.mappedResponse(response.data);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
@@ -118,5 +115,64 @@ export class LessonPlanService {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+
+  public async mappedResponse(result: any) {
+    const lessonPlanResponse = result.map((obj: any) => {
+      const lessonPlanMapping = {
+        contentId: obj?.osid ? `${obj.osid}` : "",
+        name: `${obj.name}`,
+        code: obj?.code ? `${obj.code}` : "",
+        status: obj?.status ? `${obj.status}` : "",
+        channel: obj?.channel ? `${obj.channel}` : "",
+        mediaType: obj?.mediaType ? `${obj.mediaType}` : "",
+        compatibilityLevel: obj?.compatibilityLevel
+          ? `${obj.compatibilityLevel}`
+          : "",
+        audience: obj?.audience ? obj.audience : [],
+        posterImage: obj?.posterImage ? `${obj.posterImage}` : "",
+        duration: obj?.duration ? `${obj.duration}` : "",
+        downloadUrl: obj?.downloadUrl ? `${obj.downloadUrl}` : "",
+        previewUrl: obj?.previewUrl ? `${obj.previewUrl}` : "",
+        author: obj?.author ? `${obj.author}` : "",
+        languageCode: obj?.languageCode ? obj.languageCode : [],
+        language: obj?.language ? obj.language : [],
+        ageGroup: obj?.ageGroup ? obj.ageGroup : [],
+        contentType: obj?.contentType ? `${obj.contentType}` : "",
+        category: obj?.category ? obj.category : [],
+        teachingMode: obj?.teachingMode ? `${obj.teachingMode}` : "",
+        skills: obj?.skills ? obj.skills : [],
+        keywords: obj?.keywords ? obj.keywords : [],
+        description: obj?.osid ? `${obj.osid}` : "",
+        instructions: obj?.osid ? `${obj.osid}` : "",
+        body: obj?.body ? obj.body : "",
+        learningObjective: obj?.learningObjective ? obj.learningObjective : [],
+        creator: obj?.creator ? `${obj.creator}` : "",
+        reviewer: obj?.reviewer ? `${obj.reviewer}` : "",
+        lastSubmittedBy: obj?.lastSubmittedBy ? `${obj.lastSubmittedBy}` : "",
+        lastSubmittedOn: obj?.lastSubmittedOn ? `${obj.lastSubmittedOn}` : "",
+        lastPublishedBy: obj?.lastPublishedBy ? `${obj.lastPublishedBy}` : "",
+        lastPublishedOn: obj?.astPublishedOn ? `${obj.astPublishedOn}` : "",
+        subject: obj?.subject ? obj.subject : [],
+        questionCategories: obj?.questionCategories
+          ? obj.questionCategories
+          : [],
+        medium: obj?.medium ? obj.medium : [],
+        gradeLevel: obj?.gradeLevel ? obj.gradeLevel : [],
+        topic: obj?.topic ? obj.topic : [],
+        subjectCodes: obj?.subjectCodes ? obj.subjectCodes : [],
+        difficultyLevel: obj?.difficultyLevel ? `${obj.difficultyLevel}` : "",
+        board: obj?.board ? `${obj.board}` : "",
+        primaryCategory: obj?.primaryCategory ? `${obj.primaryCategory}` : "",
+        accessibility: obj?.accessibility ? obj.accessibility : [],
+        createdAt: obj?.osCreatedAt ? `${obj.osCreatedAt}` : "",
+        updatedAt: obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "",
+        createdBy: obj?.osCreatedBy ? `${obj.osCreatedBy}` : "",
+        updatedBy: obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "",
+      };
+      return new LessonPlanDto(lessonPlanMapping);
+    });
+
+    return lessonPlanResponse;
   }
 }

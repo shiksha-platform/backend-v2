@@ -278,57 +278,6 @@ export class UserDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.userId = obj?.osid ? `${obj.osid}` : "";
-    this.refId1 = obj?.refId1 ? `${obj.refId1}` : "";
-    this.refId2 = obj?.refId2 ? `${obj.refId2}` : "";
-    this.refId3 = obj?.refId3 ? `${obj.refId3}` : "";
-
-    this.firstName = obj?.firstName ? `${obj.firstName}` : "";
-    this.middleName = obj?.middleName ? `${obj.middleName}` : "";
-    this.lastName = obj?.lastName ? `${obj.lastName}` : "";
-    this.phoneNumber = obj?.phoneNumber ? `${obj.phoneNumber}` : "";
-    this.email = obj?.email ? `${obj.email}` : "";
-    this.aadhaar = obj?.aadhaar ? `${obj.aadhaar}` : "";
-    this.gender = obj?.gender ? `${obj.gender}` : "";
-    this.socialCategory = obj?.socialCategory ? `${obj.socialCategory}` : "";
-    this.birthDate = obj?.birthDate ? `${obj.birthDate}` : "";
-    this.designation = obj?.designation ? `${obj.designation}` : "";
-    this.cadre = obj?.cadre ? `${obj.cadre}` : "";
-    this.profQualification = obj?.profQualification
-      ? `${obj.profQualification}`
-      : "";
-    this.joiningDate = obj?.joiningDate ? `${obj.joiningDate}` : "";
-    this.subjectIds = obj.subjectIds ? obj.subjectIds : [];
-    this.bloodGroup = obj?.bloodGroup ? `${obj.bloodGroup}` : "";
-    this.maritalStatus = obj?.maritalStatus ? `${obj.maritalStatus}` : "";
-    this.compSkills = obj?.compSkills ? `${obj.compSkills}` : "";
-    this.disability = obj?.disability ? `${obj.disability}` : "";
-    this.religion = obj?.religion ? `${obj.religion}` : "";
-    this.homeDistance = obj?.homeDistance ? `${obj.homeDistance}` : "";
-    this.employmentType = obj?.employmentType ? `${obj.employmentType}` : "";
-    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.address = obj?.address ? `${obj.address}` : "";
-    this.village = obj?.village ? `${obj.village}` : "";
-    this.block = obj?.block ? `${obj.block}` : "";
-    this.district = obj?.district ? `${obj.district}` : "";
-    this.stateId = obj?.stateId ? `${obj.stateId}` : "";
-    this.pincode = obj?.pincode ? obj.pincode : "";
-    this.locationId = obj?.locationId ? `${obj.locationId}` : "";
-    this.image = obj?.image ? `${obj.image}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.deactivationReason = obj?.deactivationReason
-      ? `${obj.deactivationReason}`
-      : "";
-    this.reportsTo = obj?.reportsTo ? `${obj.reportsTo}` : "";
-    this.retirementDate = obj?.retirementDate ? `${obj.retirementDate}` : "";
-    this.workingStatus = obj?.workingStatus ? `${obj.workingStatus}` : "";
-    this.fcmToken = obj?.fcmToken ? `${obj.fcmToken}` : "";
-    this.role = obj?.role ? `${obj.role}` : "";
-    this.employeeCode = obj?.employeeCode ? `${obj.employeeCode}` : "";
-    this.metaData = obj?.metaData ? obj.metaData : [];
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    Object.assign(this, obj);
   }
 }

@@ -42,15 +42,15 @@ export class TemplateService {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let data = axiosResponse.data;
+        map(async (axiosResponse: AxiosResponse) => {
+          let data = [axiosResponse.data];
 
-          const templateDto = new TemplateCreateDto(data);
+          const templateDto = await this.templateCreate(data);
 
           return new SuccessResponse({
             statusCode: 200,
             message: "ok",
-            data: templateDto,
+            data: templateDto[0],
           });
         }),
         catchError((e) => {
@@ -86,7 +86,6 @@ export class TemplateService {
     });
   }
   public async getTemplateByTag(tag: string, request: any) {
-    console.log(tag);
     var axios = require("axios");
 
     let config = {
@@ -102,5 +101,33 @@ export class TemplateService {
       message: "ok",
       data: data,
     });
+  }
+
+  public async templateCreate(result: any) {
+    const templateCreateResponse = result.map((item: any) => {
+      const templateMapping = {
+        body: item?.body ? `${item.body}` : "",
+        type: item?.type ? `${item.type}` : "",
+        user: item?.user ? `${item.user}` : "",
+        tag: item?.tag,
+        createdAt: item?.createdAt ? `${item.createdAt}` : "",
+        updatedAt: item?.updatedAt ? `${item.updatedAt}` : "",
+      };
+      return new TemplateCreateDto(templateMapping);
+    });
+
+    return templateCreateResponse;
+  }
+
+  public async templateProcess(result: any) {
+    const templateProcessResponse = result.map((item: any) => {
+      const templateMapping = {
+        id: item?.id ? item.id : "",
+        data: item?.data ? item.data : "",
+      };
+      return new TemplateCreateDto(templateMapping);
+    });
+
+    return templateProcessResponse;
   }
 }

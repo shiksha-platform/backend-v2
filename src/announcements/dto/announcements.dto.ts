@@ -83,17 +83,6 @@ export class AnnouncementsDto {
   pinnedAnnouncementProperties: any;
 
   constructor(obj: any) {
-    this.announcementId = obj?.id ? `${obj.id}` : "";
-    this.title = obj?.title ? `${obj.title}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.author = obj?.author ? `${obj.author}` : "";
-    this.announcementType = obj?.type ? `${obj.type}` : "";
-    this.dateModified = obj?.modified_at ? `${obj.modified_at}` : "";
-    this.data = obj?.data ? `${obj.data}` : "";
-    this.isPinned = obj?.is_pinned ? obj.is_pinned : false;
-    this.additionalTags = obj?.additional_tags ? obj.additional_tags : [];
-    this.pinnedAnnouncementProperties = {
-      isDismissable: obj?.is_dismissable ?? false,
-    };
+    Object.assign(this, obj);
   }
 }
