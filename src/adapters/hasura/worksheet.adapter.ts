@@ -117,11 +117,7 @@ export class WorksheetService {
 
     var data = {
       query: `query GetWorksheet($worksheetId:uuid!) {
-<<<<<<< HEAD
-        worksheet_by_pk(worksheetId: $worksheetId) {
-=======
         worksheet_by_pk(worksheetId:  $worksheetId) {
->>>>>>> 03708cb8458d63b2fd716258bafd9201f0abe195
           created_at
           feedback
           criteria
@@ -165,7 +161,6 @@ export class WorksheetService {
     };
 
     const response = await axios(config);
-
     let result = [response.data.data.worksheet_by_pk];
     const worksheetResponse = await this.mappedResponse(result);
     return new SuccessResponse({
