@@ -40,9 +40,7 @@ export class MentorTrackingService {
 
     const response = await axios(config);
 
-    let result = response.data.data.mentortracking.map(
-      (item: any) => new MentorTrackingDto(item)
-    );
+    let result = await this.mappedResponse(response.data.data.mentortracking);
 
     return new SuccessResponse({
       statusCode: 200,
@@ -57,15 +55,15 @@ export class MentorTrackingService {
   ) {
     var axios = require("axios");
 
-    let newDataObject = "";
-    const newData = Object.keys(mentorTrackingDto).forEach((e) => {
+    let query = "";
+    Object.keys(mentorTrackingDto).forEach((e) => {
       if (mentorTrackingDto[e] && mentorTrackingDto[e] != "") {
-        newDataObject += `${e}: "${mentorTrackingDto[e]}", `;
+        query += `${e}: "${mentorTrackingDto[e]}", `;
       }
     });
     var data = {
       query: `mutation createMentorTracking {
-  insert_mentortracking_one(object: {${newDataObject}}) {
+  insert_mentortracking_one(object: {${query}}) {
     mentorTrackingId
   }
 }`,
@@ -96,17 +94,17 @@ export class MentorTrackingService {
     request: any,
     mentorTrackingDto: MentorTrackingDto
   ) {
-    let newDataObject = "";
-    const newData = Object.keys(mentorTrackingDto).forEach((e) => {
+    let query = "";
+    Object.keys(mentorTrackingDto).forEach((e) => {
       if (mentorTrackingDto[e] && mentorTrackingDto[e] != "") {
-        newDataObject += `${e}:"${mentorTrackingDto[e]}" `;
+        query += `${e}:"${mentorTrackingDto[e]}" `;
       }
     });
 
     var axios = require("axios");
     var data = {
       query: `mutation updateMentorTracking($mentorTrackingId: uuid) {
-  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {${newDataObject}}) {
+  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {${query}}) {
     affected_rows
   }
 }`,
@@ -161,16 +159,16 @@ export class MentorTrackingService {
       offset = parseInt(limit) * (page - 1);
     }
 
-    let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
+    let query = "";
+    Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        query += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
 
     var data = {
       query: `query searchMentorTracking($offset:Int,$limit:Int) {
-  mentortracking(limit: $limit, offset: $offset, where: {${newDataObject}}) {
+  mentortracking(limit: $limit, offset: $offset, where: {${query}}) {
     mentorTrackingId
     created_at
     feedback
@@ -202,14 +200,37 @@ export class MentorTrackingService {
 
     const response = await axios(config);
 
-    let result = response.data.data.mentortracking.map(
-      (item: any) => new MentorTrackingDto(item)
-    );
+    let result = await this.mappedResponse(response.data.data.mentortracking);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
       data: result,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const mentorResponse = result.map((obj: any) => {
+      const mentorMapping = {
+        mentorTrackingId: obj?.mentorTrackingId
+          ? `${obj.mentorTrackingId}`
+          : "",
+        mentorId: obj?.mentorId ? `${obj.mentorId}` : "",
+        teacherId: obj?.teacherId ? `${obj.teacherId}` : "",
+        schoolId: obj?.schoolId ? `${obj.schoolId}` : "",
+        scheduleVisitDate: obj?.scheduleVisitDate
+          ? `${obj.scheduleVisitDate}`
+          : "",
+        visitDate: obj?.visitDate ? `${obj.visitDate}` : "",
+        feedback: obj?.feedback ? `${obj.feedback}` : "",
+        status: obj?.status ? obj.status : "",
+        lastVisited: obj?.lastVisited ? obj.lastVisited : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new MentorTrackingDto(mentorMapping);
+    });
+
+    return mentorResponse;
   }
 }

@@ -161,35 +161,6 @@ export class WorksheetDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.worksheetId = obj?.worksheetId ? `${obj.worksheetId}` : "";
-    this.name = obj?.name ? `${obj.name}` : "";
-    this.state = obj?.state ? `${obj.state}` : "";
-    this.subject = obj?.subject ? `${obj.subject}` : "";
-    this.grade = obj?.grade ? `${obj.grade}` : "";
-    this.level = obj?.level ? `${obj.level}` : "";
-    this.instructions = obj?.instructions ? `${obj.instructions}` : "";
-    this.feedback = obj?.feedback ? `${obj.feedback}` : "";
-    this.hints = obj?.hints ? `${obj.hints}` : "";
-    this.navigationMode = obj?.navigationMode ? `${obj.navigationMode}` : "";
-    this.timeLimits = obj?.timeLimits ? `${obj.timeLimits}` : "";
-    this.showHints = obj?.showHints ? obj.showHints : "";
-    this.questions = obj?.questions ? obj.questions : "";
-    this.questionSets = obj?.questionSets ? `${obj.questionSets}` : "";
-    this.outcomeDeclaration = obj?.outcomeDeclaration
-      ? `${obj.outcomeDeclaration}`
-      : "";
-    this.outcomeProcessing = obj?.outcomeProcessing
-      ? `${obj.outcomeProcessing}`
-      : "";
-    this.questionSetType = obj?.questionSetType ? `${obj.questionSetType}` : "";
-    this.criteria = obj?.criteria ? `${obj.criteria}` : "";
-    this.usedFor = obj?.usedFor ? `${obj.usedFor}` : "";
-    this.purpose = obj?.purpose ? `${obj.purpose}` : "";
-    this.visibility = obj?.visibility ? `${obj.visibility}` : "";
-    this.qumlVersion = obj?.qumlVersion ? `${obj.qumlVersion}` : "";
-    this.topic = obj?.topic ? obj.topic : "";
-    this.source = obj?.source ? `${obj.source}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

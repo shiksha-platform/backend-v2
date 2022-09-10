@@ -49,13 +49,6 @@ export class HolidayDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.holidayId = obj?.holidayId ? `${obj.holidayId}` : "";
-    this.date = obj?.remark ? obj.remark : "";
-    this.remark = obj?.remark ? `${obj.remark}` : "";
-    this.year = obj?.year ? obj.year : "";
-    this.context = obj?.context ? `${obj.context}` : "";
-    this.contextId = obj?.contextId ? `${obj.contextId}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

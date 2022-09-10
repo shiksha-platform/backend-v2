@@ -23,7 +23,7 @@ export class AttendanceHasuraService implements IServicelocator {
   public async getAttendance(attendanceId: any, request: any) {
     var axios = require("axios");
     var data = {
-      query: `query GetAttendance($attendanceId:uuid) {
+      query: `query GetAttendance($attendanceId:uuid!) {
         attendance(where: {attendanceId: {_eq: $attendanceId}}) {
             attendance
             attendanceDate
@@ -59,15 +59,13 @@ export class AttendanceHasuraService implements IServicelocator {
     };
 
     const response = await axios(config);
-
-    let result = response?.data?.data?.attendance.map(
-      (item: any) => new AttendanceDto(item)
-    );
+    let result = response?.data?.data?.attendance;
+    const mappedResponse = await this.mappedResponse(result);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: mappedResponse[0],
     });
   }
 
@@ -77,22 +75,22 @@ export class AttendanceHasuraService implements IServicelocator {
     attendanceDto: AttendanceDto
   ) {
     var axios = require("axios");
-    const attendanceSchema = new AttendanceDto({});
+    const attendanceSchema = new AttendanceDto(attendanceDto);
 
-    let newDataObject = "";
-    const newData = Object.keys(attendanceDto).forEach((e) => {
+    let query = "";
+    Object.keys(attendanceDto).forEach((e) => {
       if (
         attendanceDto[e] &&
         attendanceDto[e] != "" &&
         Object.keys(attendanceSchema).includes(e)
       ) {
-        newDataObject += `${e}: "${attendanceDto[e]}", `;
+        query += `${e}: "${attendanceDto[e]}", `;
       }
     });
 
     var data = {
       query: `mutation UpdateAttendance($attendanceId:uuid) {
-          update_attendance(where: {attendanceId: {_eq: $attendanceId}}, _set: {${newDataObject}}) {
+          update_attendance(where: {attendanceId: {_eq: $attendanceId}}, _set: {${query}}) {
           affected_rows
         }
 }`,
@@ -133,19 +131,19 @@ export class AttendanceHasuraService implements IServicelocator {
         parseInt(attendanceSearchDto.limit) * (attendanceSearchDto.page - 1);
     }
 
-    let newDataObject = "";
-    const newData = Object.keys(attendanceSearchDto.filters).forEach((e) => {
+    let query = "";
+    Object.keys(attendanceSearchDto.filters).forEach((e) => {
       if (
         attendanceSearchDto.filters[e] &&
         attendanceSearchDto.filters[e] != ""
       ) {
-        newDataObject += `${e}:{_eq:"${attendanceSearchDto.filters[e]}"}`;
+        query += `${e}:{_eq:"${attendanceSearchDto.filters[e]}"}`;
       }
     });
 
     var data = {
       query: `query SearchAttendance($limit:Int, $offset:Int) {
-            attendance(where:{ ${newDataObject}}, limit: $limit, offset: $offset,) {
+            attendance(where:{ ${query}}, limit: $limit, offset: $offset,) {
               attendance
               attendanceDate
               attendanceId
@@ -181,15 +179,14 @@ export class AttendanceHasuraService implements IServicelocator {
     };
 
     const response = await axios(config);
+    let result = response?.data?.data?.attendance;
 
-    let result = response.data.data.attendance.map(
-      (item: any) => new AttendanceDto(item)
-    );
+    const mappedResponse = await this.mappedResponse(result);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: mappedResponse,
     });
   }
 
@@ -426,16 +423,16 @@ export class AttendanceHasuraService implements IServicelocator {
       topicId,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(filterParams).forEach((e) => {
+    let query = "";
+    Object.keys(filterParams).forEach((e) => {
       if (filterParams[e] && filterParams[e] != "") {
-        newDataObject += `${e}:{_eq:"${filterParams[e]}"}`;
+        query += `${e}:{_eq:"${filterParams[e]}"}`;
       }
     });
 
     var FilterData = {
       query: `query AttendanceFilter($fromDate:date,$toDate:date) {
-            attendance(where:{  attendanceDate: {_gte: $fromDate}, _and: {attendanceDate: {_lte: $toDate}} ${newDataObject}}) {
+            attendance(where:{  attendanceDate: {_gte: $fromDate}, _and: {attendanceDate: {_lte: $toDate}} ${query}}) {
               attendance
               attendanceDate
               attendanceId
@@ -473,34 +470,31 @@ export class AttendanceHasuraService implements IServicelocator {
     const response = await axios(config);
 
     let result =
-      response?.data.data.attendance &&
-      response.data.data.attendance.map((item: any) => new AttendanceDto(item));
+      response?.data.data.attendance && response.data.data.attendance;
+
+    const mappedResponse = await this.mappedResponse(result);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
-      data: result,
+      data: mappedResponse,
     });
   }
 
   public async createAttendance(request: any, attendanceDto: AttendanceDto) {
     let axios = require("axios");
-    const attendanceSchema = new AttendanceDto({});
+    // const attendanceSchema = new AttendanceDto(attendanceDto);
 
-    let dataObject = "";
-    const newDataObj = Object.keys(attendanceDto).forEach((e) => {
-      if (
-        attendanceDto[e] &&
-        attendanceDto[e] != "" &&
-        Object.keys(attendanceSchema).includes(e)
-      ) {
-        dataObject += `${e}:{_eq:"${attendanceDto[e]}"}`;
+    let query = "";
+    Object.keys(attendanceDto).forEach((e) => {
+      if (attendanceDto[e] && attendanceDto[e] != "") {
+        query += `${e}:{_eq:"${attendanceDto[e]}"}`;
       }
     });
 
     var data = {
       query: `query SearchAttendance {
-            attendance(where:{ ${dataObject}}) {
+            attendance(where:{ ${query}}) {
               attendanceId
             }
           }`,
@@ -518,25 +512,19 @@ export class AttendanceHasuraService implements IServicelocator {
 
     const responseData = await axios(config);
 
-    let resData = responseData.data.data.attendance.map(
-      (item: any) => new AttendanceDto(item)
-    );
+    const resData = responseData.data.data.attendance;
 
     if (resData.length > 0) {
-      let newDataObject = "";
-      const newData = Object.keys(attendanceDto).forEach((e) => {
-        if (
-          attendanceDto[e] &&
-          attendanceDto[e] != "" &&
-          Object.keys(attendanceSchema).includes(e)
-        ) {
-          newDataObject += `${e}: "${attendanceDto[e]}", `;
+      let query = "";
+      Object.keys(attendanceDto).forEach((e) => {
+        if (attendanceDto[e] && attendanceDto[e] != "") {
+          query += `${e}: "${attendanceDto[e]}", `;
         }
       });
 
       var updateQuery = {
         query: `mutation UpdateAttendance($attendanceId:uuid) {
-          update_attendance(where: {attendanceId: {_eq: $attendanceId}}, _set: {${newDataObject}}) {
+          update_attendance(where: {attendanceId: {_eq: $attendanceId}}, _set: {${query}}) {
           affected_rows
         }
 }`,
@@ -565,20 +553,16 @@ export class AttendanceHasuraService implements IServicelocator {
         data: result,
       });
     } else {
-      let newDataObject = "";
-      const newData = Object.keys(attendanceDto).forEach((e) => {
-        if (
-          attendanceDto[e] &&
-          attendanceDto[e] != "" &&
-          Object.keys(attendanceSchema).includes(e)
-        ) {
-          newDataObject += `${e}: "${attendanceDto[e]}", `;
+      let query = "";
+      Object.keys(attendanceDto).forEach((e) => {
+        if (attendanceDto[e] && attendanceDto[e] != "") {
+          query += `${e}: "${attendanceDto[e]}", `;
         }
       });
 
       var data = {
         query: `mutation CreateAttendance {
-        insert_attendance_one(object: {${newDataObject}}) {
+        insert_attendance_one(object: {${query}}) {
          attendanceId
         }
       }
@@ -672,21 +656,21 @@ export class AttendanceHasuraService implements IServicelocator {
 
         const responseData = await axios(config);
 
-        let resData = responseData.data.data.attendance.map(
-          (item: any) => new AttendanceDto(item)
+        let resData = await this.mappedResponse(
+          responseData.data.data.attendance
         );
 
         if (resData.length > 0) {
-          let newDataObject = "";
-          const newData = Object.keys(attendanceDto).forEach((e) => {
+          let query = "";
+          Object.keys(attendanceDto).forEach((e) => {
             if (attendanceDto[e] && attendanceDto[e] != "") {
-              newDataObject += `${e}: "${attendanceDto[e]}", `;
+              query += `${e}: "${attendanceDto[e]}", `;
             }
           });
 
           var updateQuery = {
             query: `mutation UpdateAttendance($attendanceId:uuid) {
-          update_attendance(where: {attendanceId: {_eq: $attendanceId}}, _set: {${newDataObject}}) {
+          update_attendance(where: {attendanceId: {_eq: $attendanceId}}, _set: {${query}}) {
           affected_rows
         }
 }`,
@@ -709,16 +693,16 @@ export class AttendanceHasuraService implements IServicelocator {
 
           return await response.data.data;
         } else {
-          let newDataObject = "";
-          const newData = Object.keys(attendanceDto).forEach((e) => {
+          let query = "";
+          Object.keys(attendanceDto).forEach((e) => {
             if (attendanceDto[e] && attendanceDto[e] != "") {
-              newDataObject += `${e}: "${attendanceDto[e]}", `;
+              query += `${e}: "${attendanceDto[e]}", `;
             }
           });
 
           var CreateData = {
             query: `mutation CreateAttendance {
-        insert_attendance_one(object: {${newDataObject}}) {
+        insert_attendance_one(object: {${query}}) {
          attendanceId
         }
       }
@@ -763,16 +747,16 @@ export class AttendanceHasuraService implements IServicelocator {
       attendanceDate: date,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(filterParams).forEach((e) => {
+    let query = "";
+    Object.keys(filterParams).forEach((e) => {
       if (filterParams[e] && filterParams[e] != "") {
-        newDataObject += `${e}:{_eq:"${filterParams[e]}"}`;
+        query += `${e}:{_eq:"${filterParams[e]}"}`;
       }
     });
 
     var FilterData = {
       query: `query AttendanceFilter {
-              attendance(where:{   ${newDataObject}}) {
+              attendance(where:{   ${query}}) {
                 attendance
                 attendanceDate
                 attendanceId
@@ -811,7 +795,8 @@ export class AttendanceHasuraService implements IServicelocator {
           }
         );
 
-        let result = new StudentDto(studentData.data);
+        let response = await this.StudentMappedResponse([studentData.data]);
+        let result = response[0];
         const updatedStudent = {
           ...result,
           attendance: response.data.data.attendance[0].attendance,
@@ -845,16 +830,16 @@ export class AttendanceHasuraService implements IServicelocator {
       attendanceDate: date,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(filterParams).forEach((e) => {
+    let query = "";
+    Object.keys(filterParams).forEach((e) => {
       if (filterParams[e] && filterParams[e] != "") {
-        newDataObject += `${e}:{_eq:"${filterParams[e]}"}`;
+        query += `${e}:{_eq:"${filterParams[e]}"}`;
       }
     });
 
     var FilterData = {
       query: `query AttendanceFilter {
-              attendance(where:{   ${newDataObject}}) {
+              attendance(where:{   ${query}}) {
                 attendance
                 attendanceDate
                 attendanceId
@@ -885,7 +870,8 @@ export class AttendanceHasuraService implements IServicelocator {
       },
     });
 
-    let result = new StudentDto(studentData.data);
+    let responseData = await this.StudentMappedResponse([studentData.data]);
+    let result = responseData[0];
     const updatedStudent = {
       ...result,
       attendance: response.data.data.attendance[0].attendance,
@@ -897,5 +883,120 @@ export class AttendanceHasuraService implements IServicelocator {
       message: "ok",
       data: updatedStudent,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const attendanceResponse = result.map((item: any) => {
+      const attendanceMapping = {
+        attendanceId: item?.attendanceId ? `${item.attendanceId}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        userType: item?.userType ? `${item.userType}` : "",
+        userId: item?.userId ? `${item.userId}` : "",
+        groupId: item?.groupId ? `${item.groupId}` : "",
+        topicId: item?.topicId ? `${item.topicId}` : "",
+        eventId: item?.eventId ? `${item.eventId}` : "",
+        remark: item?.remark ? `${item.remark}` : "",
+        attendance: item?.attendance ? `${item.attendance}` : "",
+        attendanceDate: item?.attendanceDate ? `${item.attendanceDate}` : "",
+        latitude: item?.latitude ? item.latitude : 0,
+        longitude: item?.longitude ? item.longitude : 0,
+        image: item?.image ? `${item.image}` : "",
+        syncTime: item?.syncTime ? `${item.syncTime}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        createdAt: item?.created_at ? `${item.created_at}` : "",
+        updatedAt: item?.updated_at ? `${item.updated_at}` : "",
+      };
+
+      return new AttendanceDto(attendanceMapping);
+    });
+
+    return attendanceResponse;
+  }
+  public async StudentMappedResponse(result: any) {
+    const studentResponse = result.map((item: any) => {
+      const studentMapping = {
+        studentId: item?.osid ? `${item.osid}` : "",
+        refId1: item?.admissionNo ? `${item.admissionNo}` : "",
+        refId2: item?.refId2 ? `${item.refId2}` : "",
+        aadhaar: item?.aadhaar ? `${item.aadhaar}` : "",
+        firstName: item?.firstName ? `${item.firstName}` : "",
+        middleName: item?.middleName ? `${item.middleName}` : "",
+        lastName: item?.lastName ? `${item.lastName}` : "",
+        groupId: item?.groupId ? `${item.groupId}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        studentEmail: item?.studentEmail ? `${item.studentEmail}` : "",
+        studentPhoneNumber: item?.studentPhoneNumber
+          ? item.studentPhoneNumber
+          : "",
+        iscwsn: item?.iscwsn ? `${item.iscwsn}` : "",
+        gender: item?.gender ? `${item.gender}` : "",
+        socialCategory: item?.socialCategory ? `${item.socialCategory}` : "",
+        religion: item?.religion ? `${item.religion}` : "",
+        singleGirl: item?.singleGirl ? item.singleGirl : "",
+        weight: item?.weight ? `${item.weight}` : "",
+        height: item?.height ? `${item.height}` : "",
+        bloodGroup: item?.bloodGroup ? `${item.bloodGroup}` : "",
+        birthDate: item?.birthDate ? `${item.birthDate}` : "",
+        homeless: item?.homeless ? item.homeless : "",
+        bpl: item?.bpl ? item.bpl : "",
+        migrant: item?.migrant ? item.migrant : "",
+        status: item?.status ? `${item.status}` : "",
+
+        fatherFirstName: item?.fatherFirstName ? `${item.fatherFirstName}` : "",
+
+        fatherMiddleName: item?.fatherMiddleName
+          ? `${item.fatherMiddleName}`
+          : "",
+
+        fatherLastName: item?.fatherLastName ? `${item.fatherLastName}` : "",
+        fatherPhoneNumber: item?.fatherPhoneNumber
+          ? item.fatherPhoneNumber
+          : "",
+        fatherEmail: item?.fatherEmail ? `${item.fatherEmail}` : "",
+
+        motherFirstName: item?.motherFirstName ? `${item.motherFirstName}` : "",
+        motherMiddleName: item?.motherMiddleName
+          ? `${item.motherMiddleName}`
+          : "",
+        motherLastName: item?.motherLastName ? `${item.motherLastName}` : "",
+        motherPhoneNumber: item?.motherPhoneNumber
+          ? item.motherPhoneNumber
+          : "",
+        motherEmail: item?.motherEmail ? `${item.motherEmail}` : "",
+
+        guardianFirstName: item?.guardianFirstName
+          ? `${item.guardianFirstName}`
+          : "",
+        guardianMiddleName: item?.guardianMiddleName
+          ? `${item.guardianMiddleName}`
+          : "",
+        guardianLastName: item?.guardianLastName
+          ? `${item.guardianLastName}`
+          : "",
+        guardianPhoneNumber: item?.guardianPhoneNumber
+          ? item.guardianPhoneNumber
+          : "",
+        guardianEmail: item?.guardianEmail ? `${item.guardianEmail}` : "",
+        image: item?.image ? `${item.image}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        studentAddress: item?.studentAddress ? `${item.studentAddress}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new StudentDto(studentMapping);
+    });
+
+    return studentResponse;
   }
 }

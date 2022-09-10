@@ -62,21 +62,6 @@ export class MonitorTrackingDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.monitorTrackingId = obj?.monitorTrackingId
-      ? `${obj.monitorTrackingId}`
-      : "";
-    this.monitorId = obj?.monitorId ? `${obj.monitorId}` : "";
-    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
-    this.scheduleVisitDate = obj?.scheduleVisitDate
-      ? `${obj.scheduleVisitDate}`
-      : "";
-    this.visitDate = obj?.visitDate ? `${obj.visitDate}` : "";
-    this.feedback = obj?.feedback ? `${obj.feedback}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-
-    this.lastVisited = obj?.lastVisited ? `${obj.lastVisited}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

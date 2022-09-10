@@ -8,7 +8,7 @@ import { AnnouncementsFilterDto } from "src/announcements/dto/announcements-filt
 export const ESamwadAnnouncementsToken = "ESamwadAnnouncements";
 @Injectable()
 export class AnnouncementsEsamwadService implements IServicelocator {
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService) {}
   baseURL = process.env.HASURAURL;
   adminSecret = process.env.ADMINSECRET;
 
@@ -46,10 +46,7 @@ export class AnnouncementsEsamwadService implements IServicelocator {
     const responseData = await axios(config);
     const response = responseData.data.data.announcements;
 
-    const responsedata = response.map(
-      (item: any) => new AnnouncementsDto(item)
-    );
-
+    let responsedata = await this.mappedResponse(response);
     let x = new SuccessResponse({
       statusCode: 200,
       message: "ok.",
@@ -150,10 +147,7 @@ export class AnnouncementsEsamwadService implements IServicelocator {
 
     const responseData = await axios(config);
     const response = responseData.data.data.announcements;
-    const responsedata = response.map(
-      (item: any) => new AnnouncementsDto(item)
-    );
-
+    let responsedata = await this.mappedResponse(response);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",
@@ -292,5 +286,27 @@ export class AnnouncementsEsamwadService implements IServicelocator {
       data: response,
     });
     return x;
+  }
+
+  public async mappedResponse(result: any) {
+    const announcementResponse = result.map((obj: any) => {
+      const announcementMapping = {
+        announcementId: obj?.id ? `${obj.id}` : "",
+        title: obj?.title ? `${obj.title}` : "",
+        status: obj?.status ? `${obj.status}` : "",
+        author: obj?.author ? `${obj.author}` : "",
+        announcementType: obj?.type ? `${obj.type}` : "",
+        dateModified: obj?.modified_at ? `${obj.modified_at}` : "",
+        data: obj?.data ? `${obj.data}` : "",
+        isPinned: obj?.is_pinned ? obj.is_pinned : false,
+        additionalTags: obj?.additional_tags ? obj.additional_tags : [],
+        pinnedAnnouncementProperties: {
+          isDismissable: obj?.is_dismissable ?? false,
+        },
+      };
+      return new AnnouncementsDto(announcementMapping);
+    });
+
+    return announcementResponse;
   }
 }

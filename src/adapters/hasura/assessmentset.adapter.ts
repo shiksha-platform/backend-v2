@@ -1,11 +1,7 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { AxiosResponse } from "axios";
-import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
-import { ErrorResponse } from "src/error-response";
 import { AssessmentsetDto } from "src/assessmentset/dto/assessmentset.dto";
-import { AssessmentSetSearchDto } from "src/assessmentset/dto/assessmentset-search-dto";
 @Injectable()
 export class AssessmentsetService {
   constructor(private httpService: HttpService) {}
@@ -84,14 +80,14 @@ export class AssessmentsetService {
 
       const response = await axios(config);
 
-      let result = response.data.data.assessmentset.map(
-        (item: any) => new AssessmentsetDto(item)
+      const result = await this.mappedResponse(
+        response.data.data.assessmentset
       );
 
       return new SuccessResponse({
         statusCode: 200,
         message: "Ok.",
-        data: result,
+        data: result[0],
       });
     } catch (e) {
       return `${e}`;
@@ -115,16 +111,16 @@ export class AssessmentsetService {
         gradeType,
       };
 
-      let newDataObject = "";
-      const newData = Object.keys(searchData).forEach((e) => {
+      let query = "";
+      Object.keys(searchData).forEach((e) => {
         if (searchData[e] && searchData[e] != "") {
-          newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+          query += `${e}:{_eq:"${searchData[e]}"}`;
         }
       });
 
       var data = {
         query: `query GetAssessmentset($limit:Int) {
-      assessmentset(limit:$limit,where: {${newDataObject}}) {
+      assessmentset(limit:$limit,where: {${query}}) {
         assessmentsetId
         gradeType
         title
@@ -150,10 +146,9 @@ export class AssessmentsetService {
 
       const response = await axios(config);
 
-      let result = response.data.data.assessmentset.map(
-        (item: any) => new AssessmentsetDto(item)
+      const result = await this.mappedResponse(
+        response.data.data.assessmentset
       );
-
       return new SuccessResponse({
         statusCode: 200,
         message: "Ok.",
@@ -162,5 +157,23 @@ export class AssessmentsetService {
     } catch (e) {
       return `${e}`;
     }
+  }
+
+  public async mappedResponse(result: any) {
+    const assessmentSetResponse = result.map((obj: any) => {
+      const assessmentSetMapping = {
+        assessmentsetId: obj?.assessmentsetId ? `${obj.assessmentsetId}` : "",
+        title: obj?.title ? `${obj.title}` : "",
+        type: obj?.type ? obj.type : "",
+        typeDetails: obj?.typeDetails ? obj.typeDetails : "",
+        gradeType: obj?.gradeType ? `${obj.gradeType}` : "",
+        options: obj?.options ? `${obj.options}` : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new AssessmentsetDto(assessmentSetMapping);
+    });
+
+    return assessmentSetResponse;
   }
 }

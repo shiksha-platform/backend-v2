@@ -34,7 +34,8 @@ export class HasuraLikeService implements IServicelocator {
     const resData = await axios(searchData);
     const resultData = resData.data[0];
     likeDto.userId = resultData.osid;
-    const likeSchema = new LikeDto({});
+    const likeSchema = new LikeDto(likeDto);
+
     let query = "";
     Object.keys(likeDto).forEach((e) => {
       if (
@@ -103,7 +104,7 @@ export class HasuraLikeService implements IServicelocator {
     const userResponse = await axios(configData);
     const resultData = userResponse.data[0];
     likeDto.userId = resultData.osid;
-    const likeSchema = new LikeDto({});
+    const likeSchema = new LikeDto(likeDto);
     let query = "";
     Object.keys(likeDto).forEach((e) => {
       if (
@@ -179,12 +180,12 @@ export class HasuraLikeService implements IServicelocator {
     };
 
     const response = await axios(config);
-    let result = new LikeDto(response.data.data.like_by_pk);
-
+    let result = [response.data.data.like_by_pk];
+    const likeDto = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: likeDto[0],
     });
   }
 
@@ -236,12 +237,13 @@ export class HasuraLikeService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = response.data.data.like.map((item: any) => new LikeDto(item));
+    let result = response.data.data.like;
+    const likeDto = await this.mappedResponse(result);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: likeDto,
     });
   }
   public async getCountLike(contextId: string, context: string, request: any) {
@@ -275,12 +277,13 @@ export class HasuraLikeService implements IServicelocator {
     };
 
     const response = await axios(config);
-    let result = response.data.data.like.map((item: any) => new LikeDto(item));
+    let result = response.data.data.like;
+    const likeDto = await this.mappedResponse(result);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result.length,
+      data: likeDto.length,
     });
   }
 
@@ -314,5 +317,22 @@ export class HasuraLikeService implements IServicelocator {
       message: "Ok.",
       data: result,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const likeResponse = result.map((obj: any) => {
+      const likeMapping = {
+        likeId: obj?.likeId ? `${obj.likeId}` : "",
+        contextId: obj?.contextId ? `${obj.contextId}` : "",
+        context: obj?.context ? `${obj.context}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        type: obj?.type ? `${obj.type}` : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new LikeDto(likeMapping);
+    });
+
+    return likeResponse;
   }
 }

@@ -62,20 +62,6 @@ export class MentorTrackingDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.mentorTrackingId = obj?.mentorTrackingId
-      ? `${obj.mentorTrackingId}`
-      : "";
-    this.mentorId = obj?.mentorId ? `${obj.mentorId}` : "";
-    this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
-    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.scheduleVisitDate = obj?.scheduleVisitDate
-      ? `${obj.scheduleVisitDate}`
-      : "";
-    this.visitDate = obj?.visitDate ? `${obj.visitDate}` : "";
-    this.feedback = obj?.feedback ? `${obj.feedback}` : "";
-    this.status = obj?.status ? obj.status : "";
-    this.lastVisited = obj?.lastVisited ? obj.lastVisited : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

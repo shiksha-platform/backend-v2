@@ -24,14 +24,14 @@ export class SunbirdCommentService implements IServicelocator {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let data = axiosResponse.data;
+        map(async (axiosResponse: AxiosResponse) => {
+          let data = [axiosResponse.data];
 
-          const commentDto = new CommentDto(data);
+          const commentDto = await this.mappedResponse(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: commentDto,
+            data: commentDto[0],
           });
         }),
         catchError((e) => {
@@ -144,14 +144,13 @@ export class SunbirdCommentService implements IServicelocator {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new CommentDto(item)
-          );
+        map(async (response) => {
+          const responsedata = response.data;
+          const commentDto = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
-            data: responsedata,
+            data: commentDto,
           });
         }),
         catchError((e) => {
@@ -162,5 +161,26 @@ export class SunbirdCommentService implements IServicelocator {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+  public async mappedResponse(result: any) {
+    const commentResponse = result.map((obj: any) => {
+      const commentMapping = {
+        commentId: obj?.osid ? `${obj.osid}` : "",
+        contextId: obj?.contextId ? `${obj.contextId}` : "",
+        context: obj?.context ? `${obj.context}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        comment: obj?.comment ? `${obj.comment}` : "",
+        privacy: obj?.privacy ? `${obj.privacy}` : "",
+        parentId: obj?.parentId ? `${obj.parentId}` : "",
+        status: obj?.status ? `${obj.status}` : "",
+        createdAt: obj?.osCreatedAt ? `${obj.osCreatedAt}` : "",
+        updatedAt: obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "",
+        createdBy: obj?.osCreatedBy ? `${obj.osCreatedBy}` : "",
+        updatedBy: obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "",
+      };
+      return new CommentDto(commentMapping);
+    });
+
+    return commentResponse;
   }
 }

@@ -39,15 +39,6 @@ export class CommentDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.commentId = obj?.commentId ? `${obj.commentId}` : "";
-    this.contextId = obj?.contextId ? `${obj.contextId}` : "";
-    this.context = obj?.context ? `${obj.context}` : "";
-    this.userId = obj?.userId ? `${obj.userId}` : "";
-    this.comment = obj?.comment ? `${obj.comment}` : "";
-    this.privacy = obj?.privacy ? `${obj.privacy}` : "";
-    this.parentId = obj?.parentId ? `${obj.parentId}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

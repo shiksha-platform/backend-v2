@@ -23,7 +23,7 @@ import {
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
 import { RoleDto } from "./dto/role.dto";
-import { RoleService } from "src/adapters/sunbirdrc/role.adapter";
+import { RoleService } from "src/adapters/hasura/role.adapter";
 
 @ApiTags("Role")
 @Controller("role")
