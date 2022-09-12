@@ -347,8 +347,13 @@ export class HasuraGroupService implements IServicelocatorgroup {
     };
     const response = await axios(getMemberData);
 
-    let groupData = [response.data.data.groupmembership[0].group];
-    const groupResponse = await this.mappedResponse(groupData);
+    let groupData = response.data.data.groupmembership;
+
+    const groupList = groupData.map((e: any) => {
+      return e.group;
+    });
+
+    const groupResponse = await this.mappedResponse(groupList);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
