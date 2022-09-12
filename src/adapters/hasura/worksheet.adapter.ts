@@ -3,13 +3,15 @@ import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 import { WorksheetDto } from "src/worksheet/dto/worksheet.dto";
 import { WorksheetSearchDto } from "src/worksheet/dto/worksheet-search.dto";
+import { StudentDto } from "src/student/dto/student.dto";
+import { ErrorResponse } from "src/error-response";
 
 @Injectable()
 export class WorksheetService {
   constructor(private httpService: HttpService) {}
   questionurl = process.env.DIKSHADEVBASEAPIURL;
   templateurl = process.env.TEMPLATERURL;
-
+  url = `${process.env.BASEAPIURL}`;
   public async createWorksheet(request: any, worksheetDto: WorksheetDto) {
     var axios = require("axios");
     const worksheetSchema = new WorksheetDto(worksheetDto);
@@ -333,9 +335,6 @@ export class WorksheetService {
       const data = response?.data;
       const final = data.result.question;
 
-      const scoreResponse = {
-        question: final.body,
-      };
       if (templateTags.includes("with_answers")) {
         questionsArray.push(
           "<li>" + final.body + "<br>Ans - <hr><hr><hr></li>"
@@ -412,5 +411,324 @@ export class WorksheetService {
     });
 
     return worksheetResponse;
+  }
+
+  public async studentSegment(
+    groupId: string,
+    templateId: string,
+    worksheetId: string,
+    request: any
+  ) {
+    let axios = require("axios");
+    let userData = [];
+    let response: any;
+    var findMember = {
+      query: `query GetGroupMembership($groupId:uuid) {
+       groupmembership(where: {groupId: {_eq: $groupId},role:{_eq:"Student"}}) {
+        userId
+        groupId
+        }
+      }`,
+      variables: {
+        groupId: groupId,
+      },
+    };
+
+    var getMemberData = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: findMember,
+    };
+
+    response = await axios(getMemberData);
+    let result = response.data.data.groupmembership;
+
+    var template_id = parseInt(templateId);
+
+    const templateDetail = await axios.get(`${this.templateurl}${template_id}`);
+
+    const templateData = templateDetail.data;
+    var templateTags = templateData.tag;
+
+    var worksheetData = {
+      query: `query GetWorksheet($worksheetId:uuid) {
+        worksheet(where: {worksheetId: {_eq: $worksheetId}}) {
+          created_at
+          feedback
+          criteria
+          grade
+          hints
+          instructions
+          level
+          name
+          navigationMode
+          outcomeDeclaration
+          outcomeProcessing
+          purpose
+          questionSetType
+          questionSets
+          questions
+          qumlVersion
+          showHints
+          source
+          state
+          subject
+          timeLimits
+          topic
+          updated_at
+          usedFor
+          visibility
+          worksheetId
+        }
+      }
+      `,
+      variables: { worksheetId: worksheetId },
+    };
+
+    var config = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: worksheetData,
+    };
+
+    response = await axios(config);
+
+    let resData = response.data.data.worksheet[0];
+
+    let questionIds = resData.questions;
+
+    let questionsArray = [];
+
+    for (let value of questionIds) {
+      let qData = {
+        method: "get",
+        url: `${this.questionurl}/question/v1/read/${value}?fields=body`,
+      };
+      const response = await axios(qData);
+      const data = response?.data;
+      const final = data.result.question;
+
+      if (templateTags.includes("with_answers")) {
+        questionsArray.push(
+          "<li>" + final.body + "<br>Ans - <hr><hr><hr></li>"
+        );
+      } else {
+        questionsArray.push("<li>" + final.body + "</li>");
+      }
+    }
+
+    var data = {
+      config_id: 1,
+      data: {
+        title: resData.name,
+        grade: resData.grade,
+        subject: resData.subject,
+        questions: questionsArray,
+      },
+      template_id: template_id,
+    };
+
+    const pdf = await axios.post(
+      `http://68.183.94.187:8000/generate/?plugin=pdf`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const worksheetLink = pdf.data;
+
+    if (Array.isArray(result)) {
+      let userIds = result.map((e: any) => {
+        return e.userId;
+      });
+
+      for (let value of userIds) {
+        let studentSearch = {
+          method: "get",
+          url: `${this.url}/Student/${value}`,
+        };
+
+        response = await axios(studentSearch);
+        let responseData = await this.StudentMappedResponse([response.data]);
+        let studentData = responseData[0];
+
+        var groupData = {
+          query: `query GetGroup($groupId:uuid!) {
+        group_by_pk(groupId: $groupId) {
+        groupId
+        schoolId
+        teacherId
+      }
+    }`,
+          variables: {
+            groupId: studentData.groupId,
+          },
+        };
+
+        var groupCall = {
+          method: "post",
+          url: process.env.REGISTRYHASURA,
+          headers: {
+            "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+            "Content-Type": "application/json",
+          },
+          data: groupData,
+        };
+
+        response = await axios(groupCall);
+        let result = response?.data?.data?.group_by_pk;
+
+        const teacherData = await axios.get(
+          `${this.url}/User/${result.teacherId}`
+        );
+
+        var getSchool = {
+          query: `query GetSchool($schoolId:uuid!) {
+        school_by_pk(schoolId: $schoolId) {
+          schoolName
+        
+      }
+    }`,
+          variables: {
+            schoolId: result.schoolId,
+          },
+        };
+
+        var schoolCall = {
+          method: "post",
+          url: process.env.REGISTRYHASURA,
+          headers: {
+            "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+            "Content-Type": "application/json",
+          },
+          data: getSchool,
+        };
+
+        response = await axios(schoolCall);
+
+        let schoolData = response?.data?.data?.school_by_pk;
+
+        const studentDto = {
+          id: studentData.osid,
+          name: studentData?.firstName + " " + studentData?.lastName,
+          phoneNo: studentData.studentPhoneNumber,
+          teacherName: teacherData.data.firstName + " " + teacherData.lastName,
+          schoolName: schoolData.schoolName,
+          worksheetLink: worksheetLink.data,
+          topic: resData.name,
+          subject: resData.subject,
+        };
+
+        userData.push(studentDto);
+      }
+
+      return new SuccessResponse({
+        data: userData,
+      });
+    } else {
+      return new ErrorResponse({
+        errorCode: response.data.errors[0].extensions,
+        errorMessage: response.data.errors[0].message,
+      });
+    }
+  }
+
+  public async StudentMappedResponse(result: any) {
+    const studentResponse = result.map((item: any) => {
+      const studentMapping = {
+        studentId: item?.osid ? `${item.osid}` : "",
+        refId1: item?.admissionNo ? `${item.admissionNo}` : "",
+        refId2: item?.refId2 ? `${item.refId2}` : "",
+        aadhaar: item?.aadhaar ? `${item.aadhaar}` : "",
+        firstName: item?.firstName ? `${item.firstName}` : "",
+        middleName: item?.middleName ? `${item.middleName}` : "",
+        lastName: item?.lastName ? `${item.lastName}` : "",
+        groupId: item?.groupId ? `${item.groupId}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        studentEmail: item?.studentEmail ? `${item.studentEmail}` : "",
+        studentPhoneNumber: item?.studentPhoneNumber
+          ? item.studentPhoneNumber
+          : "",
+        iscwsn: item?.iscwsn ? `${item.iscwsn}` : "",
+        gender: item?.gender ? `${item.gender}` : "",
+        socialCategory: item?.socialCategory ? `${item.socialCategory}` : "",
+        religion: item?.religion ? `${item.religion}` : "",
+        singleGirl: item?.singleGirl ? item.singleGirl : "",
+        weight: item?.weight ? `${item.weight}` : "",
+        height: item?.height ? `${item.height}` : "",
+        bloodGroup: item?.bloodGroup ? `${item.bloodGroup}` : "",
+        birthDate: item?.birthDate ? `${item.birthDate}` : "",
+        homeless: item?.homeless ? item.homeless : "",
+        bpl: item?.bpl ? item.bpl : "",
+        migrant: item?.migrant ? item.migrant : "",
+        status: item?.status ? `${item.status}` : "",
+
+        fatherFirstName: item?.fatherFirstName ? `${item.fatherFirstName}` : "",
+
+        fatherMiddleName: item?.fatherMiddleName
+          ? `${item.fatherMiddleName}`
+          : "",
+
+        fatherLastName: item?.fatherLastName ? `${item.fatherLastName}` : "",
+        fatherPhoneNumber: item?.fatherPhoneNumber
+          ? item.fatherPhoneNumber
+          : "",
+        fatherEmail: item?.fatherEmail ? `${item.fatherEmail}` : "",
+
+        motherFirstName: item?.motherFirstName ? `${item.motherFirstName}` : "",
+        motherMiddleName: item?.motherMiddleName
+          ? `${item.motherMiddleName}`
+          : "",
+        motherLastName: item?.motherLastName ? `${item.motherLastName}` : "",
+        motherPhoneNumber: item?.motherPhoneNumber
+          ? item.motherPhoneNumber
+          : "",
+        motherEmail: item?.motherEmail ? `${item.motherEmail}` : "",
+
+        guardianFirstName: item?.guardianFirstName
+          ? `${item.guardianFirstName}`
+          : "",
+        guardianMiddleName: item?.guardianMiddleName
+          ? `${item.guardianMiddleName}`
+          : "",
+        guardianLastName: item?.guardianLastName
+          ? `${item.guardianLastName}`
+          : "",
+        guardianPhoneNumber: item?.guardianPhoneNumber
+          ? item.guardianPhoneNumber
+          : "",
+        guardianEmail: item?.guardianEmail ? `${item.guardianEmail}` : "",
+        image: item?.image ? `${item.image}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        studentAddress: item?.studentAddress ? `${item.studentAddress}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new StudentDto(studentMapping);
+    });
+
+    return studentResponse;
   }
 }

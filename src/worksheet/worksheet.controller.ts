@@ -106,4 +106,25 @@ export class WorksheetController {
   ) {
     return this.service.downloadWorksheet(worksheetId, templateId, request);
   }
+
+  @Get("studentsegment/:groupId")
+  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
+  // @ApiBasicAuth("access-token")
+  @ApiOkResponse({ description: " Ok." })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @ApiQuery({ name: "templateId", required: true })
+  @ApiQuery({ name: "worksheetId", required: true })
+  public async studentSegment(
+    @Param("groupId") groupId: string,
+    @Query("templateId") templateId: string,
+    @Query("worksheetId") worksheetId: string,
+    @Req() request: Request
+  ) {
+    return await this.service.studentSegment(
+      groupId,
+      templateId,
+      worksheetId,
+      request
+    );
+  }
 }
