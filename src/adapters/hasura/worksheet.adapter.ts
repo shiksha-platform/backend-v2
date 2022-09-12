@@ -5,6 +5,7 @@ import { WorksheetDto } from "src/worksheet/dto/worksheet.dto";
 import { WorksheetSearchDto } from "src/worksheet/dto/worksheet-search.dto";
 import { StudentDto } from "src/student/dto/student.dto";
 import { ErrorResponse } from "src/error-response";
+import { TemplateProcessDto } from "src/template/dto/template-process.dto";
 
 @Injectable()
 export class WorksheetService {
@@ -642,6 +643,107 @@ export class WorksheetService {
         errorMessage: response.data.errors[0].message,
       });
     }
+  }
+
+  public async sendWorksheet(
+    studentIds: [string],
+    teacherId: string,
+    templateId: number,
+    link: string,
+    subject: string,
+    topic: string,
+    request: any
+  ) {
+    var axios = require("axios");
+    const teacherResponse = await axios.get(`${this.url}User/${teacherId}`);
+    const teacher = teacherResponse.data;
+    const templateDetail = await axios.get(`${this.templateurl}${templateId}`);
+
+    const templateData = templateDetail.data;
+    var getSchool = {
+      query: `query GetSchool($schoolId:uuid!) {
+    school_by_pk(schoolId: $schoolId) {
+      schoolName
+  }
+}`,
+      variables: {
+        schoolId: teacher.schoolId,
+      },
+    };
+
+    var schoolCall = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: getSchool,
+    };
+
+    const schoolResponse = await axios(schoolCall);
+
+    let schoolData = schoolResponse?.data?.data?.school_by_pk;
+    let students = studentIds.map(async (studentId) => {
+      const student = await axios.get(`${this.url}Student/${studentId}`);
+
+      const process = {
+        id: 38,
+        data: {
+          studentName:
+            (student?.data?.firstName ? student?.data?.firstName : "") +
+            " " +
+            (student?.data?.lastName ? student?.data?.lastName : ""),
+          subject: subject,
+          topic: topic,
+          teacherName:
+            (teacher?.firstName ? teacher?.firstName : "") +
+            " " +
+            (teacher?.lastName ? teacher?.lastName : ""),
+          schoolName: schoolData.schoolName,
+          link: link,
+        },
+      };
+
+      var templateCall = {
+        method: "post",
+        url: `${this.templateurl}process`,
+        headers: {
+          Authorization: request.headers.authorization,
+        },
+        data: process,
+      };
+      const responseData = await axios(templateCall);
+
+      const templateDataResponse = responseData.data;
+      var data = {
+        adapterId: templateData.user,
+        to: {
+          userID: student.data.studentPhoneNumber,
+          deviceType: "PHONE",
+        },
+        payload: {
+          text: templateDataResponse.processed,
+        },
+      };
+
+      var smsSend = {
+        method: "post",
+        url: "http://143.110.255.220:9090/message/send",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      const response = await axios(smsSend);
+
+      return new SuccessResponse({
+        statusCode: 200,
+        message: "ok",
+        data: response.data,
+      });
+    });
   }
 
   public async StudentMappedResponse(result: any) {

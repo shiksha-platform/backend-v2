@@ -579,6 +579,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
 
     return studentResponse;
   }
+
   public async userMappedResponse(result: any) {
     const userResponse = result.map((item: any) => {
       const userMapping = {
