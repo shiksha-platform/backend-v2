@@ -9,4 +9,5 @@ export interface IServicelocatorgroup {
   findMembersOfGroup(id, role, request);
   findGroupsByUserId(id, role, request);
   findMembersOfChildGroup(groupId: string, role: string, request: any);
+  findMembersOfSchool(schoolId: string, role: string, request: any);
 }
