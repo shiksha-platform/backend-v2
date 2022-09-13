@@ -17,8 +17,6 @@ export class DikshaCourseService implements IServicelocator {
     request: any
   ) {
     var axios = require("axios");
-
-    var axios = require("axios");
     var data = {
       request: {
         filters: {
@@ -59,36 +57,26 @@ export class DikshaCourseService implements IServicelocator {
 
     var config = {
       method: "post",
-      url: "https://preprod.ntp.net.in/api/content/v1/search?orgdetails=orgName,email&framework=ncert_k-12",
+      url: "https://diksha.gov.in/api/content/v1/search?orgdetails=orgName,email&framework=ekstep_ncert_k-12",
       data: data,
     };
 
     const response = await axios(config);
 
     const responseData = response.data.result.content;
-    let arrayIds = responseData.map((e: any) => {
-      return e.identifier;
-    });
-
-    let courseArray = [];
-    for (let value of arrayIds) {
-      let courseData = this.getCourse(value);
-      courseArray.push(await courseData);
-    }
-
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
-      data: courseArray,
+      data: responseData,
     });
   }
 
-  public async getCourse(value: any) {
+  public async getCourseContent(value: any) {
     var axios = require("axios");
 
     let config = {
       method: "get",
-      url: `https://preprod.ntp.net.in/api/content/v1/read/${value}`,
+      url: `https://diksha.gov.in/api/content/v1/read/${value}`,
     };
 
     const response = await axios(config);
@@ -97,75 +85,13 @@ export class DikshaCourseService implements IServicelocator {
 
     const final = data.result.content;
 
-    const mappedResponse = {
-      topic: final.topic,
-
-      subject: final.subject,
-
-      subjectIds: final.subjectIds,
-
-      class: final.gradeLevel,
-
-      name: final.name,
-
-      gradeId: final.se_gradeLevelIds,
-
-      medium: final.targetMediumIds,
-
-      courseId: final.identifier,
-
-      visibility: final.visibility,
-
-      learningOutcome: final.learningOutcome,
-
-      compatibilityLevel: final.compatibilityLevel,
-
-      board: final.se_boards,
-
-      boardIds: final.targetBoardIds,
-
-      language: final.language,
-
-      audience: final.audience,
-
-      downloadUrl: final.downloadUrl,
-
-      batches: final.batches,
-
-      idealScreenSize: final.batches,
-
-      posterImage: final.posterImage,
-
-      description: final.description,
-
-      mediaType: final.mediaType,
-
-      timeLimits: final.timeLimits,
-
-      variants: final.variants,
-
-      primaryCategory: final.primaryCategory,
-
-      appId: final.appId,
-
-      contentEncoding: final.contentEncoding,
-
-      totalCompressedSize: final.totalCompressedSize,
-
-      mimeTypesCount: final.mimeTypesCount,
-
-      os: final.os,
-
-      contentDisposition: final.contentDisposition,
-    };
-
-    return mappedResponse;
+    return final;
   }
 
   public async getCoursesByIds(courseIds: [string], request: any) {
     let courseArray = [];
     for (let value of courseIds) {
-      let courseData = this.getCourse(value);
+      let courseData = this.getCourseContent(value);
       courseArray.push(await courseData);
     }
     return new SuccessResponse({
@@ -175,13 +101,34 @@ export class DikshaCourseService implements IServicelocator {
     });
   }
 
-  public async getCourseDetail(questionId: string, request: any) {
-    let value = questionId;
-    let courseData = await this.getCourse(value);
+  public async getCourseDetail(courseId: string, request: any) {
+    let value = courseId;
+    let courseData = await this.getCourseContent(value);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
       data: courseData,
+    });
+  }
+
+  public async getCourseHierarchy(value: any) {
+    var axios = require("axios");
+
+    let config = {
+      method: "get",
+      url: `https://diksha.gov.in/api/course/v1/hierarchy/${value}?orgdetails=orgName,email&licenseDetails=name,description,url`,
+    };
+
+    const response = await axios(config);
+
+    const data = response?.data;
+
+    const final = data.result.content;
+
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "ok",
+      data: final,
     });
   }
 }
