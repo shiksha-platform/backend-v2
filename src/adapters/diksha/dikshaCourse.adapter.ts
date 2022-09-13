@@ -57,7 +57,6 @@ export class DikshaCourseService implements IServicelocator {
 
     var config = {
       method: "post",
-      // url: "https://preprod.ntp.net.in/api/content/v1/search?orgdetails=orgName,email&framework=ncert_k-12",
       url: "https://diksha.gov.in/api/content/v1/search?orgdetails=orgName,email&framework=ekstep_ncert_k-12",
       data: data,
     };
@@ -65,16 +64,6 @@ export class DikshaCourseService implements IServicelocator {
     const response = await axios(config);
 
     const responseData = response.data.result.content;
-    // let arrayIds = responseData.map((e: any) => {
-    //   return e.identifier;
-    // });
-
-    // let courseArray = [];
-    // for (let value of arrayIds) {
-    //   let courseData = this.getCourse(value);
-    //   courseArray.push(await courseData);
-    // }
-
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
