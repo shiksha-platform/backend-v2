@@ -249,12 +249,6 @@ export class SunbirdGroupService implements IServicelocatorgroup {
     request: any
   ) {}
 
-  public async findMembersOfSchool(
-    schoolId: string,
-    role: string,
-    request: any
-  ) {}
-
   public async mappedResponse(result: any) {
     const groupResponse = result.map((item: any) => {
       const groupMapping = {

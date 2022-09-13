@@ -171,19 +171,4 @@ export class GroupController {
       .buildGroupAdapter()
       .findMembersOfChildGroup(id, role, request);
   }
-
-  @Get("child/:schoolId")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: "Group detail." })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  public async findMembersOfChildSchool(
-    @Param("schoolId") id: string,
-    @Query("role") role: string,
-    @Req() request: Request
-  ) {
-    return this.groupAdapter
-      .buildGroupAdapter()
-      .findMembersOfSchool(id, role, request);
-  }
 }
