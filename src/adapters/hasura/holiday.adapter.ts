@@ -170,6 +170,11 @@ export class HasuraHolidayService implements IServicelocator {
     });
     var data = {
       query: `query SearchHoliday($filters:holiday_bool_exp,$limit:Int, $offset:Int) {
+        holiday_aggregate {
+          aggregate {
+            count
+          }
+        }
           holiday(where:$filters, limit: $limit, offset: $offset,) {
             context
             contextId
@@ -201,9 +206,11 @@ export class HasuraHolidayService implements IServicelocator {
 
     let result = response.data.data.holiday;
     const holidayData = await this.mappedResponse(result);
+    const count = response?.data?.data?.holiday_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: holidayData,
     });
   }
@@ -220,6 +227,11 @@ export class HasuraHolidayService implements IServicelocator {
 
     var data = {
       query: `query searchHoliday {
+       holiday_aggregate {
+          aggregate {
+            count
+          }
+        }
         holiday( where: {${query}}) {
         context
         contextId
@@ -248,9 +260,11 @@ export class HasuraHolidayService implements IServicelocator {
 
     let result = response.data.data.holiday;
     const holidayData = await this.mappedResponse(result);
+    const count = response?.data?.data?.holiday_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: holidayData,
     });
   }
@@ -258,6 +272,7 @@ export class HasuraHolidayService implements IServicelocator {
   public async mappedResponse(result: any) {
     const holidayResponse = result.map((item: any) => {
       const holidayMapping = {
+        id: item?.holidayId ? `${item.holidayId}` : "",
         holidayId: item?.holidayId ? `${item.holidayId}` : "",
         date: item?.remark ? item.remark : "",
         remark: item?.remark ? `${item.remark}` : "",

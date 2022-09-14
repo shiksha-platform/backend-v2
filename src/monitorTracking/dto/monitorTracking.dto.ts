@@ -5,6 +5,9 @@ import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
 
 export class MonitorTrackingDto {
   @Expose()
+  id: string;
+
+  @Expose()
   monitorTrackingId: string;
 
   @ApiProperty({})

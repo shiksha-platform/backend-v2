@@ -179,6 +179,11 @@ export class MentorTrackingService {
 
     var data = {
       query: `query searchMentorTracking($offset:Int,$limit:Int) {
+        mentortracking_aggregate {
+          aggregate {
+            count
+          }
+        }
   mentortracking(limit: $limit, offset: $offset, where: {${query}}) {
     mentorTrackingId
     created_at
@@ -212,10 +217,12 @@ export class MentorTrackingService {
     const response = await axios(config);
 
     let result = await this.mappedResponse(response.data.data.mentortracking);
-
+    const count =
+      response?.data?.data?.mentortracking_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: result,
     });
   }
@@ -223,6 +230,7 @@ export class MentorTrackingService {
   public async mappedResponse(result: any) {
     const mentorResponse = result.map((obj: any) => {
       const mentorMapping = {
+        id: obj?.mentorTrackingId ? `${obj.mentorTrackingId}` : "",
         mentorTrackingId: obj?.mentorTrackingId
           ? `${obj.mentorTrackingId}`
           : "",

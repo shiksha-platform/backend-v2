@@ -203,6 +203,11 @@ export class CourseTrackingService {
 
     var data = {
       query: `query searchCourseTracking($offset:Int,$limit:Int) {
+        coursetracking_aggregate {
+          aggregate {
+            count
+          }
+        }
   coursetracking(limit: $limit, offset: $offset, where: {${query}}) {
     contentIds
     certificate
@@ -241,10 +246,12 @@ export class CourseTrackingService {
     if (response?.data?.data?.coursetracking) {
       result = await this.mappedResponse(response.data.data.coursetracking);
     }
-
+    const count =
+      response?.data?.data?.coursetracking_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: result,
     });
   }
@@ -252,6 +259,7 @@ export class CourseTrackingService {
   public async mappedResponse(result: any) {
     const courseResponse = result.map((obj: any) => {
       const courseMapping = {
+        id: obj?.courseTrackingId ? `${obj.courseTrackingId}` : "",
         courseTrackingId: obj?.courseTrackingId
           ? `${obj.courseTrackingId}`
           : "",

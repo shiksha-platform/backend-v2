@@ -197,6 +197,11 @@ export class WorksheetService {
 
     var data = {
       query: `query SearchWorksheet($filters:worksheet_bool_exp,$limit:Int, $offset:Int) {
+        worksheet_aggregate {
+          aggregate {
+            count
+          }
+        }
             worksheet(where:$filters, limit: $limit, offset: $offset,) {
               created_at
               feedback
@@ -246,9 +251,11 @@ export class WorksheetService {
 
     let result = response.data.data.worksheet;
     const worksheetResponse = await this.mappedResponse(result);
+    const count = response?.data?.data?.worksheet_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: worksheetResponse,
     });
   }
@@ -376,6 +383,7 @@ export class WorksheetService {
   public async mappedResponse(result: any) {
     const worksheetResponse = result.map((item: any) => {
       const worksheetMapping = {
+        id: item?.worksheetId ? `${item.worksheetId}` : "",
         worksheetId: item?.worksheetId ? `${item.worksheetId}` : "",
         name: item?.name ? `${item.name}` : "",
         state: item?.state ? `${item.state}` : "",

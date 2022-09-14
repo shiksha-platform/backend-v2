@@ -5,6 +5,9 @@ import { Status } from "../enums/statuses.enum";
 
 export class TrackAssessmentDto {
   @Expose()
+  id: string;
+
+  @Expose()
   trackAssessmentId: string;
 
   @ApiProperty({
