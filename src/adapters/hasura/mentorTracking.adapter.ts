@@ -2,6 +2,7 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { SuccessResponse } from "src/success-response";
 import { MentorTrackingDto } from "src/mentorTracking/dto/mentorTracking.dto";
+
 @Injectable()
 export class MentorTrackingService {
   constructor(private httpService: HttpService) {}
@@ -133,6 +134,62 @@ export class MentorTrackingService {
     };
 
     const response = await axios(config);
+    const result = response.data.data;
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "Ok.",
+      data: result,
+    });
+  }
+
+  public async feedback(
+    mentorTrackingId: string,
+    request: any,
+    feedback: string
+  ) {
+    let mentorTrackingDto = {
+      feedback: feedback,
+    };
+    const mentorSchema = new MentorTrackingDto(mentorTrackingDto);
+    let query = "";
+    Object.keys(mentorTrackingDto).forEach((e) => {
+      if (
+        mentorTrackingDto[e] &&
+        mentorTrackingDto[e] != "" &&
+        Object.keys(mentorSchema).includes(e)
+      ) {
+        if (Array.isArray(mentorTrackingDto[e])) {
+          query += `${e}: ${JSON.stringify(mentorTrackingDto[e])}, `;
+        } else {
+          query += `${e}: ${JSON.stringify(mentorTrackingDto[e])}, `;
+        }
+      }
+    });
+
+    var axios = require("axios");
+    var data = {
+      query: `mutation updateMentorTracking($mentorTrackingId: uuid) {
+  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {${query}}) {
+    affected_rows
+  }
+}`,
+      variables: {
+        mentorTrackingId: mentorTrackingId,
+      },
+    };
+
+    var config = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+
     const result = response.data.data;
     return new SuccessResponse({
       statusCode: 200,

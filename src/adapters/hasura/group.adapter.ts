@@ -114,7 +114,6 @@ export class HasuraGroupService implements IServicelocatorgroup {
 
   public async updateGroup(groupId: string, request: any, groupDto: GroupDto) {
     var axios = require("axios");
-    var axios = require("axios");
 
     let query = "";
     Object.keys(groupDto).forEach((e) => {
