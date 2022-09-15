@@ -21,13 +21,10 @@ import {
   SerializeOptions,
   UseInterceptors,
   Request,
-  ConsoleLogger,
 } from "@nestjs/common";
 import { WorksheetService } from "src/adapters/hasura/worksheet.adapter";
 import { WorksheetDto } from "./dto/worksheet.dto";
 import { WorksheetSearchDto } from "./dto/worksheet-search.dto";
-import { TemplateProcessDto } from "src/template/dto/template-process.dto";
-import { Subject } from "rxjs";
 
 @ApiTags("Worksheet")
 @Controller("worksheet")
@@ -109,27 +106,6 @@ export class WorksheetController {
     return this.service.downloadWorksheet(worksheetId, templateId, request);
   }
 
-  @Get("studentsegment/:groupId")
-  @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
-  // @ApiBasicAuth("access-token")
-  @ApiOkResponse({ description: " Ok." })
-  @ApiForbiddenResponse({ description: "Forbidden" })
-  @ApiQuery({ name: "templateId", required: true })
-  @ApiQuery({ name: "worksheetId", required: true })
-  public async studentSegment(
-    @Param("groupId") groupId: string,
-    @Query("templateId") templateId: string,
-    @Query("worksheetId") worksheetId: string,
-    @Req() request: Request
-  ) {
-    return await this.service.studentSegment(
-      groupId,
-      templateId,
-      worksheetId,
-      request
-    );
-  }
-
   @Post(":send/worksheet")
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
@@ -137,14 +113,12 @@ export class WorksheetController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "studentIds", required: true })
   @ApiQuery({ name: "teacherId", required: true })
-  @ApiQuery({ name: "templateId", required: true })
   @ApiQuery({ name: "link", required: true })
   @ApiQuery({ name: "subject", required: true })
   @ApiQuery({ name: "topic", required: true })
   public async sendWorksheet(
     @Query("studentIds") studentIds: [string],
     @Query("teacherId") teacherId: string,
-    @Query("templateId") templateId: number,
     @Query("link") link: string,
     @Query("subject") subject: string,
     @Query("topic") topic: string,
@@ -155,7 +129,6 @@ export class WorksheetController {
     return this.service.sendWorksheet(
       studentIds,
       teacherId,
-      templateId,
       link,
       subject,
       topic,

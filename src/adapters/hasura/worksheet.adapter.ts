@@ -414,241 +414,9 @@ export class WorksheetService {
     return worksheetResponse;
   }
 
-  public async studentSegment(
-    groupId: string,
-    templateId: string,
-    worksheetId: string,
-    request: any
-  ) {
-    let axios = require("axios");
-    let userData = [];
-    let response: any;
-    var findMember = {
-      query: `query GetGroupMembership($groupId:uuid) {
-       groupmembership(where: {groupId: {_eq: $groupId},role:{_eq:"Student"}}) {
-        userId
-        groupId
-        }
-      }`,
-      variables: {
-        groupId: groupId,
-      },
-    };
-
-    var getMemberData = {
-      method: "post",
-      url: process.env.REGISTRYHASURA,
-      headers: {
-        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-        "Content-Type": "application/json",
-      },
-      data: findMember,
-    };
-
-    response = await axios(getMemberData);
-    let result = response.data.data.groupmembership;
-
-    var template_id = parseInt(templateId);
-
-    const templateDetail = await axios.get(`${this.templateurl}${template_id}`);
-
-    const templateData = templateDetail.data;
-    var templateTags = templateData.tag;
-
-    var worksheetData = {
-      query: `query GetWorksheet($worksheetId:uuid) {
-        worksheet(where: {worksheetId: {_eq: $worksheetId}}) {
-          created_at
-          feedback
-          criteria
-          grade
-          hints
-          instructions
-          level
-          name
-          navigationMode
-          outcomeDeclaration
-          outcomeProcessing
-          purpose
-          questionSetType
-          questionSets
-          questions
-          qumlVersion
-          showHints
-          source
-          state
-          subject
-          timeLimits
-          topic
-          updated_at
-          usedFor
-          visibility
-          worksheetId
-        }
-      }
-      `,
-      variables: { worksheetId: worksheetId },
-    };
-
-    var config = {
-      method: "post",
-      url: process.env.REGISTRYHASURA,
-      headers: {
-        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-        "Content-Type": "application/json",
-      },
-      data: worksheetData,
-    };
-
-    response = await axios(config);
-
-    let resData = response.data.data.worksheet[0];
-
-    let questionIds = resData.questions;
-
-    let questionsArray = [];
-
-    for (let value of questionIds) {
-      let qData = {
-        method: "get",
-        url: `${this.questionurl}/question/v1/read/${value}?fields=body`,
-      };
-      const response = await axios(qData);
-      const data = response?.data;
-      const final = data.result.question;
-
-      if (templateTags.includes("with_answers")) {
-        questionsArray.push(
-          "<li>" + final.body + "<br>Ans - <hr><hr><hr></li>"
-        );
-      } else {
-        questionsArray.push("<li>" + final.body + "</li>");
-      }
-    }
-
-    var data = {
-      config_id: 1,
-      data: {
-        title: resData.name,
-        grade: resData.grade,
-        subject: resData.subject,
-        questions: questionsArray,
-      },
-      template_id: template_id,
-    };
-
-    const pdf = await axios.post(
-      `http://68.183.94.187:8000/generate/?plugin=pdf`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const worksheetLink = pdf.data;
-
-    if (Array.isArray(result)) {
-      let userIds = result.map((e: any) => {
-        return e.userId;
-      });
-
-      for (let value of userIds) {
-        let studentSearch = {
-          method: "get",
-          url: `${this.url}/Student/${value}`,
-        };
-
-        response = await axios(studentSearch);
-        let responseData = await this.StudentMappedResponse([response.data]);
-        let studentData = responseData[0];
-
-        var groupData = {
-          query: `query GetGroup($groupId:uuid!) {
-        group_by_pk(groupId: $groupId) {
-        groupId
-        schoolId
-        teacherId
-      }
-    }`,
-          variables: {
-            groupId: studentData.groupId,
-          },
-        };
-
-        var groupCall = {
-          method: "post",
-          url: process.env.REGISTRYHASURA,
-          headers: {
-            "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-            "Content-Type": "application/json",
-          },
-          data: groupData,
-        };
-
-        response = await axios(groupCall);
-        let result = response?.data?.data?.group_by_pk;
-
-        const teacherData = await axios.get(
-          `${this.url}/User/${result.teacherId}`
-        );
-
-        var getSchool = {
-          query: `query GetSchool($schoolId:uuid!) {
-        school_by_pk(schoolId: $schoolId) {
-          schoolName
-        
-      }
-    }`,
-          variables: {
-            schoolId: result.schoolId,
-          },
-        };
-
-        var schoolCall = {
-          method: "post",
-          url: process.env.REGISTRYHASURA,
-          headers: {
-            "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
-            "Content-Type": "application/json",
-          },
-          data: getSchool,
-        };
-
-        response = await axios(schoolCall);
-
-        let schoolData = response?.data?.data?.school_by_pk;
-
-        const studentDto = {
-          id: studentData.osid,
-          name: studentData?.firstName + " " + studentData?.lastName,
-          phoneNo: studentData.studentPhoneNumber,
-          teacherName: teacherData.data.firstName + " " + teacherData.lastName,
-          schoolName: schoolData.schoolName,
-          worksheetLink: worksheetLink.data,
-          topic: resData.name,
-          subject: resData.subject,
-        };
-
-        userData.push(studentDto);
-      }
-
-      return new SuccessResponse({
-        data: userData,
-      });
-    } else {
-      return new ErrorResponse({
-        errorCode: response.data.errors[0].extensions,
-        errorMessage: response.data.errors[0].message,
-      });
-    }
-  }
-
   public async sendWorksheet(
     studentIds: [string],
     teacherId: string,
-    templateId: number,
     link: string,
     subject: string,
     topic: string,
@@ -657,7 +425,7 @@ export class WorksheetService {
     var axios = require("axios");
     const teacherResponse = await axios.get(`${this.url}User/${teacherId}`);
     const teacher = teacherResponse.data;
-    const templateDetail = await axios.get(`${this.templateurl}${templateId}`);
+    const templateDetail = await axios.get(`${this.templateurl}${39}`);
 
     const templateData = templateDetail.data;
     var getSchool = {
@@ -684,11 +452,11 @@ export class WorksheetService {
     const schoolResponse = await axios(schoolCall);
 
     let schoolData = schoolResponse?.data?.data?.school_by_pk;
-    let students = studentIds.map(async (studentId) => {
+    studentIds.map(async (studentId) => {
       const student = await axios.get(`${this.url}Student/${studentId}`);
 
       const process = {
-        id: 38,
+        id: 39,
         data: {
           studentName:
             (student?.data?.firstName ? student?.data?.firstName : "") +
