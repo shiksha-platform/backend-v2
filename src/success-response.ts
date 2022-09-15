@@ -8,6 +8,9 @@ export class SuccessResponse {
   message: string;
 
   @Expose()
+  totalCount: any;
+
+  @Expose()
   data: object;
 
   constructor(partial: Partial<SuccessResponse>) {

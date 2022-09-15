@@ -120,6 +120,12 @@ export class AssessmentsetService {
 
       var data = {
         query: `query GetAssessmentset($limit:Int) {
+          assessmentset_aggregate {
+            aggregate {
+              count
+            }
+          }
+        
       assessmentset(limit:$limit,where: {${query}}) {
         assessmentsetId
         gradeType
@@ -146,12 +152,15 @@ export class AssessmentsetService {
 
       const response = await axios(config);
 
-      const result = await this.mappedResponse(
-        response.data.data.assessmentset
-      );
+      let result = await this.mappedResponse(response.data.data.assessmentset);
+
+      const count =
+        response?.data?.data?.assessmentset_aggregate?.aggregate?.count;
+
       return new SuccessResponse({
         statusCode: 200,
         message: "Ok.",
+        totalCount: count,
         data: result,
       });
     } catch (e) {
@@ -162,6 +171,7 @@ export class AssessmentsetService {
   public async mappedResponse(result: any) {
     const assessmentSetResponse = result.map((obj: any) => {
       const assessmentSetMapping = {
+        id: obj?.assessmentsetId ? `${obj.assessmentsetId}` : "",
         assessmentsetId: obj?.assessmentsetId ? `${obj.assessmentsetId}` : "",
         title: obj?.title ? `${obj.title}` : "",
         type: obj?.type ? obj.type : "",

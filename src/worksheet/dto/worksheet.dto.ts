@@ -3,6 +3,9 @@ import { Expose } from "class-transformer";
 
 export class WorksheetDto {
   @Expose()
+  id: string;
+
+  @Expose()
   worksheetId: string;
 
   @ApiProperty({

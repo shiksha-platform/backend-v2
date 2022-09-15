@@ -3,6 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class CommentDto {
   @Expose()
+  id: string;
+
+  @Expose()
   commentId: string;
 
   @ApiProperty({})

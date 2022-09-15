@@ -3,6 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class LikeDto {
   @Expose()
+  id: string;
+
+  @Expose()
   likeId: string;
 
   @ApiProperty({})

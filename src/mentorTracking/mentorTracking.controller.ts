@@ -80,6 +80,22 @@ export class MentorTrackingController {
     );
   }
 
+  @Put("feedback/:id")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({
+    description: "Mentor Tracking has been updated successfully.",
+  })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiQuery({ name: "feedback", required: true })
+  public async feedback(
+    @Param("id") mentorTrackingId: string,
+    @Req() request: Request,
+    @Query("feedback") feedback: string
+  ) {
+    return await this.service.feedback(mentorTrackingId, request, feedback);
+  }
+
   @Post("/search")
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")

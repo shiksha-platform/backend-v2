@@ -1,11 +1,7 @@
-import { Injectable, HttpException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { AxiosResponse } from "axios";
-import { map } from "rxjs";
 import { AttendanceDto } from "src/attendance/dto/attendance.dto";
 import { SuccessResponse } from "src/success-response";
-import { ErrorResponse } from "src/error-response";
-import { catchError } from "rxjs/operators";
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 import { SegmentDto } from "src/common-dto/userSegment.dto";
 import moment from "moment";
@@ -143,6 +139,11 @@ export class AttendanceHasuraService implements IServicelocator {
 
     var data = {
       query: `query SearchAttendance($limit:Int, $offset:Int) {
+        attendance_aggregate {
+          aggregate {
+            count
+          }
+        }
             attendance(where:{ ${query}}, limit: $limit, offset: $offset,) {
               attendance
               attendanceDate
@@ -181,11 +182,13 @@ export class AttendanceHasuraService implements IServicelocator {
     const response = await axios(config);
     let result = response?.data?.data?.attendance;
 
-    const mappedResponse = await this.mappedResponse(result);
+    let mappedResponse = await this.mappedResponse(result);
+    const count = response?.data?.data?.attendance_aggregate?.aggregate?.count;
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: mappedResponse,
     });
   }
@@ -432,6 +435,11 @@ export class AttendanceHasuraService implements IServicelocator {
 
     var FilterData = {
       query: `query AttendanceFilter($fromDate:date,$toDate:date) {
+        attendance_aggregate {
+          aggregate {
+            count
+          }
+        }
             attendance(where:{  attendanceDate: {_gte: $fromDate}, _and: {attendanceDate: {_lte: $toDate}} ${query}}) {
               attendance
               attendanceDate
@@ -473,10 +481,11 @@ export class AttendanceHasuraService implements IServicelocator {
       response?.data.data.attendance && response.data.data.attendance;
 
     const mappedResponse = await this.mappedResponse(result);
-
+    const count = response?.data?.data?.attendance_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
+      totalCount: count,
       data: mappedResponse,
     });
   }
@@ -888,6 +897,7 @@ export class AttendanceHasuraService implements IServicelocator {
   public async mappedResponse(result: any) {
     const attendanceResponse = result.map((item: any) => {
       const attendanceMapping = {
+        id: item?.attendanceId ? `${item.attendanceId}` : "",
         attendanceId: item?.attendanceId ? `${item.attendanceId}` : "",
         schoolId: item?.schoolId ? `${item.schoolId}` : "",
         userType: item?.userType ? `${item.userType}` : "",

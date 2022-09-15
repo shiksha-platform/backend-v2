@@ -5,6 +5,9 @@ export class WorkHistoryDto {
   @Expose()
   workHistoryId: string;
 
+  @Expose()
+  id: string;
+
   @ApiProperty({
     type: String,
     description: "ID of the user for which posting info is stored",

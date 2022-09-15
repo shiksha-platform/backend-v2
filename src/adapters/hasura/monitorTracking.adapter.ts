@@ -167,6 +167,11 @@ export class MonitorTrackingService {
 
     var data = {
       query: `query SearchMonitorTracking($offset:Int,$limit:Int) {
+            monitortracking_aggregate {
+              aggregate {
+                count
+              }
+            }
             monitortracking(where:{ ${query}}, offset: $offset,limit: $limit) {
               created_at
               feedback
@@ -197,9 +202,12 @@ export class MonitorTrackingService {
     const response = await axios(config);
 
     let result = await this.mappedResponse(response.data.data.monitortracking);
+    const count =
+      response?.data?.data?.monitortracking_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: result,
     });
   }
@@ -207,6 +215,7 @@ export class MonitorTrackingService {
   public async mappedResponse(result: any) {
     const monitorResponse = result.map((obj: any) => {
       const monitorMapping = {
+        id: obj?.monitorTrackingId ? `${obj.monitorTrackingId}` : "",
         monitorTrackingId: obj?.monitorTrackingId
           ? `${obj.monitorTrackingId}`
           : "",

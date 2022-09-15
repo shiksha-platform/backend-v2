@@ -2,6 +2,7 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { SuccessResponse } from "src/success-response";
 import { MentorTrackingDto } from "src/mentorTracking/dto/mentorTracking.dto";
+
 @Injectable()
 export class MentorTrackingService {
   constructor(private httpService: HttpService) {}
@@ -141,6 +142,62 @@ export class MentorTrackingService {
     });
   }
 
+  public async feedback(
+    mentorTrackingId: string,
+    request: any,
+    feedback: string
+  ) {
+    let mentorTrackingDto = {
+      feedback: feedback,
+    };
+    const mentorSchema = new MentorTrackingDto(mentorTrackingDto);
+    let query = "";
+    Object.keys(mentorTrackingDto).forEach((e) => {
+      if (
+        mentorTrackingDto[e] &&
+        mentorTrackingDto[e] != "" &&
+        Object.keys(mentorSchema).includes(e)
+      ) {
+        if (Array.isArray(mentorTrackingDto[e])) {
+          query += `${e}: ${JSON.stringify(mentorTrackingDto[e])}, `;
+        } else {
+          query += `${e}: ${JSON.stringify(mentorTrackingDto[e])}, `;
+        }
+      }
+    });
+
+    var axios = require("axios");
+    var data = {
+      query: `mutation updateMentorTracking($mentorTrackingId: uuid) {
+  update_mentortracking(where: {mentorTrackingId: {_eq: $mentorTrackingId}}, _set: {${query}}) {
+    affected_rows
+  }
+}`,
+      variables: {
+        mentorTrackingId: mentorTrackingId,
+      },
+    };
+
+    var config = {
+      method: "post",
+      url: process.env.REGISTRYHASURA,
+      headers: {
+        "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    const response = await axios(config);
+
+    const result = response.data.data;
+    return new SuccessResponse({
+      statusCode: 200,
+      message: "Ok.",
+      data: result,
+    });
+  }
+
   public async searchMentorTracking(
     limit: string,
     mentorTrackingId: string,
@@ -179,6 +236,11 @@ export class MentorTrackingService {
 
     var data = {
       query: `query searchMentorTracking($offset:Int,$limit:Int) {
+        mentortracking_aggregate {
+          aggregate {
+            count
+          }
+        }
   mentortracking(limit: $limit, offset: $offset, where: {${query}}) {
     mentorTrackingId
     created_at
@@ -212,10 +274,12 @@ export class MentorTrackingService {
     const response = await axios(config);
 
     let result = await this.mappedResponse(response.data.data.mentortracking);
-
+    const count =
+      response?.data?.data?.mentortracking_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: result,
     });
   }
@@ -223,6 +287,7 @@ export class MentorTrackingService {
   public async mappedResponse(result: any) {
     const mentorResponse = result.map((obj: any) => {
       const mentorMapping = {
+        id: obj?.mentorTrackingId ? `${obj.mentorTrackingId}` : "",
         mentorTrackingId: obj?.mentorTrackingId
           ? `${obj.mentorTrackingId}`
           : "",

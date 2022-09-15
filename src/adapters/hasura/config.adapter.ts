@@ -159,6 +159,11 @@ export class HasuraConfigService implements IServicelocator {
 
     var data = {
       query: `query GetConfig {
+        config_aggregate {
+          aggregate {
+            count
+          }
+        }
           config {
             canOverride
             configId
@@ -223,6 +228,11 @@ export class HasuraConfigService implements IServicelocator {
 
     var teacherConfig = {
       query: `query GetConfig($contextId:String) {
+            config_aggregate {
+              aggregate {
+                count
+              }
+            }
             config(where: {contextId: {_eq: $contextId}}) {
               canOverride
               configId
@@ -268,9 +278,12 @@ export class HasuraConfigService implements IServicelocator {
       }
     }
 
+    const count =
+      confifResponse?.data?.data?.config_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
+      totalCount: count,
       data: result,
     });
   }
@@ -295,6 +308,7 @@ export class HasuraConfigService implements IServicelocator {
   public async mappedResponse(result: any) {
     const configResponse = result.map((item: any) => {
       const configMapping = {
+        id: item?.configId ? `${item.configId}` : "",
         configId: item?.configId ? `${item.configId}` : "",
         module: item?.module ? `${item.module}` : "",
         key: item?.key ? `${item.key}` : "",
