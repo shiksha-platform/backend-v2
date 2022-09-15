@@ -24,12 +24,6 @@ export class AdminFormDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.adminFormId = obj?.osid ? `${obj.osid}` : "";
-    this.moduleId = obj?.moduleId ? `${obj.moduleId}` : "";
-    this.formSchema = obj?.formSchema ? `${obj.formSchema}` : "";
-    this.createdAt = obj?.osCreatedAt ? `${obj.osCreatedAt}` : "";
-    this.updatedAt = obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "";
-    this.createdBy = obj?.osCreatedBy ? `${obj.osCreatedBy}` : "";
-    this.updatedBy = obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "";
+    Object.assign(this, obj);
   }
 }

@@ -3,7 +3,7 @@ import { HttpService } from "@nestjs/axios";
 import { SuccessResponse } from "src/success-response";
 import { IServicelocator } from "../attendanceservicelocator";
 import { AttendanceDto } from "src/attendance/dto/attendance.dto";
-import { EsamwadAttendanceDto } from "src/attendance/dto/esamwad-attendance.dto";
+
 import { AttendanceSearchDto } from "src/attendance/dto/attendance-search.dto";
 export const EsamwadAttendanceToken = "EsamwadAttendance";
 @Injectable()
@@ -54,14 +54,12 @@ export class AttendanceEsamwadService implements IServicelocator {
       return item;
     });
 
-    const responsedata = attendanceData.map(
-      (item: any) => new EsamwadAttendanceDto(item)
-    );
+    const mappedResponse = await this.mappedResponse(attendanceData);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",
-      data: responsedata,
+      data: mappedResponse[0],
     });
   }
 
@@ -70,6 +68,7 @@ export class AttendanceEsamwadService implements IServicelocator {
     attendanceSearchDto: AttendanceSearchDto
   ) {
     var axios = require("axios");
+
     let limit = attendanceSearchDto.limit;
     var data = {
       query: `query getAttendance($limit:Int!) {
@@ -109,14 +108,12 @@ export class AttendanceEsamwadService implements IServicelocator {
       return item;
     });
 
-    const responsedata = attendanceData.map(
-      (item: any) => new EsamwadAttendanceDto(item)
-    );
+    const mappedResponse = await this.mappedResponse(attendanceData);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",
-      data: responsedata,
+      data: mappedResponse,
     });
   }
 
@@ -152,12 +149,8 @@ export class AttendanceEsamwadService implements IServicelocator {
     const responsedata = await axios(attendanceConfig);
     const attendanceResponse = responsedata.data.data.attendance;
 
-    let result = attendanceResponse.map(
-      (item: any) => new EsamwadAttendanceDto(item)
-    );
-
-    let attendanceId = result.map(function (EsamwadAttendanceDto) {
-      return EsamwadAttendanceDto.attendanceId;
+    let attendanceId = attendanceResponse.map((EsamwadAttendanceDto) => {
+      return EsamwadAttendanceDto.id;
     });
 
     let isPresent: any;
@@ -222,12 +215,13 @@ export class AttendanceEsamwadService implements IServicelocator {
       };
 
       const responseData = await axios(config);
+
       const response = responseData.data;
 
       let final = {
         ...response,
         result: {
-          Attendance: { osid: response.data.insert_attendance_one.id },
+          Attendance: { attendanceId: response.data.insert_attendance_one.id },
         },
       };
 
@@ -365,14 +359,13 @@ export class AttendanceEsamwadService implements IServicelocator {
       }
       return item;
     });
-    const responsedata = attendanceData.map(
-      (item: any) => new EsamwadAttendanceDto(item)
-    );
+
+    const mappedResponse = await this.mappedResponse(attendanceData);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "ok.",
-      data: responsedata,
+      data: mappedResponse,
     });
   }
   public async studentAttendanceByGroup(
@@ -382,4 +375,29 @@ export class AttendanceEsamwadService implements IServicelocator {
   ) {}
 
   studentAttendanceByUserId(date: string, userId: string, request: any) {}
+  userSegment(
+    groupId: string,
+    attendance: string,
+    date: string,
+    request: any
+  ) {}
+
+  public async mappedResponse(result: any) {
+    const attendanceResponse = result.map((item: any) => {
+      const attendanceMapping = {
+        attendanceId: item?.id ? `${item.id}` : "",
+        schoolId: item?.taken_by_school_id ? item.taken_by_school_id : "",
+        userId: item?.student_id ? `${item.student_id}` : "",
+        attendanceDate: item?.date ? `${item.date}` : "",
+        attendance: item.is_present,
+        metaData: item?.temperature,
+        createdAt: item?.created ? `${item.created}` : "",
+        updatedAt: item?.updated ? `${item.updated}` : "",
+      };
+
+      return new AttendanceDto(attendanceMapping);
+    });
+
+    return attendanceResponse;
+  }
 }

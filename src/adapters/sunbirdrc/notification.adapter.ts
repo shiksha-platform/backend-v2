@@ -61,10 +61,7 @@ export class NotificationService {
         },
       });
 
-      const dtoResponse = responseData.data.map(
-        (item: any) => new GroupDto(item)
-      );
-
+      const dtoResponse = await this.groupResponse(responseData.data);
       const filterObj = dtoResponse.filter((e: any) => e);
       let option = filterObj[0].option;
       let optionStr = JSON.stringify(option);
@@ -235,9 +232,7 @@ export class NotificationService {
       };
       const responseData = await axios(getSegment);
 
-      const dtoResponse = responseData.data.map(
-        (item: any) => new GroupDto(item)
-      );
+      const dtoResponse = await this.groupResponse(responseData.data);
 
       const filterObj = dtoResponse.filter((e: any) => e);
 
@@ -446,14 +441,16 @@ export class NotificationService {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let notificationData = axiosResponse.data;
-          const templateDto = new NotificationLogDto(notificationData);
+        map(async (axiosResponse: AxiosResponse) => {
+          let notificationData = [axiosResponse.data];
+          const NotificationLogDto = await this.notificationLog(
+            notificationData
+          );
 
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: templateDto,
+            data: NotificationLogDto[0],
           });
         }),
         catchError((e) => {
@@ -477,11 +474,8 @@ export class NotificationService {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new NotificationLogDto(item)
-          );
-
+        map(async (response) => {
+          const responsedata = await this.notificationLog(response.data);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
@@ -514,11 +508,8 @@ export class NotificationService {
         }
       )
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new NotificationLogDto(item)
-          );
-
+        map(async (response) => {
+          const responsedata = await this.notificationLog(response.data);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
@@ -546,14 +537,16 @@ export class NotificationService {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let scheduleNotificationData = axiosResponse.data;
-          const templateDto = new NotificationLogDto(scheduleNotificationData);
+        map(async (axiosResponse: AxiosResponse) => {
+          let scheduleNotificationData = [axiosResponse.data];
+          const responsedata = await this.notificationLog(
+            scheduleNotificationData
+          );
 
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: templateDto,
+            data: responsedata[0],
           });
         }),
         catchError((e) => {
@@ -564,5 +557,62 @@ export class NotificationService {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+  public async notificationLog(result: any) {
+    const notificationLog = result.map((item: any) => {
+      const notificationLogMapping = {
+        notificationLogId: item?.osid ? `${item.osid}` : "",
+        content: item?.content ? `${item.content}` : "",
+        recepients: item?.recepients ? item.recepients : [],
+        module: item?.module ? `${item.module}` : "",
+        templateContentId: item?.templateContentId
+          ? `${item.templateContentId}`
+          : "",
+        templateId: item?.templateId ? `${item.templateId}` : "",
+        medium: item?.medium ? `${item.medium}` : "",
+        sentDate: item?.sentDate ? `${item.sentDate}` : "",
+        sentBy: item?.sentBy ? `${item.sentBy}` : "",
+        scheduleDate: item?.scheduleDate ? `${item.scheduleDate}` : "",
+        options: item?.options ? item.options : "",
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new NotificationLogDto(notificationLogMapping);
+    });
+
+    return notificationLog;
+  }
+  public async groupResponse(result: any) {
+    const groupResponse = result.map((item: any) => {
+      const groupMapping = {
+        groupId: item?.osid ? `${item.osid}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        name: item?.name ? `${item.name}` : "",
+        type: item?.type ? `${item.type}` : "",
+        section: item?.section ? `${item.section}` : "",
+        status: item?.status ? `${item.status}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        mediumOfInstruction: item?.mediumOfInstruction
+          ? `${item.mediumOfInstruction}`
+          : "",
+        teacherId: item?.teacherId ? `${item.teacherId}` : "",
+        parentId: item?.parentId ? `${item.parentId}` : "",
+        image: item?.image ? `${item.image}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        option: item?.option ? item.option : [],
+        gradeLevel: item?.gradeLevel ? `${item.gradeLevel}` : "",
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new GroupDto(groupMapping);
+    });
+
+    return groupResponse;
   }
 }

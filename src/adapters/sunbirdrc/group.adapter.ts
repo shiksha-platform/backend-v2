@@ -30,13 +30,14 @@ export class SunbirdGroupService implements IServicelocatorgroup {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
+        map(async (axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
-          const groupDto = new GroupDto(data);
+          const groupDto = [data];
+          const groupResponse = await this.mappedResponse(groupDto);
           return new SuccessResponse({
             statusCode: 200,
             message: "Ok..",
-            data: groupDto,
+            data: groupResponse[0],
           });
         })
       );
@@ -94,15 +95,13 @@ export class SunbirdGroupService implements IServicelocatorgroup {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new GroupDto(item)
-          );
-
+        map(async (response) => {
+          const responsedata = response.data;
+          const groupResponse = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
-            data: responsedata,
+            data: groupResponse,
           });
         }),
         catchError((e) => {
@@ -135,9 +134,9 @@ export class SunbirdGroupService implements IServicelocatorgroup {
       };
 
       const response = await axios(config);
-      let result =
-        response?.data &&
-        response.data.map((item: any) => new StudentDto(item));
+      let result = await this.StudentMappedResponse(
+        response?.data && response.data
+      );
 
       return new SuccessResponse({
         statusCode: 200,
@@ -169,9 +168,8 @@ export class SunbirdGroupService implements IServicelocatorgroup {
 
         const responseData = await axios(classFinal);
 
-        const teacherDetailDto = new UserDto(responseData.data);
-
-        resData = [teacherDetailDto];
+        let response = await this.userMappedResponse([responseData.data]);
+        resData = response;
       }
       return new SuccessResponse({
         statusCode: 200,
@@ -224,10 +222,10 @@ export class SunbirdGroupService implements IServicelocatorgroup {
       const response = await axios(config);
       let studentObj = response?.data;
 
-      if (studentObj?.currentClassId) {
+      if (studentObj?.groupId) {
         let studentFinal = {
           method: "get",
-          url: `${this.url}/Class/${studentObj.currentClassId}`,
+          url: `${this.url}/Class/${studentObj.groupId}`,
           headers: {
             Authorization: request.headers.authorization,
           },
@@ -237,11 +235,197 @@ export class SunbirdGroupService implements IServicelocatorgroup {
         responseData = resData?.data ? [resData.data] : [];
       }
     }
-    let result = responseData.map((item: any) => new GroupDto(item));
+
+    const groupResponse = await this.mappedResponse(responseData);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
-      data: result,
+      data: groupResponse,
     });
+  }
+  public async findMembersOfChildGroup(
+    groupId: string,
+    role: string,
+    request: any
+  ) {}
+
+  public async mappedResponse(result: any) {
+    const groupResponse = result.map((item: any) => {
+      const groupMapping = {
+        groupId: item?.osid ? `${item.osid}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        name: item?.name ? `${item.name}` : "",
+        type: item?.type ? `${item.type}` : "",
+        section: item?.section ? `${item.section}` : "",
+        status: item?.status ? `${item.status}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        mediumOfInstruction: item?.mediumOfInstruction
+          ? `${item.mediumOfInstruction}`
+          : "",
+        teacherId: item?.teacherId ? `${item.teacherId}` : "",
+        parentId: item?.parentId ? `${item.parentId}` : "",
+        image: item?.image ? `${item.image}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        option: item?.option ? item.option : [],
+        gradeLevel: item?.gradeLevel ? `${item.gradeLevel}` : "",
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new GroupDto(groupMapping);
+    });
+
+    return groupResponse;
+  }
+  public async StudentMappedResponse(result: any) {
+    const studentResponse = result.map((item: any) => {
+      const studentMapping = {
+        studentId: item?.osid ? `${item.osid}` : "",
+        refId1: item?.admissionNo ? `${item.admissionNo}` : "",
+        refId2: item?.refId2 ? `${item.refId2}` : "",
+        aadhaar: item?.aadhaar ? `${item.aadhaar}` : "",
+        firstName: item?.firstName ? `${item.firstName}` : "",
+        middleName: item?.middleName ? `${item.middleName}` : "",
+        lastName: item?.lastName ? `${item.lastName}` : "",
+        groupId: item?.groupId ? `${item.groupId}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        studentEmail: item?.studentEmail ? `${item.studentEmail}` : "",
+        studentPhoneNumber: item?.studentPhoneNumber
+          ? item.studentPhoneNumber
+          : "",
+        iscwsn: item?.iscwsn ? `${item.iscwsn}` : "",
+        gender: item?.gender ? `${item.gender}` : "",
+        socialCategory: item?.socialCategory ? `${item.socialCategory}` : "",
+        religion: item?.religion ? `${item.religion}` : "",
+        singleGirl: item?.singleGirl ? item.singleGirl : "",
+        weight: item?.weight ? `${item.weight}` : "",
+        height: item?.height ? `${item.height}` : "",
+        bloodGroup: item?.bloodGroup ? `${item.bloodGroup}` : "",
+        birthDate: item?.birthDate ? `${item.birthDate}` : "",
+        homeless: item?.homeless ? item.homeless : "",
+        bpl: item?.bpl ? item.bpl : "",
+        migrant: item?.migrant ? item.migrant : "",
+        status: item?.status ? `${item.status}` : "",
+
+        fatherFirstName: item?.fatherFirstName ? `${item.fatherFirstName}` : "",
+
+        fatherMiddleName: item?.fatherMiddleName
+          ? `${item.fatherMiddleName}`
+          : "",
+
+        fatherLastName: item?.fatherLastName ? `${item.fatherLastName}` : "",
+        fatherPhoneNumber: item?.fatherPhoneNumber
+          ? item.fatherPhoneNumber
+          : "",
+        fatherEmail: item?.fatherEmail ? `${item.fatherEmail}` : "",
+
+        motherFirstName: item?.motherFirstName ? `${item.motherFirstName}` : "",
+        motherMiddleName: item?.motherMiddleName
+          ? `${item.motherMiddleName}`
+          : "",
+        motherLastName: item?.motherLastName ? `${item.motherLastName}` : "",
+        motherPhoneNumber: item?.motherPhoneNumber
+          ? item.motherPhoneNumber
+          : "",
+        motherEmail: item?.motherEmail ? `${item.motherEmail}` : "",
+
+        guardianFirstName: item?.guardianFirstName
+          ? `${item.guardianFirstName}`
+          : "",
+        guardianMiddleName: item?.guardianMiddleName
+          ? `${item.guardianMiddleName}`
+          : "",
+        guardianLastName: item?.guardianLastName
+          ? `${item.guardianLastName}`
+          : "",
+        guardianPhoneNumber: item?.guardianPhoneNumber
+          ? item.guardianPhoneNumber
+          : "",
+        guardianEmail: item?.guardianEmail ? `${item.guardianEmail}` : "",
+        image: item?.image ? `${item.image}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        studentAddress: item?.studentAddress ? `${item.studentAddress}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new StudentDto(studentMapping);
+    });
+
+    return studentResponse;
+  }
+
+  public async userMappedResponse(result: any) {
+    const userResponse = result.map((item: any) => {
+      const userMapping = {
+        userId: item?.osid ? `${item.osid}` : "",
+        refId1: item?.refId1 ? `${item.refId1}` : "",
+        refId2: item?.refId2 ? `${item.refId2}` : "",
+        refId3: item?.refId3 ? `${item.refId3}` : "",
+        firstName: item?.firstName ? `${item.firstName}` : "",
+        middleName: item?.middleName ? `${item.middleName}` : "",
+        lastName: item?.lastName ? `${item.lastName}` : "",
+        phoneNumber: item?.phoneNumber ? `${item.phoneNumber}` : "",
+        email: item?.email ? `${item.email}` : "",
+        aadhaar: item?.aadhaar ? `${item.aadhaar}` : "",
+        gender: item?.gender ? `${item.gender}` : "",
+        socialCategory: item?.socialCategory ? `${item.socialCategory}` : "",
+        birthDate: item?.birthDate ? `${item.birthDate}` : "",
+        designation: item?.designation ? `${item.designation}` : "",
+        cadre: item?.cadre ? `${item.cadre}` : "",
+        profQualification: item?.profQualification
+          ? `${item.profQualification}`
+          : "",
+        joiningDate: item?.joiningDate ? `${item.joiningDate}` : "",
+        subjectIds: item.subjectIds ? item.subjectIds : [],
+        bloodGroup: item?.bloodGroup ? `${item.bloodGroup}` : "",
+        maritalStatus: item?.maritalStatus ? `${item.maritalStatus}` : "",
+        compSkills: item?.compSkills ? `${item.compSkills}` : "",
+        disability: item?.disability ? `${item.disability}` : "",
+        religion: item?.religion ? `${item.religion}` : "",
+        homeDistance: item?.homeDistance ? `${item.homeDistance}` : "",
+        employmentType: item?.employmentType ? `${item.employmentType}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        address: item?.address ? `${item.address}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        image: item?.image ? `${item.image}` : "",
+        status: item?.status ? `${item.status}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        reportsTo: item?.reportsTo ? `${item.reportsTo}` : "",
+        retirementDate: item?.retirementDate ? `${item.retirementDate}` : "",
+        workingStatus: item?.workingStatus ? `${item.workingStatus}` : "",
+        fcmToken: item?.fcmToken ? `${item.fcmToken}` : "",
+        role: item?.role ? `${item.role}` : "",
+        employeeCode: item?.employeeCode ? `${item.employeeCode}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new UserDto(userMapping);
+    });
+
+    return userResponse;
   }
 }

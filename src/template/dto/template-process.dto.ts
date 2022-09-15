@@ -13,7 +13,6 @@ export class TemplateProcessDto {
   data: object;
 
   constructor(obj: any) {
-    this.id = obj?.id ? obj.id : "";
-    this.data = obj?.data ? obj.data : "";
+    Object.assign(this, obj);
   }
 }

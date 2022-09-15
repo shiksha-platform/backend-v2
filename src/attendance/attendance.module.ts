@@ -1,37 +1,23 @@
 import { CacheModule, Module } from "@nestjs/common";
 import { AttendanceController } from "./attendance.controller";
-import { HttpModule } from "@nestjs/axios";
 import { ScheduleModule } from "@nestjs/schedule";
-import {
-  AttendanceEsamwadService,
-  EsamwadAttendanceToken,
-} from "src/adapters/esamwad/attendance.adapter";
-import {
-  AttendanceHasuraService,
-  ShikshaAttendanceToken,
-} from "src/adapters/hasura/attendance.adapter";
-import {
-  AttendanceService,
-  SunbirdAttendanceToken,
-} from "src/adapters/sunbirdrc/attendance.adapter";
+import { AttendaceAdapter } from "./attendanceadapter";
+import { HasuraModule } from "src/adapters/hasura/hasura.module";
+import { SunbirdModule } from "src/adapters/sunbirdrc/subnbird.module";
+import { EsmwadModule } from "src/adapters/esamwad/esamwad.module";
 
 const ttl = process.env.TTL as never;
 @Module({
   imports: [
-    HttpModule,
+    SunbirdModule,
+    HasuraModule,
+    EsmwadModule,
     CacheModule.register({
       ttl: ttl,
     }),
     ScheduleModule.forRoot(),
   ],
   controllers: [AttendanceController],
-  providers: [
-    AttendanceService,
-    AttendanceHasuraService,
-    AttendanceEsamwadService,
-    { provide: ShikshaAttendanceToken, useClass: AttendanceHasuraService },
-    { provide: SunbirdAttendanceToken, useClass: AttendanceService },
-    { provide: EsamwadAttendanceToken, useClass: AttendanceEsamwadService },
-  ],
+  providers: [AttendaceAdapter],
 })
 export class AttendanceModule {}

@@ -11,16 +11,16 @@ export class WorkHistoryService {
   public async createWorkHistory(request: any, workHistoryDto: WorkHistoryDto) {
     var axios = require("axios");
 
-    let newDataObject = "";
-    const newData = Object.keys(workHistoryDto).forEach((e) => {
+    let query = "";
+    Object.keys(workHistoryDto).forEach((e) => {
       if (workHistoryDto[e] && workHistoryDto[e] != "") {
-        newDataObject += `${e}: "${workHistoryDto[e]}", `;
+        query += `${e}: "${workHistoryDto[e]}", `;
       }
     });
 
     var data = {
       query: `mutation CreateWorkHistory {
-        insert_workhistory_one(object: {${newDataObject}}) {
+        insert_workhistory_one(object: {${query}}) {
          workHistoryId
         }
       }
@@ -56,16 +56,16 @@ export class WorkHistoryService {
   ) {
     var axios = require("axios");
 
-    let newDataObject = "";
-    const newData = Object.keys(workHistoryDto).forEach((e) => {
+    let query = "";
+    Object.keys(workHistoryDto).forEach((e) => {
       if (workHistoryDto[e] && workHistoryDto[e] != "") {
-        newDataObject += `${e}: "${workHistoryDto[e]}", `;
+        query += `${e}: "${workHistoryDto[e]}", `;
       }
     });
 
     var data = {
       query: `mutation UpdateWorkHistory($workHistoryId:uuid) {
-          update_workhistory(where: {workHistoryId: {_eq: $worksHitoryId}}, _set: {${newDataObject}}) {
+          update_workhistory(where: {workHistoryId: {_eq: $worksHitoryId}}, _set: {${query}}) {
           affected_rows
         }
 }`,
@@ -134,10 +134,7 @@ export class WorkHistoryService {
     };
 
     const response = await axios(config);
-    let result = response?.data?.data?.workhistory.map(
-      (item: any) => new WorkHistoryDto(item)
-    );
-
+    let result = await this.mappedResponse(response?.data?.data?.workhistory);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
@@ -168,16 +165,16 @@ export class WorkHistoryService {
       dateOfRelieving: dateOfRelieving,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
+    let query = "";
+    Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        query += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
 
     var data = {
       query: `query SearchWorkHistory($limit:Int, $offset:Int) {
-            workhistory(where:{ ${newDataObject}}, limit: $limit, offset: $offset,) {
+            workhistory(where:{ ${query}}, limit: $limit, offset: $offset,) {
               workHistoryId
               cadre
               created_at
@@ -213,14 +210,47 @@ export class WorkHistoryService {
     };
 
     const response = await axios(config);
-    let result = response.data.data.workhistory.map(
-      (item: any) => new WorkHistoryDto(item)
-    );
 
+    let result = await this.mappedResponse(response.data.data.workhistory);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
       data: result,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const workHistoryResponse = result.map((obj: any) => {
+      const workHistoryMapping = {
+        workHistoryId: obj?.workHistoryId ? `${obj.workHistoryId}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        role: obj?.role ? `${obj.role}` : "",
+        joiningDesignation: obj?.joiningDesignation
+          ? `${obj.joiningDesignation}`
+          : "",
+        leavingDesignation: obj?.leavingDesignation
+          ? `${obj.leavingDesignation}`
+          : "",
+        dateOfJoining: obj?.dateOfJoining ? obj.dateOfJoining : "",
+        dateOfRelieving: obj?.dateOfRelieving ? obj.dateOfRelieving : "",
+        reason: obj?.reason ? `${obj.reason}` : "",
+        remark: obj?.remark ? `${obj.remark}` : "",
+        cadre: obj?.cadre ? `${obj.cadre}` : "",
+        transferOrderNumber: obj?.transferOrderNumber
+          ? `${obj.transferOrderNumber}`
+          : "",
+        placeOfPosting: obj?.placeOfPosting ? `${obj.placeOfPosting}` : "",
+        dateOfOrder: obj?.dateOfOrder ? obj.dateOfOrder : "",
+        modeOfPosting: obj?.modeOfPosting ? `${obj.modeOfPosting}` : "",
+        organizationName: obj?.organizationName
+          ? `${obj.organizationName}`
+          : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new WorkHistoryDto(workHistoryMapping);
+    });
+
+    return workHistoryResponse;
   }
 }

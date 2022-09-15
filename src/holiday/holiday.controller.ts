@@ -21,14 +21,14 @@ import {
   ApiBasicAuth,
   ApiQuery,
 } from "@nestjs/swagger";
-import { HolidayService } from "src/adapters/sunbirdrc/holiday.adapter";
 import { HolidayDto } from "./dto/holiday.dto";
 import { HolidaySearchDto } from "./dto/holiday-search.dto";
 import { Request } from "@nestjs/common";
+import { HolidayAdapter } from "./holidayadapter";
 @ApiTags("Holiday")
 @Controller("holiday")
 export class HolidayController {
-  constructor(private readonly service: HolidayService) {}
+  constructor(private holidayProvider: HolidayAdapter) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -38,7 +38,9 @@ export class HolidayController {
     strategy: "excludeAll",
   })
   getHolidays(@Param("id") holidayId: string, @Req() request: Request) {
-    return this.service.getHoliday(holidayId, request);
+    return this.holidayProvider
+      .buildHolidayAdapter()
+      .getHoliday(holidayId, request);
   }
 
   @Post()
@@ -51,7 +53,9 @@ export class HolidayController {
     @Req() request: Request,
     @Body() holidayDto: HolidayDto
   ) {
-    return this.service.createHoliday(request, holidayDto);
+    return await this.holidayProvider
+      .buildHolidayAdapter()
+      .createHoliday(request, holidayDto);
   }
 
   @Put("/:id")
@@ -64,7 +68,9 @@ export class HolidayController {
     @Req() request: Request,
     @Body() holidayDto: HolidayDto
   ) {
-    return await this.service.updateHoliday(holidayId, request, holidayDto);
+    return await this.holidayProvider
+      .buildHolidayAdapter()
+      .updateHoliday(holidayId, request, holidayDto);
   }
 
   @Post("/search")
@@ -80,7 +86,9 @@ export class HolidayController {
     @Req() request: Request,
     @Body() holidaySearchDto: HolidaySearchDto
   ) {
-    return await this.service.searchHoliday(request, holidaySearchDto);
+    return await this.holidayProvider
+      .buildHolidayAdapter()
+      .searchHoliday(request, holidaySearchDto);
   }
 
   @Get("")
@@ -95,11 +103,8 @@ export class HolidayController {
     @Query("toDate") toDate: string,
     @Req() request: Request
   ) {
-    return await this.service.holidayFilter(
-      date,
-      toDate,
-
-      request
-    );
+    return await this.holidayProvider
+      .buildHolidayAdapter()
+      .holidayFilter(date, toDate, request);
   }
 }

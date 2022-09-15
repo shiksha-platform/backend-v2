@@ -176,6 +176,7 @@ export class QumlQuestionService implements IServicelocator {
         method: "get",
         url: `${this.url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks,maxScore,bloomsLevel,compatibilityLevel,language,source`,
       };
+
       const response = await axios(config);
       const data = response?.data;
       const final = data.result.question;
@@ -310,30 +311,34 @@ export class QumlQuestionService implements IServicelocator {
     try {
       var axios = require("axios");
       let topics = Array;
+      var data = {
+        request: {
+          filters: {
+            objectType: "Question",
+            status: ["Live"],
+            subject: [subject],
+          },
+        },
+      };
+
       var config = {
-        method: "get",
-        url: "https://diksha.gov.in/api/framework/v1/read/mh_k-12_1?categories=subject,topic",
+        method: "post",
+        url: "https://vdn.diksha.gov.in/action/composite/v3/search",
         headers: {
           "Content-Type": "application/json",
         },
+        data: data,
       };
+
       const responseData = await axios(config);
-      const categories = responseData.data.result.framework.categories;
-
-      if (typeof categories !== "undefined" && categories.length > 0) {
-        const subjectList = categories.find((o) => o.code === "subject");
-
-        let terms = subjectList.terms;
-        if (typeof terms !== "undefined" && terms.length > 0) {
-          let associations = terms.find((o) => o.code === subject);
-          topics = associations.associations;
-        }
-      }
-
+      const categories = responseData.data.result.Question;
+      const topicList = categories.map((e: any) => {
+        return e.se_topics[0];
+      });
       return new SuccessResponse({
         statusCode: 200,
         message: "ok",
-        data: topics,
+        data: topicList,
       });
     } catch (e) {
       return `${e}`;
@@ -350,6 +355,7 @@ export class QumlQuestionService implements IServicelocator {
     const response = await axios(config);
 
     const data = response?.data;
+
     const final = data.result.question;
 
     const mappedResponse = {

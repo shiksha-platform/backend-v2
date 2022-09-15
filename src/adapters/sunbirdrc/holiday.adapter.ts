@@ -8,8 +8,10 @@ import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { HolidaySearchDto } from "src/holiday/dto/holiday-search.dto";
+import { IServicelocator } from "../holidayservicelocator";
+export const SunbirdHolidayToken = "SunbirdHoliday";
 @Injectable()
-export class HolidayService {
+export class SunbirdHolidayService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/Holiday`;
 
@@ -21,14 +23,13 @@ export class HolidayService {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let data = axiosResponse.data;
-
-          const holidayDto = new HolidayDto(data);
+        map(async (axiosResponse: AxiosResponse) => {
+          let data = [axiosResponse.data];
+          const holidayData = await this.mappedResponse(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: holidayDto,
+            data: holidayData[0],
           });
         }),
         catchError((e) => {
@@ -97,14 +98,13 @@ export class HolidayService {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new HolidayDto(item)
-          );
+        map(async (response) => {
+          const responsedata = response.data;
+          const holidayData = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
-            data: responsedata,
+            data: holidayData,
           });
         }),
         catchError((e) => {
@@ -144,13 +144,32 @@ export class HolidayService {
 
     const response = await axios(config);
 
-    let result =
-      response?.data && response.data.map((item: any) => new HolidayDto(item));
-
+    let result = response?.data && response.data;
+    const holidayData = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
-      data: result,
+      data: holidayData,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const holidayResponse = result.map((item: any) => {
+      const holidayMapping = {
+        holidayId: item?.osid ? `${item.osid}` : "",
+        date: item?.remark ? item.remark : "",
+        remark: item?.remark ? `${item.remark}` : "",
+        year: item?.year ? item.year : "",
+        context: item?.context ? `${item.context}` : "",
+        contextId: item?.contextId ? `${item.contextId}` : "",
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new HolidayDto(holidayMapping);
+    });
+
+    return holidayResponse;
   }
 }

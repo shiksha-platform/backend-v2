@@ -185,23 +185,6 @@ export class TrackAssessmentDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.trackAssessmentId = obj?.trackAssessmentId
-      ? `${obj.trackAssessmentId}`
-      : "";
-    this.filter = obj?.filter ? `${obj.filter}` : "";
-    this.type = obj?.type ? `${obj.type}` : "";
-    this.questions = obj?.questions ? obj.questions : "";
-    this.source = obj?.source ? `${obj.source}` : "";
-    this.answersheet = obj?.answersheet ? `${obj.answersheet}` : "";
-    this.score = obj?.score ? `${obj.score}` : "";
-    this.totalScore = obj?.totalScore ? `${obj.totalScore}` : "";
-    this.studentId = obj?.studentId ? `${obj.studentId}` : "";
-    this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
-    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
-    this.subject = obj?.subject ? `${obj.subject}` : "";
-    this.date = obj?.date ? `${obj.date}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

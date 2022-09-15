@@ -255,23 +255,13 @@ export class AttendanceDto {
   @Expose()
   updatedAt: string;
 
+  @Expose()
+  createdBy: string;
+
+  @Expose()
+  updatedBy: string;
+
   constructor(obj: any) {
-    this.attendanceId = obj?.attendanceId ? `${obj.attendanceId}` : "";
-    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.userType = obj?.userType ? `${obj.userType}` : "";
-    this.userId = obj?.userId ? `${obj.userId}` : "";
-    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
-    this.topicId = obj?.topicId ? `${obj.topicId}` : "";
-    this.eventId = obj?.eventId ? `${obj.eventId}` : "";
-    this.remark = obj?.remark ? `${obj.remark}` : "";
-    this.attendance = obj?.attendance ? `${obj.attendance}` : "";
-    this.attendanceDate = obj?.attendanceDate ? `${obj.attendanceDate}` : "";
-    this.latitude = obj?.latitude ? obj.latitude : 0;
-    this.longitude = obj?.longitude ? obj.longitude : 0;
-    this.image = obj?.image ? `${obj.image}` : "";
-    this.syncTime = obj?.syncTime ? `${obj.syncTime}` : "";
-    this.metaData = obj?.metaData ? obj.metaData : [];
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

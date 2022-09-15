@@ -13,7 +13,7 @@ export class QuestionService implements IServicelocator {
 
     var data = {
       query: `query GetQuestion($examQuestionId:uuid) {
-        question(where: {examQuestionId: {_eq: $examQuestionId}}) {
+        question_by_pk(examQuestionId: $examQuestionId) {
           answer
           avgRating
           avgTimeSpent
@@ -75,32 +75,31 @@ export class QuestionService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = response.data.data.question.map(
-      (item: any) => new QuestionDto(item)
-    );
+    let result = [response.data.data.question_by_pk];
+    const questionResponse = await this.mappedResponse(result);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: questionResponse[0],
     });
   }
   public async createQuestion(request: any, questionDto: QuestionDto) {
     var axios = require("axios");
-    let newDataObject = "";
-    const newData = Object.keys(questionDto).forEach((e) => {
+    let query = "";
+    Object.keys(questionDto).forEach((e) => {
       if (questionDto[e] && questionDto[e] != "") {
         if (Array.isArray(questionDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(questionDto[e])}, `;
+          query += `${e}: ${JSON.stringify(questionDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${questionDto[e]}", `;
+          query += `${e}: "${questionDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation CreateQuestion {
-        insert_question_one(object: {${newDataObject}}) {
+        insert_question_one(object: {${query}}) {
           examQuestionId
         }
       }
@@ -136,20 +135,20 @@ export class QuestionService implements IServicelocator {
   ) {
     var axios = require("axios");
 
-    let newDataObject = "";
-    const newData = Object.keys(questionDto).forEach((e) => {
+    let query = "";
+    Object.keys(questionDto).forEach((e) => {
       if (questionDto[e] && questionDto[e] != "") {
         if (Array.isArray(questionDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(questionDto[e])}, `;
+          query += `${e}: ${JSON.stringify(questionDto[e])}, `;
         } else {
-          newDataObject += `${e}: ${questionDto[e]}, `;
+          query += `${e}: ${questionDto[e]}, `;
         }
       }
     });
 
     var data = {
       query: `mutation UpdateQuestion($examQuestionId:uuid) {
-          update_question(where: {examQuestionId: {_eq: $examQuestionId}}, _set: {${newDataObject}}) {
+          update_question(where: {examQuestionId: {_eq: $examQuestionId}}, _set: {${query}}) {
           affected_rows
         }
 }`,
@@ -209,16 +208,16 @@ export class QuestionService implements IServicelocator {
       type: type,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
+    let query = "";
+    Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        query += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
 
     var data = {
       query: `query SearchQuestion($limit:Int, $offset:Int) {
-            question(where:{ ${newDataObject}}, limit: $limit, offset: $offset,) {
+            question(where:{ ${query}}, limit: $limit, offset: $offset,) {
               answer
               avgRating
               avgTimeSpent
@@ -282,14 +281,12 @@ export class QuestionService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = response.data.data.question.map(
-      (item: any) => new QuestionDto(item)
-    );
-
+    let result = response.data.data.question;
+    const questionResponse = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: questionResponse,
     });
   }
 
@@ -297,20 +294,20 @@ export class QuestionService implements IServicelocator {
     let axios = require("axios");
     const result = Promise.all(
       questionDto.map(async (data: any) => {
-        let newDataObject = "";
-        const newData = Object.keys(data).forEach((e) => {
+        let query = "";
+        Object.keys(data).forEach((e) => {
           if (data[e] && data[e] != "") {
             if (Array.isArray(data[e])) {
-              newDataObject += `${e}: ${JSON.stringify(data[e])}, `;
+              query += `${e}: ${JSON.stringify(data[e])}, `;
             } else {
-              newDataObject += `${e}: ${data[e]}, `;
+              query += `${e}: ${data[e]}, `;
             }
           }
         });
 
-        var query = {
+        var createQuery = {
           query: `mutation CreateQuestion {
-              insert_question_one(object: {${newDataObject}}) {
+              insert_question_one(object: {${query}}) {
                 examQuestionId
               }
             }
@@ -324,7 +321,7 @@ export class QuestionService implements IServicelocator {
             "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
             "Content-Type": "application/json",
           },
-          data: query,
+          data: createQuery,
         };
 
         const response = await axios(config);
@@ -365,4 +362,93 @@ export class QuestionService implements IServicelocator {
     limit: string,
     request: any
   ) {}
+  public async mappedResponse(result: any) {
+    const questionResponse = result.map((item: any) => {
+      const questionMapping = {
+        examQuestionId: item?.examQuestionId,
+        body: item?.body,
+
+        instructions: item?.instructions,
+
+        feedback: item?.feedback,
+
+        topic: item?.topic,
+
+        subject: item?.subject,
+
+        class: item?.class,
+
+        questionId: item?.questionId,
+
+        hints: item?.hints,
+
+        options: item?.options,
+
+        media: item?.media,
+
+        responseDeclaration: item?.responseDeclaration,
+
+        outcomeDeclaration: item?.outcomeDeclaration,
+
+        templateDeclaration: item?.templateDeclaration,
+
+        templateProcessing: item?.templateProcessing,
+
+        responseProcessing: item?.responseProcessing,
+
+        bloomsLevel: item?.bloomsLevel,
+
+        qlevel: item?.qlevel,
+
+        purpose: item?.purpose,
+
+        expectedDuration: item?.expectedDuration,
+
+        maxScore: item?.maxScore,
+
+        type: item?.type,
+
+        visibility: item?.visibility,
+
+        isTemplate: item?.isTemplate,
+
+        interactions: item?.interactions,
+
+        solutionAvailable: item?.solutionAvailable,
+
+        scoringMode: item?.scoringMode,
+
+        qumlVersion: item?.qumlVersion,
+
+        totalTimeSpent: item?.totalTimeSpent,
+
+        avgTimeSpent: item?.avgTimeSpent,
+
+        numAttempts: item?.numAttempts,
+
+        numCorrectAttempts: item?.numCorrectAttempts,
+
+        numInCorrectAttempts: item?.numInCorrectAttempts,
+
+        numSkips: item?.numSkips,
+
+        source: item?.source,
+
+        answer: item?.answer,
+
+        learningOutcome: item?.learningOutcome,
+
+        compatibilityLevel: item?.compatibilityLevel,
+
+        language: item?.language,
+
+        avgRating: item?.avgRating,
+
+        totalRatings: item?.totalRatings,
+      };
+      return new QuestionDto(questionMapping);
+    });
+
+    return questionResponse;
+  }
 }

@@ -11,25 +11,25 @@ export class SchoolHasuraService implements IServicelocator {
 
   public async createSchool(request: any, schoolDto: SchoolDto) {
     var axios = require("axios");
-    const schoolSchema = new SchoolDto({});
-    let newDataObject = "";
-    const newData = Object.keys(schoolDto).forEach((e) => {
+    const schoolSchema = new SchoolDto(schoolDto);
+    let query = "";
+    Object.keys(schoolDto).forEach((e) => {
       if (
         schoolDto[e] &&
         schoolDto[e] != "" &&
         Object.keys(schoolSchema).includes(e)
       ) {
         if (Array.isArray(schoolDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(schoolDto[e])}, `;
+          query += `${e}: ${JSON.stringify(schoolDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${schoolDto[e]}", `;
+          query += `${e}: "${schoolDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation CreateSchool {
-        insert_school_one(object: {${newDataObject}}) {
+        insert_school_one(object: {${query}}) {
          schoolId
         }
       }
@@ -60,25 +60,25 @@ export class SchoolHasuraService implements IServicelocator {
 
   public async updateSchool(id: string, request: any, schoolDto: SchoolDto) {
     var axios = require("axios");
-    const schoolSchema = new SchoolDto({});
-    let newDataObject = "";
-    const newData = Object.keys(schoolDto).forEach((e) => {
+    const schoolSchema = new SchoolDto(schoolDto);
+    let query = "";
+    Object.keys(schoolDto).forEach((e) => {
       if (
         schoolDto[e] &&
         schoolDto[e] != "" &&
         Object.keys(schoolSchema).includes(e)
       ) {
         if (Array.isArray(schoolDto[e])) {
-          newDataObject += `${e}: ${JSON.stringify(schoolDto[e])}, `;
+          query += `${e}: ${JSON.stringify(schoolDto[e])}, `;
         } else {
-          newDataObject += `${e}: "${schoolDto[e]}", `;
+          query += `${e}: "${schoolDto[e]}", `;
         }
       }
     });
 
     var data = {
       query: `mutation UpdateSchool($schoolId:uuid) {
-          update_school(where: {schoolId: {_eq: $schoolId}}, _set: {${newDataObject}}) {
+          update_school(where: {schoolId: {_eq: $schoolId}}, _set: {${query}}) {
           affected_rows
         }}`,
       variables: {
@@ -156,12 +156,12 @@ export class SchoolHasuraService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = new SchoolDto(response.data.data.school_by_pk);
-
+    let result = [response.data.data.school_by_pk];
+    const schoolDto = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: schoolDto[0],
     });
   }
   public async searchSchool(request: any, schoolSearchDto: SchoolSearchDto) {
@@ -173,16 +173,16 @@ export class SchoolHasuraService implements IServicelocator {
       offset = parseInt(schoolSearchDto.limit) * (schoolSearchDto.page - 1);
     }
 
-    let newDataObject = "";
-    const newData = Object.keys(schoolSearchDto.filters).forEach((e) => {
+    let query = "";
+    Object.keys(schoolSearchDto.filters).forEach((e) => {
       if (schoolSearchDto.filters[e] && schoolSearchDto.filters[e] != "") {
-        newDataObject += `${e}:{_eq:"${schoolSearchDto.filters[e]}"}`;
+        query += `${e}:{_eq:"${schoolSearchDto.filters[e]}"}`;
       }
     });
 
     var data = {
       query: `query SearchSchool($limit:Int, $offset:Int) {
-            school(where:{ ${newDataObject}}, limit: $limit, offset: $offset,) {
+            school(where:{ ${query}}, limit: $limit, offset: $offset,) {
                 address
                 block
                 created_at
@@ -228,14 +228,51 @@ export class SchoolHasuraService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = response.data.data.school.map(
-      (item: any) => new SchoolDto(item)
-    );
-
+    let result = response.data.data.school;
+    const schoolDto = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: schoolDto,
     });
+  }
+  public async mappedResponse(result: any) {
+    const schoolResponse = result.map((item: any) => {
+      const schoolMapping = {
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        schoolName: item?.schoolName ? `${item.schoolName}` : "",
+        email: item?.email ? `${item.email}` : "",
+        udise: item?.udise ? `${item.udise}` : "",
+        mediumOfInstruction: item?.mediumOfInstruction
+          ? item.mediumOfInstruction
+          : "",
+        phoneNumber: item?.phoneNumber ? item.phoneNumber : "",
+        address: item?.address ? item.address : "",
+        schoolType: item?.schoolType ? `${item.schoolType}` : "",
+        website: item?.website ? `${item.website}` : "",
+        headMaster: item?.headMaster ? `${item.headMaster}` : "",
+        board: item?.board ? `${item.board}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        cluster: item?.cluster ? `${item.cluster}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        enrollCount: item?.enrollCount ? `${item.enrollCount}` : "",
+        status: item?.status ? `${item.status}` : "",
+        latitude: item?.latitude ? item.latitude : "",
+        longitude: item?.longitude ? item.longitude : "",
+        metaData: item?.metaData ? item.metaData : [],
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        createdAt: item?.created_at ? `${item.created_at}` : "",
+        updatedAt: item?.updated_at ? `${item.updated_at}` : "",
+      };
+      return new SchoolDto(schoolMapping);
+    });
+
+    return schoolResponse;
   }
 }

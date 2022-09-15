@@ -32,13 +32,13 @@ import { UserDto } from "./dto/user.dto";
 import { UserSearchDto } from "./dto/user-search.dto";
 import { IServicelocator } from "src/adapters/userservicelocator";
 import { EsamwadUserToken } from "src/adapters/esamwad/user.adapter";
+import { UserAdapter } from "./useradapter";
 @ApiTags("User")
 @Controller("user")
 export class UserController {
   constructor(
     private readonly service: UserService,
-    @Inject(EsamwadUserToken) private eSamwadProvider: IServicelocator,
-    @Inject(SunbirdUserToken) private sunbirdProvider: IServicelocator
+    private userAdapter: UserAdapter
   ) {}
 
   @Get("/:id")
@@ -50,7 +50,7 @@ export class UserController {
     strategy: "excludeAll",
   })
   public async getUser(@Param("id") id: string, @Req() request: Request) {
-    return this.service.getUser(id, request);
+    return this.userAdapter.buildUserAdapter().getUser(id, request);
   }
 
   @Get()
@@ -62,11 +62,7 @@ export class UserController {
     strategy: "excludeAll",
   })
   public async getUserByAuth(@Req() request: Request) {
-    if (process.env.ADAPTER === "sunbird") {
-      return this.sunbirdProvider.getUserByAuth(request);
-    } else if (process.env.ADAPTER === "esamwad") {
-      return this.eSamwadProvider.getUserByAuth(request);
-    }
+    return this.userAdapter.buildUserAdapter().getUserByAuth(request);
   }
 
   @Post()
@@ -76,7 +72,7 @@ export class UserController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async createUser(@Req() request: Request, @Body() userDto: UserDto) {
-    return this.service.createUser(request, userDto);
+    return this.userAdapter.buildUserAdapter().createUser(request, userDto);
   }
 
   @Put("/:id")
@@ -89,7 +85,9 @@ export class UserController {
     @Req() request: Request,
     @Body() userDto: UserDto
   ) {
-    return await this.service.updateUser(id, request, userDto);
+    return await this.userAdapter
+      .buildUserAdapter()
+      .updateUser(id, request, userDto);
   }
   @Post("/search")
   @ApiBasicAuth("access-token")
@@ -104,7 +102,9 @@ export class UserController {
     @Req() request: Request,
     @Body() userSearchDto: UserSearchDto
   ) {
-    return await this.service.searchUser(request, userSearchDto);
+    return await this.userAdapter
+      .buildUserAdapter()
+      .searchUser(request, userSearchDto);
   }
 
   @Get("teachersegment/:schoolId")
@@ -118,6 +118,8 @@ export class UserController {
     @Query("templateId") templateId: string,
     @Req() request: Request
   ) {
-    return await this.service.teacherSegment(schoolId, templateId, request);
+    return await this.userAdapter
+      .buildUserAdapter()
+      .teacherSegment(schoolId, templateId, request);
   }
 }

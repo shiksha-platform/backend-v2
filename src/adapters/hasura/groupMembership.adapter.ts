@@ -43,14 +43,12 @@ export class GroupMembershipService {
 
     const response = await axios(config);
 
-    let result = new GroupMembershipDto(
-      response?.data?.data?.groupmembership_by_pk
-    );
-
+    let result = [response?.data?.data?.groupmembership_by_pk];
+    let groupMembershipResponse = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: groupMembershipResponse[0],
     });
   }
 
@@ -205,14 +203,31 @@ export class GroupMembershipService {
 
     const response = await axios(config);
 
-    let result = response.data.data.groupmembership.map(
-      (item: any) => new GroupMembershipDto(item)
-    );
-
+    let result = response.data.data.groupmembership;
+    let groupMembershipResponse = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: groupMembershipResponse,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const groupMembershipResponse = result.map((obj: any) => {
+      const groupMembershipMapping = {
+        groupMembershipId: obj?.groupMembershipId
+          ? `${obj.groupMembershipId}`
+          : "",
+        groupId: obj?.groupId ? `${obj.groupId}` : "",
+        schoolId: obj?.schoolId ? `${obj.schoolId}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        role: obj?.role ? `${obj.role}` : "",
+        created_at: obj?.created_at ? `${obj.created_at}` : "",
+        updated_at: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new GroupMembershipDto(groupMembershipMapping);
+    });
+
+    return groupMembershipResponse;
   }
 }

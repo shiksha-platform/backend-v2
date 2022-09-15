@@ -118,25 +118,6 @@ export class GroupDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.groupId = obj?.groupId ? `${obj.groupId}` : "";
-    this.schoolId = obj?.schoolId ? `${obj.schoolId}` : "";
-    this.name = obj?.name ? `${obj.name}` : "";
-    this.type = obj?.type ? `${obj.type}` : "";
-    this.section = obj?.section ? `${obj.section}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.deactivationReason = obj?.deactivationReason
-      ? `${obj.deactivationReason}`
-      : "";
-    this.mediumOfInstruction = obj?.mediumOfInstruction
-      ? `${obj.mediumOfInstruction}`
-      : "";
-    this.teacherId = obj?.teacherId ? `${obj.teacherId}` : "";
-    this.parentId = obj?.parentId ? `${obj.parentId}` : "";
-    this.image = obj?.image ? `${obj.image}` : "";
-    this.metaData = obj?.metaData ? obj.metaData : [];
-    this.option = obj?.option ? obj.option : [];
-    this.gradeLevel = obj?.gradeLevel ? `${obj.gradeLevel}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

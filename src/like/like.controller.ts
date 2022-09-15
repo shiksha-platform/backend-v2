@@ -12,7 +12,6 @@ import {
   CacheInterceptor,
   Query,
   Delete,
-  Inject,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -24,20 +23,13 @@ import {
   ApiQuery,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
-import { SunbirdLikeToken } from "src/adapters/sunbirdrc/like.adapter";
 import { LikeDto } from "./dto/like.dto";
 import { LikeSearchDto } from "./dto/like-search.dto";
-import { HasuraLikeToken } from "src/adapters/hasura/like.adapter";
-import { IServicelocator } from "src/adapters/likeservicelocator";
+import { LikeAdapter } from "./likeadapter";
 @ApiTags("Like")
 @Controller("like")
 export class LikeController {
-  constructor(
-    @Inject(SunbirdLikeToken)
-    private sunbirdProvider: IServicelocator,
-    @Inject(HasuraLikeToken)
-    private hasuraProvider: IServicelocator
-  ) {}
+  constructor(private likeAdapter: LikeAdapter) {}
 
   @Get("/:id")
   @UseInterceptors(ClassSerializerInterceptor, CacheInterceptor)
@@ -47,11 +39,7 @@ export class LikeController {
     strategy: "excludeAll",
   })
   getLike(@Param("id") likeId: string, @Req() request: Request) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.getLike(likeId, request);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.getLike(likeId, request);
-    }
+    return this.likeAdapter.buildLikeAdapter().getLike(likeId, request);
   }
 
   @Post()
@@ -63,11 +51,7 @@ export class LikeController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
   public async createLike(@Req() request: Request, @Body() likeDto: LikeDto) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return this.sunbirdProvider.createLike(request, likeDto);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return this.hasuraProvider.createLike(request, likeDto);
-    }
+    return this.likeAdapter.buildLikeAdapter().createLike(request, likeDto);
   }
 
   @Put("/:id")
@@ -82,11 +66,9 @@ export class LikeController {
     @Req() request: Request,
     @Body() likeDto: LikeDto
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return await this.sunbirdProvider.updateLike(likeId, request, likeDto);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return await this.hasuraProvider.updateLike(likeId, request, likeDto);
-    }
+    return await this.likeAdapter
+      .buildLikeAdapter()
+      .updateLike(likeId, request, likeDto);
   }
 
   @Post("/search")
@@ -102,11 +84,9 @@ export class LikeController {
     @Req() request: Request,
     @Body() likeSearchDto: LikeSearchDto
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return await this.sunbirdProvider.searchLike(request, likeSearchDto);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return await this.hasuraProvider.searchLike(request, likeSearchDto);
-    }
+    return await this.likeAdapter
+      .buildLikeAdapter()
+      .searchLike(request, likeSearchDto);
   }
 
   @Post("/getAllLikes")
@@ -120,19 +100,9 @@ export class LikeController {
     @Query("context") context: string,
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return await this.sunbirdProvider.getCountLike(
-        contextId,
-        context,
-        request
-      );
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return await this.hasuraProvider.getCountLike(
-        contextId,
-        context,
-        request
-      );
-    }
+    return await this.likeAdapter
+      .buildLikeAdapter()
+      .getCountLike(contextId, context, request);
   }
 
   @Delete("/:id")
@@ -143,10 +113,8 @@ export class LikeController {
     @Param("id") likeId: string,
     @Req() request: Request
   ) {
-    if (process.env.ADAPTERSOURCE === "sunbird") {
-      return await this.sunbirdProvider.deleteLike(likeId, request);
-    } else if (process.env.ADAPTERSOURCE === "hasura") {
-      return await this.hasuraProvider.deleteLike(likeId, request);
-    }
+    return await this.likeAdapter
+      .buildLikeAdapter()
+      .deleteLike(likeId, request);
   }
 }

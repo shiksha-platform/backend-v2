@@ -9,7 +9,7 @@ import { UserSearchDto } from "src/user/dto/user-search.dto";
 import { UserDto } from "../../user/dto/user.dto";
 import jwt_decode from "jwt-decode";
 import { IServicelocator } from "../userservicelocator";
-import { TeacherSegementDto } from "src/user/dto/teacher-segment.dto";
+import { UserSegmentDto } from "src/user/dto/user-segment.dto";
 export const SunbirdUserToken = "SunbirdUser";
 @Injectable()
 export class UserService implements IServicelocator {
@@ -25,15 +25,14 @@ export class UserService implements IServicelocator {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let data = axiosResponse.data;
+        map(async (axiosResponse: AxiosResponse) => {
+          let data = [axiosResponse.data];
 
-          const teacherDto = new UserDto(data);
-
+          const teacherResponse = await this.mappedResponse(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "User found Successfully",
-            data: teacherDto,
+            data: teacherResponse[0],
           });
         }),
         catchError((e) => {
@@ -98,14 +97,13 @@ export class UserService implements IServicelocator {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new UserDto(item)
-          );
+        map(async (response) => {
+          const responsedata = response.data;
+          const teacherResponse = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
             message: "User found Successfully",
-            data: responsedata,
+            data: teacherResponse,
           });
         }),
         catchError((e) => {
@@ -140,13 +138,12 @@ export class UserService implements IServicelocator {
       data: data,
     };
     const response = await axios(config);
-    let result =
-      response?.data && response.data.map((item: any) => new UserDto(item));
-
+    let result = response?.data && response.data;
+    const teacherResponse = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
-      data: result,
+      data: teacherResponse,
     });
   }
 
@@ -180,9 +177,18 @@ export class UserService implements IServicelocator {
       data: teacherSearchDto,
     };
     const response = await axios(config);
-    let responseData = response.data.map(
-      (item: any) => new TeacherSegementDto(item)
-    );
+    let responseData = response.data.map((item: any) => {
+      const userSegment = {
+        fcmToken: item?.fcmToken ? `${item.fcmToken}` : "",
+        phoneNo: item?.phoneNumber ? `${item.phoneNumber}` : "",
+        name: item?.firstName ? `${item.firstName}` : "",
+        fcmClickActionUrl: item?.fcmClickActionUrl
+          ? `${item.fcmClickActionUrl}`
+          : "",
+      };
+      return new UserSegmentDto(userSegment);
+    });
+
     const teachersegment = responseData.map((obj: any) => {
       return { ...obj, fcmClickActionUrl: fcmClickActionUrl.attendance };
     });
@@ -192,5 +198,65 @@ export class UserService implements IServicelocator {
       message: "ok",
       data: teachersegment,
     });
+  }
+  public async mappedResponse(result: any) {
+    const userResponse = result.map((item: any) => {
+      const userMapping = {
+        userId: item?.osid ? `${item.osid}` : "",
+        refId1: item?.refId1 ? `${item.refId1}` : "",
+        refId2: item?.refId2 ? `${item.refId2}` : "",
+        refId3: item?.refId3 ? `${item.refId3}` : "",
+        firstName: item?.firstName ? `${item.firstName}` : "",
+        middleName: item?.middleName ? `${item.middleName}` : "",
+        lastName: item?.lastName ? `${item.lastName}` : "",
+        phoneNumber: item?.phoneNumber ? `${item.phoneNumber}` : "",
+        email: item?.email ? `${item.email}` : "",
+        aadhaar: item?.aadhaar ? `${item.aadhaar}` : "",
+        gender: item?.gender ? `${item.gender}` : "",
+        socialCategory: item?.socialCategory ? `${item.socialCategory}` : "",
+        birthDate: item?.birthDate ? `${item.birthDate}` : "",
+        designation: item?.designation ? `${item.designation}` : "",
+        cadre: item?.cadre ? `${item.cadre}` : "",
+        profQualification: item?.profQualification
+          ? `${item.profQualification}`
+          : "",
+        joiningDate: item?.joiningDate ? `${item.joiningDate}` : "",
+        subjectIds: item.subjectIds ? item.subjectIds : [],
+        bloodGroup: item?.bloodGroup ? `${item.bloodGroup}` : "",
+        maritalStatus: item?.maritalStatus ? `${item.maritalStatus}` : "",
+        compSkills: item?.compSkills ? `${item.compSkills}` : "",
+        disability: item?.disability ? `${item.disability}` : "",
+        religion: item?.religion ? `${item.religion}` : "",
+        homeDistance: item?.homeDistance ? `${item.homeDistance}` : "",
+        employmentType: item?.employmentType ? `${item.employmentType}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        address: item?.address ? `${item.address}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        image: item?.image ? `${item.image}` : "",
+        status: item?.status ? `${item.status}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        reportsTo: item?.reportsTo ? `${item.reportsTo}` : "",
+        retirementDate: item?.retirementDate ? `${item.retirementDate}` : "",
+        workingStatus: item?.workingStatus ? `${item.workingStatus}` : "",
+        fcmToken: item?.fcmToken ? `${item.fcmToken}` : "",
+        role: item?.role ? `${item.role}` : "",
+        employeeCode: item?.employeeCode ? `${item.employeeCode}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new UserDto(userMapping);
+    });
+
+    return userResponse;
   }
 }

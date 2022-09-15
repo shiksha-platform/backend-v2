@@ -34,7 +34,7 @@ export class HasuraCommentService implements IServicelocator {
     const resData = await axios(user);
     const res = resData.data[0];
     commentDto.userId = res.osid;
-    const commentSchema = new CommentDto({});
+    const commentSchema = new CommentDto(commentDto);
     let query = "";
     Object.keys(commentDto).forEach((e) => {
       if (
@@ -104,7 +104,7 @@ export class HasuraCommentService implements IServicelocator {
     const userResponse = await axios(configData);
     const resultData = userResponse.data[0];
     commentDto.userId = resultData.osid;
-    const commentSchema = new CommentDto({});
+    const commentSchema = new CommentDto(commentDto);
     let query = "";
     Object.keys(commentDto).forEach((e) => {
       if (
@@ -184,12 +184,13 @@ export class HasuraCommentService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = new CommentDto(response.data.data.comment_by_pk);
-
+    const result = await this.mappedResponse([
+      response.data.data.comment_by_pk,
+    ]);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: result[0],
     });
   }
 
@@ -243,15 +244,32 @@ export class HasuraCommentService implements IServicelocator {
     };
 
     const response = await axios(config);
-
-    let result = response.data.data.comment.map(
-      (item: any) => new CommentDto(item)
-    );
+    const result = await this.mappedResponse(response.data.data.comment);
 
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
       data: result,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const commentResponse = result.map((obj: any) => {
+      const commentMapping = {
+        commentId: obj?.commentId ? `${obj.commentId}` : "",
+        contextId: obj?.contextId ? `${obj.contextId}` : "",
+        context: obj?.context ? `${obj.context}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        comment: obj?.comment ? `${obj.comment}` : "",
+        privacy: obj?.privacy ? `${obj.privacy}` : "",
+        parentId: obj?.parentId ? `${obj.parentId}` : "",
+        status: obj?.status ? `${obj.status}` : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new CommentDto(commentMapping);
+    });
+
+    return commentResponse;
   }
 }

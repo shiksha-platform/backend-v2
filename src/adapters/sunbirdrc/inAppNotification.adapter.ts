@@ -124,9 +124,7 @@ export class InAppNotificationService {
         },
       });
 
-      const dtoResponse = responseData.data.map(
-        (item: any) => new GroupDto(item)
-      );
+      const dtoResponse = await this.GroupMappedResponse(responseData.data);
 
       const filterObj = dtoResponse.filter((e: any) => e);
       let option = filterObj[0].option;
@@ -219,5 +217,34 @@ export class InAppNotificationService {
       message: "Ok.",
       data: response.data,
     });
+  }
+  public async GroupMappedResponse(result: any) {
+    const groupResponse = result.map((item: any) => {
+      const groupMapping = {
+        groupId: item?.groupId ? `${item.groupId}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        name: item?.name ? `${item.name}` : "",
+        type: item?.type ? `${item.type}` : "",
+        section: item?.section ? `${item.section}` : "",
+        status: item?.status ? `${item.status}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        mediumOfInstruction: item?.mediumOfInstruction
+          ? `${item.mediumOfInstruction}`
+          : "",
+        teacherId: item?.teacherId ? `${item.teacherId}` : "",
+        parentId: item?.parentId ? `${item.parentId}` : "",
+        image: item?.image ? `${item.image}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        option: item?.option ? item.option : [],
+        gradeLevel: item?.gradeLevel ? `${item.gradeLevel}` : "",
+        createdAt: item?.created_at ? `${item.created_at}` : "",
+        updatedAt: item?.updated_at ? `${item.updated_at}` : "",
+      };
+      return new GroupDto(groupMapping);
+    });
+
+    return groupResponse;
   }
 }

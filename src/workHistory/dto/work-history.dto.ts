@@ -111,30 +111,6 @@ export class WorkHistoryDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.workHistoryId = obj?.workHistoryId ? `${obj.workHistoryId}` : "";
-    this.userId = obj?.userId ? `${obj.userId}` : "";
-    this.role = obj?.role ? `${obj.role}` : "";
-    this.joiningDesignation = obj?.joiningDesignation
-      ? `${obj.joiningDesignation}`
-      : "";
-    this.leavingDesignation = obj?.leavingDesignation
-      ? `${obj.leavingDesignation}`
-      : "";
-    this.dateOfJoining = obj?.dateOfJoining ? obj.dateOfJoining : "";
-    this.dateOfRelieving = obj?.dateOfRelieving ? obj.dateOfRelieving : "";
-    this.reason = obj?.reason ? `${obj.reason}` : "";
-    this.remark = obj?.remark ? `${obj.remark}` : "";
-    this.cadre = obj?.cadre ? `${obj.cadre}` : "";
-    this.transferOrderNumber = obj?.transferOrderNumber
-      ? `${obj.transferOrderNumber}`
-      : "";
-    this.placeOfPosting = obj?.placeOfPosting ? `${obj.placeOfPosting}` : "";
-    this.dateOfOrder = obj?.dateOfOrder ? obj.dateOfOrder : "";
-    this.modeOfPosting = obj?.modeOfPosting ? `${obj.modeOfPosting}` : "";
-    this.organizationName = obj?.organizationName
-      ? `${obj.organizationName}`
-      : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }
