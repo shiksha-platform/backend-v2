@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
+import { IsEnum, IsIn, IsNotEmpty, IsString, MaxLength } from "class-validator";
+import {
+  enumOption,
+  GenderEnumValue,
+  religionEnumValue,
+  socialCategory,
+} from "../enums/student-value.enum";
 
 export class StudentDto {
   @Expose()
@@ -41,7 +48,13 @@ export class StudentDto {
   @Expose()
   studentEmail: string;
 
-  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([GenderEnumValue.male, GenderEnumValue.female])
+  @IsEnum(GenderEnumValue)
+  @ApiProperty({
+    enum: [GenderEnumValue.male, GenderEnumValue.female],
+  })
   @Expose()
   gender: string;
 
@@ -49,7 +62,13 @@ export class StudentDto {
   @Expose()
   groupId: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([socialCategory.general, socialCategory.obc, socialCategory.st])
+  @IsEnum(socialCategory)
+  @ApiPropertyOptional({
+    enum: [socialCategory.general, socialCategory.obc, socialCategory.st],
+  })
   @Expose()
   socialCategory: string;
 
@@ -57,7 +76,27 @@ export class StudentDto {
   @Expose()
   iscwsn: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    religionEnumValue.hindus,
+    religionEnumValue.muslims,
+    religionEnumValue.christians,
+    religionEnumValue.Sikhs,
+    religionEnumValue.buddhists,
+    religionEnumValue.jains,
+  ])
+  @IsEnum(religionEnumValue)
+  @ApiPropertyOptional({
+    enum: [
+      religionEnumValue.hindus,
+      religionEnumValue.muslims,
+      religionEnumValue.christians,
+      religionEnumValue.Sikhs,
+      religionEnumValue.buddhists,
+      religionEnumValue.jains,
+    ],
+  })
   @Expose()
   religion: string;
 
@@ -81,7 +120,13 @@ export class StudentDto {
   @Expose()
   birthDate: string;
 
-  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([enumOption.yes, enumOption.no])
+  @IsEnum(enumOption)
+  @ApiPropertyOptional({
+    enum: [enumOption.yes, enumOption.no],
+  })
   @Expose()
   homeless: Boolean;
 
@@ -89,7 +134,13 @@ export class StudentDto {
   @Expose()
   bpl: Boolean;
 
-  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([enumOption.yes, enumOption.no])
+  @IsEnum(enumOption)
+  @ApiPropertyOptional({
+    enum: [enumOption.yes, enumOption.no],
+  })
   @Expose()
   migrant: Boolean;
 

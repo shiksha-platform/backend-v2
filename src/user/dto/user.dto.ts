@@ -5,8 +5,21 @@ import {
   IsEmail,
   IsString,
   IsNumber,
+  IsIn,
+  IsEnum,
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  employmentType,
+  enumOption,
+  GenderEnumValue,
+  maritalStatusEnum,
+  religionEnumValue,
+  roleEnum,
+  socialCategory,
+  statusEnum,
+  workingStatus,
+} from "../enums/user-value.enum";
 
 export class UserDto {
   @Expose()
@@ -64,14 +77,24 @@ export class UserDto {
   @Expose()
   aadhaar: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([GenderEnumValue.male, GenderEnumValue.female])
+  @IsEnum(GenderEnumValue)
   @ApiProperty({
     type: String,
     description: "The gender of the user",
+    enum: [GenderEnumValue.male, GenderEnumValue.female],
   })
   @Expose()
   gender: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([socialCategory.general, socialCategory.obc, socialCategory.st])
+  @IsEnum(socialCategory)
   @ApiProperty({
+    enum: [socialCategory.general, socialCategory.obc, socialCategory.st],
     type: String,
     description: "The socialCategory of the user",
   })
@@ -127,9 +150,14 @@ export class UserDto {
   @Expose()
   bloodGroup: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([maritalStatusEnum.married, maritalStatusEnum.unMarried])
+  @IsEnum(maritalStatusEnum)
   @ApiProperty({
     type: String,
     description: "The maritalStatus of the user",
+    enum: [GenderEnumValue.male, GenderEnumValue.female],
   })
   @Expose()
   maritalStatus: string;
@@ -141,16 +169,38 @@ export class UserDto {
   @Expose()
   compSkills: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([enumOption.yes, enumOption.no])
+  @IsEnum(GenderEnumValue)
   @ApiProperty({
+    enum: [enumOption.yes, enumOption.no],
     type: String,
     description: "The disability of the user",
   })
   @Expose()
   disability: string;
 
-  @ApiProperty({
-    type: String,
-    description: "The religion of the user",
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([
+    religionEnumValue.hindus,
+    religionEnumValue.muslims,
+    religionEnumValue.christians,
+    religionEnumValue.Sikhs,
+    religionEnumValue.buddhists,
+    religionEnumValue.jains,
+  ])
+  @IsEnum(religionEnumValue)
+  @ApiPropertyOptional({
+    enum: [
+      religionEnumValue.hindus,
+      religionEnumValue.muslims,
+      religionEnumValue.christians,
+      religionEnumValue.Sikhs,
+      religionEnumValue.buddhists,
+      religionEnumValue.jains,
+    ],
   })
   @Expose()
   religion: string;
@@ -204,7 +254,16 @@ export class UserDto {
   @Expose()
   retirementDate: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([workingStatus.working, workingStatus.retired, workingStatus.suspended])
+  @IsEnum(workingStatus)
   @ApiProperty({
+    enum: [
+      workingStatus.working,
+      workingStatus.retired,
+      workingStatus.suspended,
+    ],
     type: String,
     description: "The workingStatus of the user",
   })
@@ -218,14 +277,24 @@ export class UserDto {
   @Expose()
   image: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([employmentType.permenant, employmentType.contractBasis])
+  @IsEnum(employmentType)
   @ApiProperty({
+    enum: [employmentType.permenant, employmentType.contractBasis],
     type: String,
     description: "The employmentType of the user",
   })
   @Expose()
   employmentType: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([statusEnum.publish, statusEnum.unpublish, statusEnum.draft])
+  @IsEnum(statusEnum)
   @ApiProperty({
+    enum: [statusEnum.publish, statusEnum.unpublish, statusEnum.draft],
     type: String,
     description: "The status of the user",
   })
@@ -251,7 +320,12 @@ export class UserDto {
   @Expose()
   fcmToken: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsIn([roleEnum.teacher, roleEnum.mentor, roleEnum.monitor])
+  @IsEnum(roleEnum)
   @ApiProperty({
+    enum: [roleEnum.teacher, roleEnum.mentor, roleEnum.monitor],
     type: String,
     description: "roleId of user, teacher, mentor,monitor",
   })

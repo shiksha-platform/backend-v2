@@ -23,6 +23,10 @@ import {
   UploadedFile,
   CacheInterceptor,
   Query,
+  Inject,
+  CACHE_MANAGER,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 import { AttendanceDto } from "./dto/attendance.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -75,6 +79,7 @@ export class AttendanceController {
   @ApiBody({ type: AttendanceDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createAttendace(
     @Req() request: Request,
     @Body() attendaceDto: AttendanceDto,
@@ -107,6 +112,7 @@ export class AttendanceController {
   @ApiBody({ type: AttendanceDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateAttendace(
     @Param("id") attendanceId: string,
     @Req() request: Request,

@@ -9,6 +9,8 @@ import {
   CACHE_MANAGER,
   Inject,
   Request,
+  UsePipes,
+  ValidationPipe,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -70,6 +72,7 @@ export class StudentController {
   @ApiBody({ type: StudentDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createStudent(
     @Req() request: Request,
     @Body() studentDto: StudentDto
@@ -84,6 +87,7 @@ export class StudentController {
   @ApiCreatedResponse({ description: "Student has been updated successfully." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateStudent(
     @Param("id") id: string,
     @Req() request: Request,

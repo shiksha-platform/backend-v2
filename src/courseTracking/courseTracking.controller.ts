@@ -21,6 +21,8 @@ import {
   Body,
   Query,
   Put,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 import { CourseTrackingService } from "src/adapters/hasura/courseTracking.adapter";
 import { CourseTrackingDto } from "./dto/courseTracking.dto";
@@ -94,6 +96,7 @@ export class CourseTrackingController {
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   @ApiQuery({ name: "progressDetail", required: false })
   @ApiQuery({ name: "courseId", required: false })
   @ApiQuery({ name: "userId", required: false })
@@ -136,6 +139,7 @@ export class CourseTrackingController {
   @ApiCreatedResponse({ description: "Course Tracking list." })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   @SerializeOptions({
     strategy: "excludeAll",
   })

@@ -5,7 +5,7 @@ import { catchError, map } from "rxjs";
 import { SuccessResponse } from "src/success-response";
 import { TrackAssessmentDto } from "src/trackAssessment/dto/trackassessment.dto";
 import { ErrorResponse } from "src/error-response";
-import { Status } from "../../trackAssessment/enums/statuses.enum";
+import { Status } from "../../trackAssessment/enums/trackAssessment.enum";
 
 @Injectable()
 export class TrackAssessmentService {

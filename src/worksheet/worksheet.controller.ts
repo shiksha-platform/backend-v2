@@ -22,6 +22,8 @@ import {
   UseInterceptors,
   Request,
   ConsoleLogger,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 import { WorksheetService } from "src/adapters/hasura/worksheet.adapter";
 import { WorksheetDto } from "./dto/worksheet.dto";
@@ -40,6 +42,7 @@ export class WorksheetController {
   @ApiBody({ type: WorksheetDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createWorksheet(
     @Req() request: Request,
     @Body() worksheetDto: WorksheetDto
@@ -54,6 +57,7 @@ export class WorksheetController {
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateWorksheet(
     @Param("id") id: string,
     @Req() request: Request,

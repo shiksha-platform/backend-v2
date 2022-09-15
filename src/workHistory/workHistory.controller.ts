@@ -21,6 +21,8 @@ import {
   SerializeOptions,
   UseInterceptors,
   Request,
+  ValidationPipe,
+  UsePipes,
 } from "@nestjs/common";
 
 import { WorkHistoryService } from "../adapters/hasura/workhistory.adapter";
@@ -39,6 +41,7 @@ export class WorkHistoryController {
   @ApiBody({ type: WorkHistoryDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async createWorkHistory(
     @Req() request: Request,
     @Body() workHistoryDto: WorkHistoryDto
@@ -53,6 +56,7 @@ export class WorkHistoryController {
   })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
+  @UsePipes(new ValidationPipe({}))
   public async updateWorkHistory(
     @Param("id") id: string,
     @Req() request: Request,
