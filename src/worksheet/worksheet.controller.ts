@@ -106,7 +106,7 @@ export class WorksheetController {
     return this.service.downloadWorksheet(worksheetId, templateId, request);
   }
 
-  @Post(":send/worksheet")
+  @Post("/share")
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
   @ApiOkResponse({ description: " Ok." })
