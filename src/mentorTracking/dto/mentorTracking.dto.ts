@@ -1,5 +1,5 @@
 import { Expose } from "class-transformer";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsIn, IsNotEmpty, IsString } from "class-validator";
 import { VisitStatus } from "./visitStatus.enum";
 
@@ -39,7 +39,7 @@ export class MentorTrackingDto {
   @IsNotEmpty()
   @IsIn([VisitStatus.pending, VisitStatus.visited])
   @IsEnum(VisitStatus)
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: [VisitStatus.pending, VisitStatus.visited],
   })
   @Expose()

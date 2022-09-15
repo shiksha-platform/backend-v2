@@ -94,10 +94,19 @@ export class MentorTrackingService {
     request: any,
     mentorTrackingDto: MentorTrackingDto
   ) {
+    const mentorSchema = new MentorTrackingDto(mentorTrackingDto);
     let query = "";
     Object.keys(mentorTrackingDto).forEach((e) => {
-      if (mentorTrackingDto[e] && mentorTrackingDto[e] != "") {
-        query += `${e}:"${mentorTrackingDto[e]}" `;
+      if (
+        mentorTrackingDto[e] &&
+        mentorTrackingDto[e] != "" &&
+        Object.keys(mentorSchema).includes(e)
+      ) {
+        if (Array.isArray(mentorTrackingDto[e])) {
+          query += `${e}: ${JSON.stringify(mentorTrackingDto[e])}, `;
+        } else {
+          query += `${e}: "${mentorTrackingDto[e]}", `;
+        }
       }
     });
 
@@ -141,6 +150,7 @@ export class MentorTrackingService {
     scheduleVisitDate: Date,
     visitDate: Date,
     page: number,
+    status: string,
     request: any
   ) {
     var axios = require("axios");
@@ -152,6 +162,7 @@ export class MentorTrackingService {
       schoolId,
       scheduleVisitDate,
       visitDate,
+      status,
     };
     let offset = 0;
 
