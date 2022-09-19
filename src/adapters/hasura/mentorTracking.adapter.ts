@@ -2,7 +2,8 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { SuccessResponse } from "src/success-response";
 import { MentorTrackingDto } from "src/mentorTracking/dto/mentorTracking.dto";
-
+import * as FormData from "form-data";
+import { FeedbackCreateDto } from "src/mentorTracking/dto/feedback-create.dto";
 @Injectable()
 export class MentorTrackingService {
   constructor(private httpService: HttpService) {}
@@ -144,13 +145,11 @@ export class MentorTrackingService {
 
   public async feedback(
     mentorTrackingId: string,
-    request: any,
-    feedback: string
+    feedbackCreateDto: FeedbackCreateDto,
+    request: any
   ) {
-    let mentorTrackingDto = {
-      feedback: feedback,
-    };
-    const mentorSchema = new MentorTrackingDto(mentorTrackingDto);
+    let mentorTrackingDto = feedbackCreateDto;
+    const mentorSchema = new FeedbackCreateDto(mentorTrackingDto);
     let query = "";
     Object.keys(mentorTrackingDto).forEach((e) => {
       if (

@@ -13,6 +13,8 @@ import {
   Query,
   ValidationPipe,
   UsePipes,
+  Header,
+  UploadedFile,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -22,12 +24,15 @@ import {
   ApiCreatedResponse,
   ApiBasicAuth,
   ApiQuery,
+  ApiConsumes,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
-
 import { MentorTrackingDto } from "./dto/mentorTracking.dto";
 import { MentorTrackingService } from "src/adapters/hasura/mentorTracking.adapter";
-
+import { FileInterceptor } from "@nestjs/platform-express";
+import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
+import { diskStorage } from "multer";
+import { FeedbackCreateDto } from "./dto/feedback-create.dto";
 @ApiTags("Mentor Tracking")
 @Controller("mentortracking")
 export class MentorTrackingController {
@@ -81,19 +86,37 @@ export class MentorTrackingController {
   }
 
   @Put("feedback/:id")
+  @ApiConsumes("multipart/form-data")
   @ApiBasicAuth("access-token")
-  @ApiCreatedResponse({
-    description: "Mentor Tracking has been updated successfully.",
-  })
+  @ApiCreatedResponse({ description: "Group has been updated successfully." })
+  @UseInterceptors(
+    FileInterceptor("image", {
+      storage: diskStorage({
+        destination: process.env.IMAGEPATH,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    })
+  )
+  @ApiBody({ type: FeedbackCreateDto })
   @ApiForbiddenResponse({ description: "Forbidden" })
   @UseInterceptors(ClassSerializerInterceptor)
-  @ApiQuery({ name: "feedback", required: true })
   public async feedback(
     @Param("id") mentorTrackingId: string,
     @Req() request: Request,
-    @Query("feedback") feedback: string
+    @Body() feedbackCreateDto: FeedbackCreateDto,
+    @UploadedFile() image
   ) {
-    return await this.service.feedback(mentorTrackingId, request, feedback);
+    const response = {
+      image: image?.filename,
+    };
+    Object.assign(feedbackCreateDto, response);
+
+    return await this.service.feedback(
+      mentorTrackingId,
+      feedbackCreateDto,
+      request
+    );
   }
 
   @Post("/search")
