@@ -91,6 +91,25 @@ export class StudentService implements IServicelocator {
   }
 
   public async searchStudent(request: any, studentSearchDto: StudentSearchDto) {
+    let studentSearchData = studentSearchDto;
+
+    let searchData: any;
+    Object.keys(studentSearchData).forEach((e) => {
+      if (studentSearchData[e].studentId) {
+        searchData = {
+          filters: {
+            osid: {
+              eq: `${studentSearchData[e].studentId.eq}`,
+            },
+            ...studentSearchData.filters,
+          },
+        };
+
+        delete searchData.filters.studentId;
+      } else {
+        searchData = studentSearchData;
+      }
+    });
     return this.httpService
       .post(`${this.url}/search`, studentSearchDto, {
         headers: {
@@ -116,6 +135,7 @@ export class StudentService implements IServicelocator {
         })
       );
   }
+
   public async mappedResponse(result: any) {
     const studentResponse = result.map((item: any) => {
       const studentMapping = {

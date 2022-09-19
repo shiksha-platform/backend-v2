@@ -90,8 +90,28 @@ export class UserService implements IServicelocator {
     });
   }
   public async searchUser(request: any, teacherSearchDto: UserSearchDto) {
+    let userSearchData = teacherSearchDto;
+
+    let searchData: any;
+    Object.keys(userSearchData).forEach((e) => {
+      if (userSearchData[e].userId) {
+        searchData = {
+          filters: {
+            osid: {
+              eq: `${userSearchData[e].userId.eq}`,
+            },
+            ...userSearchData.filters,
+          },
+        };
+
+        delete searchData.filters.userId;
+      } else {
+        searchData = userSearchData;
+      }
+    });
+
     return this.httpService
-      .post(`${this.url}/search`, teacherSearchDto, {
+      .post(`${this.url}/search`, searchData, {
         headers: {
           Authorization: request.headers.authorization,
         },
@@ -102,7 +122,7 @@ export class UserService implements IServicelocator {
           const teacherResponse = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
-            message: "User found Successfully",
+            message: "Ok",
             data: teacherResponse,
           });
         }),

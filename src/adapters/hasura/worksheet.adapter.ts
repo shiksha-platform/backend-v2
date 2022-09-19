@@ -417,6 +417,7 @@ export class WorksheetService {
   public async sendWorksheet(
     studentIds: [string],
     teacherId: string,
+    templateId: string,
     link: string,
     subject: string,
     topic: string,
@@ -425,9 +426,9 @@ export class WorksheetService {
     var axios = require("axios");
     const teacherResponse = await axios.get(`${this.url}User/${teacherId}`);
     const teacher = teacherResponse.data;
-    const templateDetail = await axios.get(`${this.templateurl}${39}`);
-
+    const templateDetail = await axios.get(`${this.templateurl}${templateId}`);
     const templateData = templateDetail.data;
+
     var getSchool = {
       query: `query GetSchool($schoolId:uuid!) {
     school_by_pk(schoolId: $schoolId) {
@@ -456,7 +457,7 @@ export class WorksheetService {
       const student = await axios.get(`${this.url}Student/${studentId}`);
 
       const process = {
-        id: 39,
+        id: parseInt(templateId),
         data: {
           studentName:
             (student?.data?.firstName ? student?.data?.firstName : "") +

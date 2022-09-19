@@ -113,12 +113,14 @@ export class WorksheetController {
   @ApiForbiddenResponse({ description: "Forbidden" })
   @ApiQuery({ name: "studentIds", required: true })
   @ApiQuery({ name: "teacherId", required: true })
+  @ApiQuery({ name: "templateId", required: true })
   @ApiQuery({ name: "link", required: true })
   @ApiQuery({ name: "subject", required: true })
   @ApiQuery({ name: "topic", required: true })
   public async sendWorksheet(
     @Query("studentIds") studentIds: [string],
     @Query("teacherId") teacherId: string,
+    @Query("templateId") templateId: string,
     @Query("link") link: string,
     @Query("subject") subject: string,
     @Query("topic") topic: string,
@@ -129,6 +131,7 @@ export class WorksheetController {
     return this.service.sendWorksheet(
       studentIds,
       teacherId,
+      templateId,
       link,
       subject,
       topic,
