@@ -149,6 +149,11 @@ export class RoleService {
     });
     var data = {
       query: `query searchRole($limit:Int) {
+        role_aggregate {
+          aggregate {
+            count
+          }
+        }
   role(limit: $limit, where: {${query}}) {
     title
     roleId,
@@ -177,15 +182,19 @@ export class RoleService {
 
     let result = response.data.data.role;
     const roleData = await this.mappedResponse(result);
+    const count = response?.data?.data?.role_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: roleData,
     });
   }
+
   public async mappedResponse(result: any) {
     const roleResponse = result.map((item: any) => {
       const roleMapping = {
+        id: item?.roleId ? `${item.roleId}` : "",
         roleId: item?.roleId ? `${item.roleId}` : "",
         title: item?.title ? `${item.title}` : "",
         parentId: item?.parentId ? `${item.parentId}` : "",

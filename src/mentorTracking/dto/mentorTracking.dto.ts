@@ -5,6 +5,9 @@ import { VisitStatus } from "./visitStatus.enum";
 
 export class MentorTrackingDto {
   @Expose()
+  id: string;
+
+  @Expose()
   mentorTrackingId: string;
 
   @ApiProperty({})

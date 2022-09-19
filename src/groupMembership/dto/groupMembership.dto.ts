@@ -3,6 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class GroupMembershipDto {
   @Expose()
+  id: string;
+
+  @Expose()
   groupMembershipId: string;
 
   @ApiProperty()

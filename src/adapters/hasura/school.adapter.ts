@@ -182,6 +182,11 @@ export class SchoolHasuraService implements IServicelocator {
 
     var data = {
       query: `query SearchSchool($limit:Int, $offset:Int) {
+        school_aggregate {
+          aggregate {
+            count
+          }
+        }
             school(where:{ ${query}}, limit: $limit, offset: $offset,) {
                 address
                 block
@@ -230,15 +235,18 @@ export class SchoolHasuraService implements IServicelocator {
 
     let result = response.data.data.school;
     const schoolDto = await this.mappedResponse(result);
+    const count = response?.data?.data?.school_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: schoolDto,
     });
   }
   public async mappedResponse(result: any) {
     const schoolResponse = result.map((item: any) => {
       const schoolMapping = {
+        id: item?.schoolId ? `${item.schoolId}` : "",
         schoolId: item?.schoolId ? `${item.schoolId}` : "",
         schoolName: item?.schoolName ? `${item.schoolName}` : "",
         email: item?.email ? `${item.email}` : "",

@@ -114,7 +114,6 @@ export class HasuraGroupService implements IServicelocatorgroup {
 
   public async updateGroup(groupId: string, request: any, groupDto: GroupDto) {
     var axios = require("axios");
-    var axios = require("axios");
 
     let query = "";
     Object.keys(groupDto).forEach((e) => {
@@ -178,6 +177,11 @@ export class HasuraGroupService implements IServicelocatorgroup {
     });
     var data = {
       query: `query SearchGroup($filters:group_bool_exp,$limit:Int, $offset:Int) {
+        group_aggregate {
+          aggregate {
+            count
+          }
+        }
            group(where:$filters, limit: $limit, offset: $offset,) {
                 groupId
                 deactivationReason
@@ -217,9 +221,11 @@ export class HasuraGroupService implements IServicelocatorgroup {
 
     let result = response.data.data.group;
     const groupResponse = await this.mappedResponse(result);
+    const count = response?.data?.data?.group_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: groupResponse,
     });
   }
@@ -346,9 +352,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
       data: findMember,
     };
     const response = await axios(getMemberData);
-
     let groupData = response.data.data.groupmembership;
-
     const groupList = groupData.map((e: any) => {
       return e.group;
     });
@@ -467,6 +471,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
   public async mappedResponse(result: any) {
     const groupResponse = result.map((item: any) => {
       const groupMapping = {
+        id: item?.groupId ? `${item.groupId}` : "",
         groupId: item?.groupId ? `${item.groupId}` : "",
         schoolId: item?.schoolId ? `${item.schoolId}` : "",
         name: item?.name ? `${item.name}` : "",

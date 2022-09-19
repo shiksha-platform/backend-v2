@@ -282,7 +282,7 @@ export class QumlQuestionService implements IServicelocator {
       let subjects = Array;
       var config = {
         method: "get",
-        url: "https://diksha.gov.in/api/framework/v1/read/mh_k-12_1?categories=board,gradeLevel,medium,class,subject",
+        url: "https://diksha.gov.in/api/framework/v1/read/hr_k-12?categories=board,gradeLevel,medium,class,subject",
         headers: {
           "Content-Type": "application/json",
         },
@@ -310,7 +310,6 @@ export class QumlQuestionService implements IServicelocator {
   public async getTopicsList(subject: string) {
     try {
       var axios = require("axios");
-      let topics = Array;
       var data = {
         request: {
           filters: {
@@ -335,10 +334,11 @@ export class QumlQuestionService implements IServicelocator {
       const topicList = categories.map((e: any) => {
         return e.se_topics[0];
       });
+      const subjectTopicList = [...new Set(topicList)];
       return new SuccessResponse({
         statusCode: 200,
         message: "ok",
-        data: topicList,
+        data: subjectTopicList,
       });
     } catch (e) {
       return `${e}`;

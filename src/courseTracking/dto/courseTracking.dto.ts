@@ -3,6 +3,9 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CourseTrackingDto {
   @Expose()
+  id: string;
+
+  @Expose()
   courseTrackingId: string;
 
   @ApiProperty({})

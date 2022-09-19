@@ -10,6 +10,9 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class ConfigDto {
   @Expose()
+  id: string;
+
+  @Expose()
   configId: string;
 
   @ApiProperty({

@@ -3,6 +3,9 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AttendanceDto {
   @Expose()
+  id: string;
+
+  @Expose()
   attendanceId: string;
 
   @ApiProperty({
