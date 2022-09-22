@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ prod ]
 
 jobs:
   build:
@@ -36,8 +36,8 @@ jobs:
       name: Deploy Stack
       uses: appleboy/ssh-action@master
       with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.HOST_PROD }}
+          username: ${{ secrets.USERNAME_PROD }}
           key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
@@ -48,4 +48,4 @@ jobs:
 
               docker pull ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
          
-              docker run -d --name ${{ secrets.CONTAINER_NAME }} --network ${{ secrets.NETWORK }} -p ${{ secrets.CONTAINER_PORT }} -t ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
+              docker run -d --name ${{ secrets.CONTAINER_NAME }} --network ${{ secrets.NETWORK_PROD }} -p ${{ secrets.CONTAINER_PORT }} -t ${{ secrets.CONTAINER_REGISTRY }}:${{ github.sha }}
