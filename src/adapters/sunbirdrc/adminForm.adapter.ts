@@ -8,8 +8,9 @@ import { SuccessResponse } from "src/success-response";
 import { catchError } from "rxjs/operators";
 import { ErrorResponse } from "src/error-response";
 import { AdminFormSearchDto } from "src/adminForm/dto/adminForm-search.dto";
+import { IServicelocator } from "../adminformservicelocator";
 @Injectable()
-export class AdminFormService {
+export class SunbirdAdminFormService implements IServicelocator {
   constructor(private httpService: HttpService) {}
   url = `${process.env.BASEAPIURL}/AdminForm`;
 
