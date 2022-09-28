@@ -14,7 +14,7 @@ export class HasuraAdminFormService implements IServicelocator {
     var axios = require("axios");
 
     var data = {
-      query: `query GetHoliday($adminFormId:uuid!) {
+      query: `query GetAdminForm($adminFormId:uuid!) {
         adminform_by_pk(adminFormId: $adminFormId) {
             moduleId
             formSchema

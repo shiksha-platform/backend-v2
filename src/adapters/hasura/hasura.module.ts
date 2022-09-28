@@ -8,6 +8,7 @@ import { HasuraGroupService } from "./group.adapter";
 import { HasuraHolidayService } from "./holiday.adapter";
 import { HasuraLikeService } from "./like.adapter";
 import { SchoolHasuraService } from "./school.adapter";
+import { HasuraStudentService } from "./student.adapter";
 
 @Module({
   imports: [HttpModule],
@@ -20,6 +21,7 @@ import { SchoolHasuraService } from "./school.adapter";
     HasuraLikeService,
     HasuraHolidayService,
     HasuraAdminFormService,
+    HasuraStudentService,
   ],
   exports: [
     AttendanceHasuraService,
@@ -30,6 +32,7 @@ import { SchoolHasuraService } from "./school.adapter";
     HasuraLikeService,
     HasuraHolidayService,
     HasuraAdminFormService,
+    HasuraStudentService,
   ],
 })
 export class HasuraModule {}

@@ -262,18 +262,84 @@ export class HasuraGroupService implements IServicelocatorgroup {
       let userIds = result.map((e: any) => {
         return e.userId;
       });
+
       if (result[0].role == "Student") {
         for (let value of userIds) {
-          let studentSearch = {
-            method: "get",
-            url: `${this.url}/Student/${value}`,
+          var data = {
+            query: `query GetStudent($studentId:uuid!) {
+              student_by_pk(studentId: $studentId) {
+                  aadhaar
+                  birthDate
+                  block
+                  bloodGroup
+                  bpl
+                  created_at
+                  deactivationReason
+                  district
+                  fatherEmail
+                  fatherFirstName
+                  fatherLastName
+                  fatherMiddleName
+                  fatherPhoneNumber
+                  firstName
+                  gender
+                  groupId
+                  guardianEmail
+                  guardianFirstName
+                  guardianLastName
+                  guardianMiddleName
+                  guardianPhoneNumber
+                  height
+                  homeless
+                  image
+                  iscwsn
+                  lastName
+                  locationId
+                  metaData
+                  middleName
+                  migrant
+                  motherEmail
+                  motherFirstName
+                  motherLastName
+                  motherMiddleName
+                  motherPhoneNumber
+                  pincode
+                  refId1
+                  refId2
+                  religion
+                  schoolId
+                  singleGirl
+                  socialCategory
+                  stateId
+                  status
+                  studentAddress
+                  studentEmail
+                  studentId
+                  studentPhoneNumber
+                  updated_at
+                  village
+                  weight
+              }
+            }
+            `,
+            variables: { studentId: value },
+          };
+
+          var studentSearch = {
+            method: "post",
+            url: process.env.REGISTRYHASURA,
             headers: {
-              Authorization: request.headers.authorization,
+              "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+              "Content-Type": "application/json",
             },
+            data: data,
           };
 
           const response = await axios(studentSearch);
-          let responseData = await this.StudentMappedResponse([response.data]);
+
+          let responseData = await this.StudentMappedResponse([
+            response.data.data.student_by_pk,
+          ]);
           let studentData = responseData[0];
 
           userData.push(studentData);
@@ -430,17 +496,81 @@ export class HasuraGroupService implements IServicelocatorgroup {
     });
     for (let userId of userIds) {
       if (role == "Student") {
-        let studentSearch = {
-          method: "get",
-          url: `${this.url}/Student/${userId}`,
+        var data = {
+          query: `query GetStudent($studentId:uuid!) {
+            student_by_pk(studentId: $studentId) {
+                aadhaar
+                birthDate
+                block
+                bloodGroup
+                bpl
+                created_at
+                deactivationReason
+                district
+                fatherEmail
+                fatherFirstName
+                fatherLastName
+                fatherMiddleName
+                fatherPhoneNumber
+                firstName
+                gender
+                groupId
+                guardianEmail
+                guardianFirstName
+                guardianLastName
+                guardianMiddleName
+                guardianPhoneNumber
+                height
+                homeless
+                image
+                iscwsn
+                lastName
+                locationId
+                metaData
+                middleName
+                migrant
+                motherEmail
+                motherFirstName
+                motherLastName
+                motherMiddleName
+                motherPhoneNumber
+                pincode
+                refId1
+                refId2
+                religion
+                schoolId
+                singleGirl
+                socialCategory
+                stateId
+                status
+                studentAddress
+                studentEmail
+                studentId
+                studentPhoneNumber
+                updated_at
+                village
+                weight
+            }
+          }
+          `,
+          variables: { studentId: userId },
+        };
+
+        var studentSearch = {
+          method: "post",
+          url: process.env.REGISTRYHASURA,
           headers: {
-            Authorization: request.headers.authorization,
+            "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+            "Content-Type": "application/json",
           },
+          data: data,
         };
 
         const response = await axios(studentSearch);
 
-        let responseData = await this.StudentMappedResponse([response.data]);
+        let responseData = await this.StudentMappedResponse([
+          response.data.data.student_by_pk,
+        ]);
         let studentData = responseData[0];
 
         userData.push(studentData);
@@ -501,7 +631,7 @@ export class HasuraGroupService implements IServicelocatorgroup {
   public async StudentMappedResponse(result: any) {
     const studentResponse = result.map((item: any) => {
       const studentMapping = {
-        studentId: item?.osid ? `${item.osid}` : "",
+        studentId: item?.studentId ? `${item.studentId}` : "",
         refId1: item?.admissionNo ? `${item.admissionNo}` : "",
         refId2: item?.refId2 ? `${item.refId2}` : "",
         aadhaar: item?.aadhaar ? `${item.aadhaar}` : "",
