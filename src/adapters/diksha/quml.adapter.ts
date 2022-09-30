@@ -176,6 +176,7 @@ export class QumlQuestionService implements IServicelocator {
         method: "get",
         url: `${this.url}/question/v1/read/${value}?fields=body,qType,answer,responseDeclaration,name,solutions,editorState,media,name,board,medium,gradeLevel,subject,topic,learningOutcome,marks,maxScore,bloomsLevel,compatibilityLevel,language,source`,
       };
+
       const response = await axios(config);
       const data = response?.data;
       const final = data.result.question;
@@ -309,7 +310,6 @@ export class QumlQuestionService implements IServicelocator {
   public async getTopicsList(subject: string) {
     try {
       var axios = require("axios");
-      let topics = Array;
       var data = {
         request: {
           filters: {
@@ -334,10 +334,11 @@ export class QumlQuestionService implements IServicelocator {
       const topicList = categories.map((e: any) => {
         return e.se_topics[0];
       });
+      const subjectTopicList = [...new Set(topicList)];
       return new SuccessResponse({
         statusCode: 200,
         message: "ok",
-        data: topicList,
+        data: subjectTopicList,
       });
     } catch (e) {
       return `${e}`;
@@ -354,6 +355,7 @@ export class QumlQuestionService implements IServicelocator {
     const response = await axios(config);
 
     const data = response?.data;
+
     const final = data.result.question;
 
     const mappedResponse = {

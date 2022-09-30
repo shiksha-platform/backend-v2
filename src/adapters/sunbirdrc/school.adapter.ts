@@ -21,14 +21,13 @@ export class SchoolService implements IServicelocator {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
+        map(async (axiosResponse: AxiosResponse) => {
           const data = axiosResponse.data;
-          const schoolDto = new SchoolDto(data);
-
+          const schoolDto = await this.mappedResponse(data);
           return new SuccessResponse({
             statusCode: 200,
             message: " Ok.",
-            data: schoolDto,
+            data: schoolDto[0],
           });
         }),
         catchError((e) => {
@@ -94,14 +93,13 @@ export class SchoolService implements IServicelocator {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new SchoolDto(item)
-          );
+        map(async (response) => {
+          const responsedata = response.data;
+          const schoolDto = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
-            data: responsedata,
+            data: schoolDto,
           });
         }),
         catchError((e) => {
@@ -112,5 +110,47 @@ export class SchoolService implements IServicelocator {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+
+  public async mappedResponse(result: any) {
+    const schoolResponse = result.map((item: any) => {
+      const schoolMapping = {
+        schoolId: item?.osid ? `${item.osid}` : "",
+        schoolName: item?.schoolName ? `${item.schoolName}` : "",
+        email: item?.email ? `${item.email}` : "",
+        udise: item?.udise ? `${item.udise}` : "",
+        mediumOfInstruction: item?.mediumOfInstruction
+          ? item.mediumOfInstruction
+          : "",
+        phoneNumber: item?.phoneNumber ? item.phoneNumber : "",
+        address: item?.address ? item.address : "",
+        schoolType: item?.schoolType ? `${item.schoolType}` : "",
+        website: item?.website ? `${item.website}` : "",
+        headMaster: item?.headMaster ? `${item.headMaster}` : "",
+        board: item?.board ? `${item.board}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        cluster: item?.cluster ? `${item.cluster}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        enrollCount: item?.enrollCount ? `${item.enrollCount}` : "",
+        status: item?.status ? `${item.status}` : "",
+        latitude: item?.latitude ? item.latitude : "",
+        longitude: item?.longitude ? item.longitude : "",
+        metaData: item?.metaData ? item.metaData : [],
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new SchoolDto(schoolMapping);
+    });
+
+    return schoolResponse;
   }
 }

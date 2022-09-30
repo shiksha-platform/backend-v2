@@ -13,7 +13,7 @@ export class HasuraHolidayService implements IServicelocator {
   public async createHoliday(request: any, holidayDto: HolidayDto) {
     var axios = require("axios");
 
-    const holidaySchema = new HolidayDto({});
+    const holidaySchema = new HolidayDto(holidayDto);
     let query = "";
     Object.keys(holidayDto).forEach((e) => {
       if (
@@ -63,7 +63,7 @@ export class HasuraHolidayService implements IServicelocator {
   public async updateHoliday(id: string, request: any, holidayDto: HolidayDto) {
     var axios = require("axios");
 
-    const holidaySchema = new HolidayDto({});
+    const holidaySchema = new HolidayDto(holidayDto);
     let query = "";
     Object.keys(holidayDto).forEach((e) => {
       if (
@@ -141,12 +141,12 @@ export class HasuraHolidayService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = new HolidayDto(response.data.data.holiday_by_pk);
-
+    let result = [response.data.data.holiday_by_pk];
+    const holidayData = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: holidayData[0],
     });
   }
 
@@ -170,6 +170,11 @@ export class HasuraHolidayService implements IServicelocator {
     });
     var data = {
       query: `query SearchHoliday($filters:holiday_bool_exp,$limit:Int, $offset:Int) {
+        holiday_aggregate {
+          aggregate {
+            count
+          }
+        }
           holiday(where:$filters, limit: $limit, offset: $offset,) {
             context
             contextId
@@ -199,14 +204,14 @@ export class HasuraHolidayService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = response.data.data.holiday.map(
-      (item: any) => new HolidayDto(item)
-    );
-
+    let result = response.data.data.holiday;
+    const holidayData = await this.mappedResponse(result);
+    const count = response?.data?.data?.holiday_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      totalCount: count,
+      data: holidayData,
     });
   }
 
@@ -222,6 +227,11 @@ export class HasuraHolidayService implements IServicelocator {
 
     var data = {
       query: `query searchHoliday {
+       holiday_aggregate {
+          aggregate {
+            count
+          }
+        }
         holiday( where: {${query}}) {
         context
         contextId
@@ -248,14 +258,33 @@ export class HasuraHolidayService implements IServicelocator {
 
     const response = await axios(config);
 
-    let result = response.data.data.holiday.map(
-      (item: any) => new HolidayDto(item)
-    );
-
+    let result = response.data.data.holiday;
+    const holidayData = await this.mappedResponse(result);
+    const count = response?.data?.data?.holiday_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      totalCount: count,
+      data: holidayData,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const holidayResponse = result.map((item: any) => {
+      const holidayMapping = {
+        id: item?.holidayId ? `${item.holidayId}` : "",
+        holidayId: item?.holidayId ? `${item.holidayId}` : "",
+        date: item?.remark ? item.remark : "",
+        remark: item?.remark ? `${item.remark}` : "",
+        year: item?.year ? item.year : "",
+        context: item?.context ? `${item.context}` : "",
+        contextId: item?.contextId ? `${item.contextId}` : "",
+        createdAt: item?.created_at ? `${item.created_at}` : "",
+        updatedAt: item?.updated_at ? `${item.updated_at}` : "",
+      };
+      return new HolidayDto(holidayMapping);
+    });
+
+    return holidayResponse;
   }
 }

@@ -43,14 +43,12 @@ export class GroupMembershipService {
 
     const response = await axios(config);
 
-    let result = new GroupMembershipDto(
-      response?.data?.data?.groupmembership_by_pk
-    );
-
+    let result = [response?.data?.data?.groupmembership_by_pk];
+    let groupMembershipResponse = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: groupMembershipResponse[0],
     });
   }
 
@@ -177,6 +175,11 @@ export class GroupMembershipService {
     });
     var data = {
       query: `query SearchGroupMembership($filters:groupmembership_bool_exp,$limit:Int, $offset:Int) {
+       groupmembership_aggregate {
+          aggregate {
+            count
+          }
+        }
            groupmembership(where:$filters, limit: $limit, offset: $offset,) {
             created_at
             groupId
@@ -205,14 +208,35 @@ export class GroupMembershipService {
 
     const response = await axios(config);
 
-    let result = response.data.data.groupmembership.map(
-      (item: any) => new GroupMembershipDto(item)
-    );
-
+    let result = response.data.data.groupmembership;
+    let groupMembershipResponse = await this.mappedResponse(result);
+    const count =
+      response?.data?.data?.groupmembership_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      totalCount: count,
+      data: groupMembershipResponse,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const groupMembershipResponse = result.map((obj: any) => {
+      const groupMembershipMapping = {
+        id: obj?.groupMembershipId ? `${obj.groupMembershipId}` : "",
+        groupMembershipId: obj?.groupMembershipId
+          ? `${obj.groupMembershipId}`
+          : "",
+        groupId: obj?.groupId ? `${obj.groupId}` : "",
+        schoolId: obj?.schoolId ? `${obj.schoolId}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        role: obj?.role ? `${obj.role}` : "",
+        created_at: obj?.created_at ? `${obj.created_at}` : "",
+        updated_at: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new GroupMembershipDto(groupMembershipMapping);
+    });
+
+    return groupMembershipResponse;
   }
 }

@@ -54,10 +54,9 @@ export class TrackAssessmentService {
 
       const response = await axios(config);
 
-      let result = response.data.data.trackassessment.map(
-        (item: any) => new TrackAssessmentDto(item)
+      const result = await this.mappedResponse(
+        response.data.data.trackassessment
       );
-
       return new SuccessResponse({
         statusCode: 200,
         message: "Ok.",
@@ -67,6 +66,7 @@ export class TrackAssessmentService {
       return `${e}`;
     }
   }
+
   public async createAssessment(
     request: any,
     assessmentDto: TrackAssessmentDto
@@ -204,9 +204,9 @@ export class TrackAssessmentService {
       subject,
     };
 
-    let newDataObject = "";
+    let query = "";
     if (searchData.fromDate && searchData.toDate) {
-      newDataObject += `date:{_gte: "${searchData.fromDate}"}, _and: {date: {_lte: "${searchData.toDate}"}} `;
+      query += `date:{_gte: "${searchData.fromDate}"}, _and: {date: {_lte: "${searchData.toDate}"}} `;
     }
     const objectKeys = Object.keys(searchData);
     objectKeys.forEach((e, index) => {
@@ -215,32 +215,37 @@ export class TrackAssessmentService {
         searchData[e] != "" &&
         !["fromDate", "toDate"].includes(e)
       ) {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        query += `${e}:{_eq:"${searchData[e]}"}`;
         if (index !== objectKeys.length - 1) {
-          newDataObject += " ";
+          query += " ";
         }
       }
     });
 
     var data = {
       query: `query searchTrackAssessment($offset:Int,$limit:Int) {
-  trackassessment(limit: $limit, offset: $offset, where: {${newDataObject}}) {
-    answersheet
-    filter
-    created_at
-    updated_at
-  trackAssessmentId
-    questions
-    score
-    totalScore
-    source
-    studentId
-    teacherId
-    groupId
-    subject
-    date
-    type
-    status
+        trackassessment_aggregate {
+          aggregate {
+            count
+          }
+        }
+  trackassessment(limit: $limit, offset: $offset, where: {${query}}) {
+        answersheet
+        filter
+        created_at
+        updated_at
+      trackAssessmentId
+        questions
+        score
+        totalScore
+        source
+        studentId
+        teacherId
+        groupId
+        subject
+        date
+        type
+        status
   }
 }`,
       variables: {
@@ -261,14 +266,45 @@ export class TrackAssessmentService {
 
     const response = await axios(config);
 
-    let result = response.data.data.trackassessment.map(
-      (item: any) => new TrackAssessmentDto(item)
+    const result = await this.mappedResponse(
+      response.data.data.trackassessment
     );
-
+    const count =
+      response?.data?.data?.trackassessment_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: result,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const trackAssessmentResponse = result.map((obj: any) => {
+      const trackAssessmentMapping = {
+        id: obj?.trackAssessmentId ? `${obj.trackAssessmentId}` : "",
+        trackAssessmentId: obj?.trackAssessmentId
+          ? `${obj.trackAssessmentId}`
+          : "",
+        filter: obj?.filter ? `${obj.filter}` : "",
+        type: obj?.type ? `${obj.type}` : "",
+        questions: obj?.questions ? obj.questions : "",
+        source: obj?.source ? `${obj.source}` : "",
+        answersheet: obj?.answersheet ? `${obj.answersheet}` : "",
+        score: obj?.score ? `${obj.score}` : "",
+        totalScore: obj?.totalScore ? `${obj.totalScore}` : "",
+        studentId: obj?.studentId ? `${obj.studentId}` : "",
+        teacherId: obj?.teacherId ? `${obj.teacherId}` : "",
+        groupId: obj?.groupId ? `${obj.groupId}` : "",
+        subject: obj?.subject ? `${obj.subject}` : "",
+        date: obj?.date ? `${obj.date}` : "",
+        status: obj?.status ? `${obj.status}` : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new TrackAssessmentDto(trackAssessmentMapping);
+    });
+
+    return trackAssessmentResponse;
   }
 }

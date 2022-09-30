@@ -34,12 +34,12 @@ export class RoleService {
 
     const response = await axios(config);
 
-    let result = response.data.data.role.map((item: any) => new RoleDto(item));
-
+    let result = response.data.data.role;
+    const roleData = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      data: roleData,
     });
   }
 
@@ -47,7 +47,7 @@ export class RoleService {
     var axios = require("axios");
     var data = {
       query: `mutation createRole($title: String, $parentId: String, $status: String) {
-      insert_role_one(object: {title: $title, parentId: $parentId}, status: $status) {
+      insert_role_one(object: {title: $title, parentId: $parentId, status: $status}) {
         roleId
       }
     }`,
@@ -69,6 +69,7 @@ export class RoleService {
     };
 
     const response = await axios(config);
+
     const result = response.data.data.insert_role_one;
     return new SuccessResponse({
       statusCode: 200,
@@ -86,16 +87,16 @@ export class RoleService {
       status: roleDto.status,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(updateRoleData).forEach((e) => {
+    let query = "";
+    Object.keys(updateRoleData).forEach((e) => {
       if (updateRoleData[e] && updateRoleData[e] != "") {
-        newDataObject += `${e}:${updateRoleData[e]} `;
+        query += `${e}:${updateRoleData[e]} `;
       }
     });
 
     var data = {
       query: `mutation updateRole($roleId: uuid, $title: String, $parentId: String, $status: String) {
-      update_role(where: {roleId: {_eq: $roleId}}, _set: {${newDataObject}}) {
+      update_role(where: {roleId: {_eq: $roleId}}, _set: {${query}}) {
         affected_rows
       }
     }`,
@@ -140,15 +141,20 @@ export class RoleService {
       status,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
+    let query = "";
+    Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        query += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
     var data = {
       query: `query searchRole($limit:Int) {
-  role(limit: $limit, where: {${newDataObject}}) {
+        role_aggregate {
+          aggregate {
+            count
+          }
+        }
+  role(limit: $limit, where: {${query}}) {
     title
     roleId,
     status,
@@ -174,12 +180,31 @@ export class RoleService {
 
     const response = await axios(config);
 
-    let result = response.data.data.role.map((item: any) => new RoleDto(item));
-
+    let result = response.data.data.role;
+    const roleData = await this.mappedResponse(result);
+    const count = response?.data?.data?.role_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
-      data: result,
+      totalCount: count,
+      data: roleData,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const roleResponse = result.map((item: any) => {
+      const roleMapping = {
+        id: item?.roleId ? `${item.roleId}` : "",
+        roleId: item?.roleId ? `${item.roleId}` : "",
+        title: item?.title ? `${item.title}` : "",
+        parentId: item?.parentId ? `${item.parentId}` : "",
+        status: item?.status ? `${item.status}` : "",
+        createdAt: item?.created_at ? `${item.created_at}` : "",
+        updatedAt: item?.updated_at ? `${item.updated_at}` : "",
+      };
+      return new RoleDto(roleMapping);
+    });
+
+    return roleResponse;
   }
 }

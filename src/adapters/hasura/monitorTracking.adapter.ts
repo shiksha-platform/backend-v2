@@ -39,31 +39,29 @@ export class MonitorTrackingService {
 
     const response = await axios(config);
 
-    let result = response.data.data.monitortracking.map(
-      (item: any) => new MonitorTrackingDto(item)
-    );
-
+    let result = await this.mappedResponse(response.data.data.monitortracking);
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
       data: result,
     });
   }
+
   public async createMonitorTracking(
     request: any,
     monitorTrackingDto: MonitorTrackingDto
   ) {
     var axios = require("axios");
 
-    let newDataObject = "";
+    let query = "";
     Object.keys(monitorTrackingDto).forEach((e) => {
       if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
-        newDataObject += `${e}: "${monitorTrackingDto[e]}", `;
+        query += `${e}: "${monitorTrackingDto[e]}", `;
       }
     });
     var data = {
       query: `mutation CreateMonitorTracking {
-        insert_monitortracking_one(object: {${newDataObject}}) {
+        insert_monitortracking_one(object: {${query}}) {
           monitorTrackingId
         }
       }`,
@@ -96,16 +94,16 @@ export class MonitorTrackingService {
   ) {
     var axios = require("axios");
 
-    let newDataObject = "";
+    let query = "";
     Object.keys(monitorTrackingDto).forEach((e) => {
       if (monitorTrackingDto[e] && monitorTrackingDto[e] != "") {
-        newDataObject += `${e}:"${monitorTrackingDto[e]}"`;
+        query += `${e}:"${monitorTrackingDto[e]}"`;
       }
     });
 
     var data = {
       query: `mutation UpdatedMonitorTracking($monitorTrackingId:uuid) {
-        update_monitortracking(where: {monitorTrackingId: {_eq: $monitorTrackingId}}, _set: {${newDataObject}}) {
+        update_monitortracking(where: {monitorTrackingId: {_eq: $monitorTrackingId}}, _set: {${query}}) {
           affected_rows
         }
 }`,
@@ -160,16 +158,21 @@ export class MonitorTrackingService {
       visitDate,
     };
 
-    let newDataObject = "";
+    let query = "";
     Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        query += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
 
     var data = {
       query: `query SearchMonitorTracking($offset:Int,$limit:Int) {
-            monitortracking(where:{ ${newDataObject}}, offset: $offset,limit: $limit) {
+            monitortracking_aggregate {
+              aggregate {
+                count
+              }
+            }
+            monitortracking(where:{ ${query}}, offset: $offset,limit: $limit) {
               created_at
               feedback
               monitorTrackingId
@@ -197,14 +200,42 @@ export class MonitorTrackingService {
     };
 
     const response = await axios(config);
-    let result = response.data.data.monitortracking.map(
-      (item: any) => new MonitorTrackingDto(item)
-    );
 
+    let result = await this.mappedResponse(response.data.data.monitortracking);
+    const count =
+      response?.data?.data?.monitortracking_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: result,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const monitorResponse = result.map((obj: any) => {
+      const monitorMapping = {
+        id: obj?.monitorTrackingId ? `${obj.monitorTrackingId}` : "",
+        monitorTrackingId: obj?.monitorTrackingId
+          ? `${obj.monitorTrackingId}`
+          : "",
+        monitorId: obj?.monitorId ? `${obj.monitorId}` : "",
+        schoolId: obj?.schoolId ? `${obj.schoolId}` : "",
+        groupId: obj?.groupId ? `${obj.groupId}` : "",
+        scheduleVisitDate: obj?.scheduleVisitDate
+          ? `${obj.scheduleVisitDate}`
+          : "",
+        visitDate: obj?.visitDate ? `${obj.visitDate}` : "",
+        feedback: obj?.feedback ? `${obj.feedback}` : "",
+        status: obj?.status ? `${obj.status}` : "",
+
+        lastVisited: obj?.lastVisited ? `${obj.lastVisited}` : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new MonitorTrackingDto(monitorMapping);
+    });
+
+    return monitorResponse;
   }
 }

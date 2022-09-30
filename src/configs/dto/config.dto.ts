@@ -10,6 +10,9 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class ConfigDto {
   @Expose()
+  id: string;
+
+  @Expose()
   configId: string;
 
   @ApiProperty({
@@ -80,16 +83,6 @@ export class ConfigDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.configId = obj?.configId ? `${obj.configId}` : "";
-    this.module = obj?.module ? `${obj.module}` : "";
-    this.key = obj?.key ? `${obj.key}` : "";
-    this.value = obj?.value;
-    this.context = obj?.context ? `${obj.context}` : "";
-    this.contextId = obj?.contextId ? `${obj.contextId}` : "";
-    this.canOverride = obj?.canOverride;
-    this.overrideBy = obj?.overrideBy ? `${obj.overrideBy}` : "";
-    this.isPublic = obj?.isPublic;
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

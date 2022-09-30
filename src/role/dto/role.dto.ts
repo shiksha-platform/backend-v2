@@ -3,6 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class RoleDto {
   @Expose()
+  id: string;
+
+  @Expose()
   roleId: string;
 
   @ApiProperty({})
@@ -30,11 +33,6 @@ export class RoleDto {
   updatedBy: string;
 
   constructor(obj: any) {
-    this.roleId = obj?.roleId ? `${obj.roleId}` : "";
-    this.title = obj?.title ? `${obj.title}` : "";
-    this.parentId = obj?.parentId ? `${obj.parentId}` : "";
-    this.status = obj?.status ? `${obj.status}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

@@ -13,6 +13,8 @@ import {
   Query,
   ValidationPipe,
   UsePipes,
+  Header,
+  UploadedFile,
 } from "@nestjs/common";
 import {
   ApiTags,
@@ -22,12 +24,15 @@ import {
   ApiCreatedResponse,
   ApiBasicAuth,
   ApiQuery,
+  ApiConsumes,
 } from "@nestjs/swagger";
 import { Request } from "@nestjs/common";
-
 import { MentorTrackingDto } from "./dto/mentorTracking.dto";
 import { MentorTrackingService } from "src/adapters/hasura/mentorTracking.adapter";
-
+import { FileInterceptor } from "@nestjs/platform-express";
+import { editFileName, imageFileFilter } from "./utils/file-upload.utils";
+import { diskStorage } from "multer";
+import { FeedbackCreateDto } from "./dto/feedback-create.dto";
 @ApiTags("Mentor Tracking")
 @Controller("mentortracking")
 export class MentorTrackingController {
@@ -80,6 +85,40 @@ export class MentorTrackingController {
     );
   }
 
+  @Put("feedback/:id")
+  @ApiConsumes("multipart/form-data")
+  @ApiBasicAuth("access-token")
+  @ApiCreatedResponse({ description: "Group has been updated successfully." })
+  @UseInterceptors(
+    FileInterceptor("image", {
+      storage: diskStorage({
+        destination: process.env.IMAGEPATH,
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    })
+  )
+  @ApiBody({ type: FeedbackCreateDto })
+  @ApiForbiddenResponse({ description: "Forbidden" })
+  @UseInterceptors(ClassSerializerInterceptor)
+  public async feedback(
+    @Param("id") mentorTrackingId: string,
+    @Req() request: Request,
+    @Body() feedbackCreateDto: FeedbackCreateDto,
+    @UploadedFile() image
+  ) {
+    const response = {
+      image: image?.filename,
+    };
+    Object.assign(feedbackCreateDto, response);
+
+    return await this.service.feedback(
+      mentorTrackingId,
+      feedbackCreateDto,
+      request
+    );
+  }
+
   @Post("/search")
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBasicAuth("access-token")
@@ -93,6 +132,7 @@ export class MentorTrackingController {
   @ApiQuery({ name: "scheduleVisitDate", required: false })
   @ApiQuery({ name: "visitDate", required: false })
   @ApiQuery({ name: "page", required: false })
+  @ApiQuery({ name: "status", required: false })
   public async searchMentorTracking(
     @Query("limit") limit: string,
     @Query("mentorTrackingId") mentorTrackingId: string,
@@ -102,6 +142,7 @@ export class MentorTrackingController {
     @Query("scheduleVisitDate") scheduleVisitDate: Date,
     @Query("visitDate") visitDate: Date,
     @Query("page") page: number,
+    @Query("status") status: string,
     @Req() request: Request
   ) {
     return this.service.searchMentorTracking(
@@ -113,6 +154,7 @@ export class MentorTrackingController {
       scheduleVisitDate,
       visitDate,
       page,
+      status,
       request
     );
   }

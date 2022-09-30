@@ -44,9 +44,7 @@ export class CourseTrackingService {
 
     const response = await axios(config);
 
-    let result = response.data.data.coursetracking.map(
-      (item: any) => new CourseTrackingDto(item)
-    );
+    let result = await this.mappedResponse(response.data.data.coursetracking);
 
     return new SuccessResponse({
       statusCode: 200,
@@ -132,20 +130,20 @@ export class CourseTrackingService {
       source: source,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(updateData).forEach((e) => {
+    let query = "";
+    Object.keys(updateData).forEach((e) => {
       if (updateData[e] && updateData[e] != "") {
         if (e != "contentIds") {
-          newDataObject += `${e}: "${updateData[e]}", `;
+          query += `${e}: "${updateData[e]}", `;
         } else {
-          newDataObject += `${e}: ${updateData[e]}, `;
+          query += `${e}: ${updateData[e]}, `;
         }
       }
     });
 
     var data = {
       query: `mutation CreateCourseTracking($courseTrackingId:uuid) {
-        update_coursetracking(where: {courseTrackingId: {_eq: $courseTrackingId}}, _set: {${newDataObject}}) {
+        update_coursetracking(where: {courseTrackingId: {_eq: $courseTrackingId}}, _set: {${query}}) {
             affected_rows
       }
     }`,
@@ -196,16 +194,21 @@ export class CourseTrackingService {
       source,
     };
 
-    let newDataObject = "";
-    const newData = Object.keys(searchData).forEach((e) => {
+    let query = "";
+    Object.keys(searchData).forEach((e) => {
       if (searchData[e] && searchData[e] != "") {
-        newDataObject += `${e}:{_eq:"${searchData[e]}"}`;
+        query += `${e}:{_eq:"${searchData[e]}"}`;
       }
     });
 
     var data = {
       query: `query searchCourseTracking($offset:Int,$limit:Int) {
-  coursetracking(limit: $limit, offset: $offset, where: {${newDataObject}}) {
+        coursetracking_aggregate {
+          aggregate {
+            count
+          }
+        }
+  coursetracking(limit: $limit, offset: $offset, where: {${query}}) {
     contentIds
     certificate
     courseId
@@ -241,15 +244,41 @@ export class CourseTrackingService {
     let result = [];
 
     if (response?.data?.data?.coursetracking) {
-      result = response.data.data.coursetracking.map(
-        (item: any) => new CourseTrackingDto(item)
-      );
+      result = await this.mappedResponse(response.data.data.coursetracking);
     }
-
+    const count =
+      response?.data?.data?.coursetracking_aggregate?.aggregate?.count;
     return new SuccessResponse({
       statusCode: 200,
       message: "Ok.",
+      totalCount: count,
       data: result,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const courseResponse = result.map((obj: any) => {
+      const courseMapping = {
+        id: obj?.courseTrackingId ? `${obj.courseTrackingId}` : "",
+        courseTrackingId: obj?.courseTrackingId
+          ? `${obj.courseTrackingId}`
+          : "",
+        courseId: obj?.courseId ? `${obj.courseId}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        progressDetail: obj?.progressDetail ? obj.progressDetail : "",
+        contentIds: obj?.contentIds ? obj.contentIds : [],
+        startTime: obj?.startTime ? `${obj.startTime}` : "",
+        endTime: obj?.endTime ? `${obj.endTime}` : "",
+        certificate: obj?.certificate ? `${obj.certificate}` : "",
+        status: obj?.status ? `${obj.status}` : "",
+        source: obj?.source ? `${obj.source}` : "",
+        date: obj?.date ? `${obj.date}` : "",
+        createdAt: obj?.created_at ? `${obj.created_at}` : "",
+        updatedAt: obj?.updated_at ? `${obj.updated_at}` : "",
+      };
+      return new CourseTrackingDto(courseMapping);
+    });
+
+    return courseResponse;
   }
 }

@@ -21,14 +21,14 @@ export class AdminFormService {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let data = axiosResponse.data;
+        map(async (axiosResponse: AxiosResponse) => {
+          let data = [axiosResponse.data];
 
-          const adminFormDto = new AdminFormDto(data);
+          const adminFormDto = await this.mappedResponse(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: adminFormDto,
+            data: adminFormDto[0],
           });
         }),
         catchError((e) => {
@@ -40,6 +40,7 @@ export class AdminFormService {
         })
       );
   }
+
   public async createAdminForm(request: any, adminFormDto: AdminFormDto) {
     return this.httpService
       .post(`${this.url}`, adminFormDto, {
@@ -100,10 +101,8 @@ export class AdminFormService {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new AdminFormDto(item)
-          );
+        map(async (response) => {
+          const responsedata = await this.mappedResponse(response.data);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
@@ -147,14 +146,29 @@ export class AdminFormService {
 
     const response = await axios(config);
 
-    let result =
-      response?.data &&
-      response.data.map((item: any) => new AdminFormDto(item));
-
+    let result = response?.data && response.data;
+    const responsedata = await this.mappedResponse(result);
     return new SuccessResponse({
       statusCode: 200,
       message: "ok",
-      data: result,
+      data: responsedata,
     });
+  }
+
+  public async mappedResponse(result: any) {
+    const adminFormResponse = result.map((obj: any) => {
+      const adminFormMapping = {
+        adminFormId: obj?.osid ? `${obj.osid}` : "",
+        moduleId: obj?.moduleId ? `${obj.moduleId}` : "",
+        formSchema: obj?.formSchema ? `${obj.formSchema}` : "",
+        createdAt: obj?.osCreatedAt ? `${obj.osCreatedAt}` : "",
+        updatedAt: obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "",
+        createdBy: obj?.osCreatedBy ? `${obj.osCreatedBy}` : "",
+        updatedBy: obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "",
+      };
+      return new AdminFormDto(adminFormMapping);
+    });
+
+    return adminFormResponse;
   }
 }

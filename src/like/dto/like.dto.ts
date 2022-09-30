@@ -3,6 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class LikeDto {
   @Expose()
+  id: string;
+
+  @Expose()
   likeId: string;
 
   @ApiProperty({})
@@ -27,12 +30,6 @@ export class LikeDto {
   updatedAt: string;
 
   constructor(obj: any) {
-    this.likeId = obj?.likeId ? `${obj.likeId}` : "";
-    this.contextId = obj?.contextId ? `${obj.contextId}` : "";
-    this.context = obj?.context ? `${obj.context}` : "";
-    this.userId = obj?.userId ? `${obj.userId}` : "";
-    this.type = obj?.type ? `${obj.type}` : "";
-    this.createdAt = obj?.created_at ? `${obj.created_at}` : "";
-    this.updatedAt = obj?.updated_at ? `${obj.updated_at}` : "";
+    Object.assign(this, obj);
   }
 }

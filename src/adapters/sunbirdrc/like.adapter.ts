@@ -24,14 +24,13 @@ export class SunbirdLikeService implements IServicelocator {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
-          let data = axiosResponse.data;
-
-          const likeDto = new LikeDto(data);
+        map(async (axiosResponse: AxiosResponse) => {
+          let data = [axiosResponse.data];
+          const likeDto = await this.mappedResponse(data);
           return new SuccessResponse({
             statusCode: 200,
             message: "ok.",
-            data: likeDto,
+            data: likeDto[0],
           });
         }),
         catchError((e) => {
@@ -139,14 +138,13 @@ export class SunbirdLikeService implements IServicelocator {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new LikeDto(item)
-          );
+        map(async (response) => {
+          const responsedata = response.data;
+          const likeDto = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
-            data: responsedata,
+            data: likeDto,
           });
         }),
         catchError((e) => {
@@ -181,11 +179,11 @@ export class SunbirdLikeService implements IServicelocator {
 
     const response = await axios(config);
     let resData = response?.data;
-    let result = resData.map((item: any) => new LikeDto(item));
+    const likeDto = await this.mappedResponse(resData);
     return new SuccessResponse({
       statusCode: 200,
       message: " Ok.",
-      data: result.length,
+      data: likeDto.length,
     });
   }
 
@@ -214,5 +212,24 @@ export class SunbirdLikeService implements IServicelocator {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+
+  public async mappedResponse(result: any) {
+    const likeResponse = result.map((obj: any) => {
+      const likeMapping = {
+        likeId: obj?.osid ? `${obj.osid}` : "",
+        contextId: obj?.contextId ? `${obj.contextId}` : "",
+        context: obj?.context ? `${obj.context}` : "",
+        userId: obj?.userId ? `${obj.userId}` : "",
+        type: obj?.type ? `${obj.type}` : "",
+        createdAt: obj?.osCreatedAt ? `${obj.osCreatedAt}` : "",
+        updatedAt: obj?.osUpdatedAt ? `${obj.osUpdatedAt}` : "",
+        createdBy: obj?.osCreatedBy ? `${obj.osCreatedBy}` : "",
+        updatedBy: obj?.osUpdatedBy ? `${obj.osUpdatedBy}` : "",
+      };
+      return new LikeDto(likeMapping);
+    });
+
+    return likeResponse;
   }
 }

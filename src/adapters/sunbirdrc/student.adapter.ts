@@ -24,15 +24,15 @@ export class StudentService implements IServicelocator {
         },
       })
       .pipe(
-        map((axiosResponse: AxiosResponse) => {
+        map(async (axiosResponse: AxiosResponse) => {
           let data = axiosResponse.data;
 
-          const studentDto = new StudentDto(data);
-
+          const studentDto = [data];
+          const studentResponse = await this.mappedResponse(studentDto);
           return new SuccessResponse({
             statusCode: 200,
             message: "student found Successfully",
-            data: studentDto,
+            data: studentResponse[0],
           });
         }),
         catchError((e) => {
@@ -91,6 +91,25 @@ export class StudentService implements IServicelocator {
   }
 
   public async searchStudent(request: any, studentSearchDto: StudentSearchDto) {
+    let studentSearchData = studentSearchDto;
+
+    let searchData: any;
+    Object.keys(studentSearchData).forEach((e) => {
+      if (studentSearchData[e].studentId) {
+        searchData = {
+          filters: {
+            osid: {
+              eq: `${studentSearchData[e].studentId.eq}`,
+            },
+            ...studentSearchData.filters,
+          },
+        };
+
+        delete searchData.filters.studentId;
+      } else {
+        searchData = studentSearchData;
+      }
+    });
     return this.httpService
       .post(`${this.url}/search`, studentSearchDto, {
         headers: {
@@ -98,14 +117,13 @@ export class StudentService implements IServicelocator {
         },
       })
       .pipe(
-        map((response) => {
-          const responsedata = response.data.map(
-            (item: any) => new StudentDto(item)
-          );
+        map(async (response) => {
+          const responsedata = response.data;
+          const studentResponse = await this.mappedResponse(responsedata);
           return new SuccessResponse({
             statusCode: response.status,
             message: "Ok.",
-            data: responsedata,
+            data: studentResponse,
           });
         }),
         catchError((e) => {
@@ -116,5 +134,93 @@ export class StudentService implements IServicelocator {
           throw new HttpException(error, e.response.status);
         })
       );
+  }
+
+  public async mappedResponse(result: any) {
+    const studentResponse = result.map((item: any) => {
+      const studentMapping = {
+        studentId: item?.osid ? `${item.osid}` : "",
+        refId1: item?.admissionNo ? `${item.admissionNo}` : "",
+        refId2: item?.refId2 ? `${item.refId2}` : "",
+        aadhaar: item?.aadhaar ? `${item.aadhaar}` : "",
+        firstName: item?.firstName ? `${item.firstName}` : "",
+        middleName: item?.middleName ? `${item.middleName}` : "",
+        lastName: item?.lastName ? `${item.lastName}` : "",
+        groupId: item?.groupId ? `${item.groupId}` : "",
+        schoolId: item?.schoolId ? `${item.schoolId}` : "",
+        studentEmail: item?.studentEmail ? `${item.studentEmail}` : "",
+        studentPhoneNumber: item?.studentPhoneNumber
+          ? item.studentPhoneNumber
+          : "",
+        iscwsn: item?.iscwsn ? `${item.iscwsn}` : "",
+        gender: item?.gender ? `${item.gender}` : "",
+        socialCategory: item?.socialCategory ? `${item.socialCategory}` : "",
+        religion: item?.religion ? `${item.religion}` : "",
+        singleGirl: item?.singleGirl ? item.singleGirl : "",
+        weight: item?.weight ? `${item.weight}` : "",
+        height: item?.height ? `${item.height}` : "",
+        bloodGroup: item?.bloodGroup ? `${item.bloodGroup}` : "",
+        birthDate: item?.birthDate ? `${item.birthDate}` : "",
+        homeless: item?.homeless ? item.homeless : "",
+        bpl: item?.bpl ? item.bpl : "",
+        migrant: item?.migrant ? item.migrant : "",
+        status: item?.status ? `${item.status}` : "",
+
+        fatherFirstName: item?.fatherFirstName ? `${item.fatherFirstName}` : "",
+
+        fatherMiddleName: item?.fatherMiddleName
+          ? `${item.fatherMiddleName}`
+          : "",
+
+        fatherLastName: item?.fatherLastName ? `${item.fatherLastName}` : "",
+        fatherPhoneNumber: item?.fatherPhoneNumber
+          ? item.fatherPhoneNumber
+          : "",
+        fatherEmail: item?.fatherEmail ? `${item.fatherEmail}` : "",
+
+        motherFirstName: item?.motherFirstName ? `${item.motherFirstName}` : "",
+        motherMiddleName: item?.motherMiddleName
+          ? `${item.motherMiddleName}`
+          : "",
+        motherLastName: item?.motherLastName ? `${item.motherLastName}` : "",
+        motherPhoneNumber: item?.motherPhoneNumber
+          ? item.motherPhoneNumber
+          : "",
+        motherEmail: item?.motherEmail ? `${item.motherEmail}` : "",
+
+        guardianFirstName: item?.guardianFirstName
+          ? `${item.guardianFirstName}`
+          : "",
+        guardianMiddleName: item?.guardianMiddleName
+          ? `${item.guardianMiddleName}`
+          : "",
+        guardianLastName: item?.guardianLastName
+          ? `${item.guardianLastName}`
+          : "",
+        guardianPhoneNumber: item?.guardianPhoneNumber
+          ? item.guardianPhoneNumber
+          : "",
+        guardianEmail: item?.guardianEmail ? `${item.guardianEmail}` : "",
+        image: item?.image ? `${item.image}` : "",
+        deactivationReason: item?.deactivationReason
+          ? `${item.deactivationReason}`
+          : "",
+        studentAddress: item?.studentAddress ? `${item.studentAddress}` : "",
+        village: item?.village ? `${item.village}` : "",
+        block: item?.block ? `${item.block}` : "",
+        district: item?.district ? `${item.district}` : "",
+        stateId: item?.stateId ? `${item.stateId}` : "",
+        pincode: item?.pincode ? item.pincode : "",
+        locationId: item?.locationId ? `${item.locationId}` : "",
+        metaData: item?.metaData ? item.metaData : [],
+        createdAt: item?.osCreatedAt ? `${item.osCreatedAt}` : "",
+        updatedAt: item?.osUpdatedAt ? `${item.osUpdatedAt}` : "",
+        createdBy: item?.osCreatedBy ? `${item.osCreatedBy}` : "",
+        updatedBy: item?.osUpdatedBy ? `${item.osUpdatedBy}` : "",
+      };
+      return new StudentDto(studentMapping);
+    });
+
+    return studentResponse;
   }
 }
