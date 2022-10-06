@@ -370,12 +370,77 @@ export class AttendanceHasuraService implements IServicelocator {
 
     let studentArray = [];
     for (let value of arrayIds) {
-      let config = {
-        method: "get",
-        url: `${this.studentAPIUrl}/${value}`,
+      var studentGetQuery = {
+        query: `query GetStudent($studentId:uuid!) {
+          student_by_pk(studentId: $studentId) {
+              aadhaar
+              birthDate
+              block
+              bloodGroup
+              bpl
+              created_at
+              deactivationReason
+              district
+              fatherEmail
+              fatherFirstName
+              fatherLastName
+              fatherMiddleName
+              fatherPhoneNumber
+              firstName
+              gender
+              groupId
+              guardianEmail
+              guardianFirstName
+              guardianLastName
+              guardianMiddleName
+              guardianPhoneNumber
+              height
+              homeless
+              image
+              iscwsn
+              lastName
+              locationId
+              metaData
+              middleName
+              migrant
+              motherEmail
+              motherFirstName
+              motherLastName
+              motherMiddleName
+              motherPhoneNumber
+              pincode
+              refId1
+              refId2
+              religion
+              schoolId
+              singleGirl
+              socialCategory
+              stateId
+              status
+              studentAddress
+              studentEmail
+              studentId
+              studentPhoneNumber
+              updated_at
+              village
+              weight
+          }
+        }
+        `,
+        variables: { studentId: value },
+      };
+
+      var studentSearch = {
+        method: "post",
+        url: process.env.REGISTRYHASURA,
+        headers: {
+          "x-hasura-admin-secret": process.env.REGISTRYHASURAADMINSECRET,
+          "Content-Type": "application/json",
+        },
+        data: studentGetQuery,
       };
       const response = await axios(config);
-      const data = response?.data;
+      const data = response?.data.data.student_by_pk;
 
       const date = new Date(dateData[0]);
       const month = date.toLocaleString("default", { month: "long" });

@@ -1,5 +1,6 @@
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
+import { SunbirdAdminFormService } from "./adminForm.adapter";
 import { AttendanceService } from "./attendance.adapter";
 import { SunbirdCommentService } from "./comment.adapter";
 import { SunbirdConfigService } from "./config.adapter";
@@ -22,6 +23,7 @@ import { UserService } from "./user.adapter";
     SunbirdConfigService,
     SunbirdLikeService,
     SunbirdHolidayService,
+    SunbirdAdminFormService,
   ],
   exports: [
     AttendanceService,
@@ -33,6 +35,7 @@ import { UserService } from "./user.adapter";
     SunbirdConfigService,
     SunbirdLikeService,
     SunbirdHolidayService,
+    SunbirdAdminFormService,
   ],
 })
 export class SunbirdModule {}

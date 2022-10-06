@@ -1,5 +1,3 @@
-import { AdminFormService } from "../adapters/sunbirdrc/adminForm.adapter";
-
 import {
   CacheInterceptor,
   CACHE_MANAGER,
@@ -29,11 +27,12 @@ import {
 } from "@nestjs/common";
 import { AdminFormDto } from "./dto/adminForm.dto";
 import { AdminFormSearchDto } from "./dto/adminForm-search.dto";
+import { AdminFormAdapter } from "./adminformadapter";
 @ApiTags("AdminForm")
 @Controller("adminForm")
 export class AdminFormController {
   constructor(
-    private service: AdminFormService,
+    private adminFormAdapter: AdminFormAdapter,
     @Inject(CACHE_MANAGER) private cacheManager
   ) {}
 
@@ -46,7 +45,9 @@ export class AdminFormController {
     strategy: "excludeAll",
   })
   getAdminForm(@Param("id") adminFormId: string, @Req() request: Request) {
-    return this.service.getAdminForm(adminFormId, request);
+    return this.adminFormAdapter
+      .buildAdminFormAdapter()
+      .getAdminForm(adminFormId, request);
   }
 
   @Post()
@@ -61,7 +62,9 @@ export class AdminFormController {
     @Req() request: Request,
     @Body() adminFormDto: AdminFormDto
   ) {
-    return this.service.createAdminForm(request, adminFormDto);
+    return this.adminFormAdapter
+      .buildAdminFormAdapter()
+      .createAdminForm(request, adminFormDto);
   }
 
   @Put("/:id")
@@ -76,7 +79,9 @@ export class AdminFormController {
     @Req() request: Request,
     @Body() adminFormDto: AdminFormDto
   ) {
-    return await this.service.updateAdminForm(id, request, adminFormDto);
+    return await this.adminFormAdapter
+      .buildAdminFormAdapter()
+      .updateAdminForm(id, request, adminFormDto);
   }
 
   @Post("/search")
@@ -92,6 +97,8 @@ export class AdminFormController {
     @Req() request: Request,
     @Body() adminFormSearchDto: AdminFormSearchDto
   ) {
-    return await this.service.searchAdminForm(request, adminFormSearchDto);
+    return await this.adminFormAdapter
+      .buildAdminFormAdapter()
+      .searchAdminForm(request, adminFormSearchDto);
   }
 }

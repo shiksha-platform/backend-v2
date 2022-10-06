@@ -16,6 +16,12 @@ export class StudentSearchDto {
   limit: string;
 
   @ApiProperty({
+    type: String,
+    description: "Page",
+  })
+  page: number;
+
+  @ApiProperty({
     type: Object,
     description: "Filters",
   })
