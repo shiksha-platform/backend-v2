@@ -23,6 +23,7 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
+  ApiTags,
 } from "@nestjs/swagger";
 import { IServicelocator } from "src/adapters/announcementsservicelocator";
 import {
@@ -32,6 +33,7 @@ import {
 import { AnnouncementsFilterDto } from "./dto/announcements-filter.dto";
 import { AnnouncementsDto } from "./dto/announcements.dto";
 
+@ApiTags("Announcements")
 @Controller("announcements")
 export class AnnouncementsController {
   constructor(
