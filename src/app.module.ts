@@ -26,6 +26,7 @@ import { MonitorTrackingModule } from "./monitorTracking/monitorTracking.module"
 import { CourseModule } from "./course/course.module";
 import { CourseTrackingModule } from "./courseTracking/courseTracking.module";
 import { AnnouncementsModule } from "./announcements/announcements.module";
+import { ContentPagesModule } from './contentPages/contentPages.module';
 import { RoleModule } from "./role/role.module";
 import { WorkHistoryModule } from "./workHistory/workHistory.module";
 import { GroupMembershipModule } from "./groupMembership/groupMembership.module";
@@ -66,4 +67,4 @@ import { GroupMembershipModule } from "./groupMembership/groupMembership.module"
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
